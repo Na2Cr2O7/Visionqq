@@ -1,0 +1,14 @@
+﻿  FocusQQWindow.cpp
+D:\Viv\FocusQQWindow\inicpp.hpp(328,40): warning C4101: “e”: 未引用的局部变量
+  (编译源文件“FocusQQWindow.cpp”)
+  
+D:\Viv\FocusQQWindow\inicpp.hpp(332,36): warning C4101: “e”: 未引用的局部变量
+  (编译源文件“FocusQQWindow.cpp”)
+  
+D:\Viv\FocusQQWindow\inicpp.hpp(370,40): warning C4101: “e”: 未引用的局部变量
+  (编译源文件“FocusQQWindow.cpp”)
+  
+D:\Viv\FocusQQWindow\inicpp.hpp(374,36): warning C4101: “e”: 未引用的局部变量
+  (编译源文件“FocusQQWindow.cpp”)
+  
+  FocusQQWindow.vcxproj -> D:\Viv\FocusQQWindow\x64\Debug\FocusQQWindow.exe

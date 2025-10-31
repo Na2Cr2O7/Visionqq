@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "dgSpecHash": "uWWyhwM43mA=",
+  "success": true,
+  "projectFilePath": "D:\\Viv\\Opt\\Opt.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\16928\\.nuget\\packages\\ini-parser\\2.5.2\\ini-parser.2.5.2.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "message": "已使用“.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1”而不是项目目标框架“net9.0-windows7.0”还原包“ini-parser 2.5.2”。此包可能与项目不完全兼容。",
+      "projectPath": "D:\\Viv\\Opt\\Opt.csproj",
+      "warningLevel": 1,
+      "filePath": "D:\\Viv\\Opt\\Opt.csproj",
+      "libraryId": "ini-parser",
+      "targetGraphs": [
+        "net9.0-windows7.0"
+      ]
+    }
+  ]
+}

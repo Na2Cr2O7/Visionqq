@@ -1,0 +1,14 @@
+﻿  ScaleToINI.cpp
+D:\Viv\ScaleToINI\inicpp.hpp(328,40): warning C4101: “e”: 未引用的局部变量
+  (编译源文件“ScaleToINI.cpp”)
+  
+D:\Viv\ScaleToINI\inicpp.hpp(332,36): warning C4101: “e”: 未引用的局部变量
+  (编译源文件“ScaleToINI.cpp”)
+  
+D:\Viv\ScaleToINI\inicpp.hpp(370,40): warning C4101: “e”: 未引用的局部变量
+  (编译源文件“ScaleToINI.cpp”)
+  
+D:\Viv\ScaleToINI\inicpp.hpp(374,36): warning C4101: “e”: 未引用的局部变量
+  (编译源文件“ScaleToINI.cpp”)
+  
+  ScaleToINI.vcxproj -> D:\Viv\ScaleToINI\x64\Debug\ScaleToINI.exe
