@@ -1,0 +1,1 @@
+".\python\WinPython64-3.13.7.0dot\WPy64-31700\python\python.exe" %*

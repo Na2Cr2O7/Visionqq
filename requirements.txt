@@ -1,0 +1,7 @@
+easyocr
+pillow
+ollama
+colorama
+pyautogui
+pyperclip
+requests
