@@ -1,4 +1,4 @@
-![示例截图](./visionQQ.svg)
+![示例截图](./visionQQ.jpeg)
 
 # VisionQQ - 基于纯视觉的 QQ 自动回复机器人
 使用纯图像识别技术实现 QQ 消息自动回复，极大降低封号风险。仅支持 Windows 系统。
