@@ -1,4 +1,4 @@
-![示例截图](./visionQQ.jpeg)
+![示例截图](./VisionQQ.jpeg)
 
 # VisionQQ - 基于纯视觉的 QQ 自动回复机器人
 使用纯图像识别技术实现 QQ 消息自动回复，极大降低封号风险。仅支持 Windows 系统。
@@ -86,5 +86,6 @@ ollama pull huihui_ai/gemma3-abliterated:1b
 本项目遵循 [MIT License](LICENSE)，欢迎 Fork、Star 与贡献代码！
 
 🙌 贡献与反馈
+
 
 欢迎提交 Issue 或 Pull Request！
