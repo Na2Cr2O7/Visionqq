@@ -39,11 +39,16 @@ def click(x: int, y: int):
     print(x,y)
     pyautogui.moveTo(x, y,duration=1, tween=pytweening.easeInOutQuad)
     pyautogui.click()
-# def sendText(text: str,x: int, y: int):
-#     pyperclip.copy(text)
-#     click(x,y)
-#     time.sleep(.1)
-#     pyautogui.hotkey('ctrl', 'v')
+def goto(x: int, y: int):
+    pyautogui.moveTo(x, y,duration=1, tween=pytweening.easeInOutQuad)
+def scrollUp(length: int = 120):
+    for i in range(4):
+        pyautogui.scroll(length)
+        time.sleep(.1)
+def scrollDown(length: int = 120):
+    for i in range(4):
+        pyautogui.scroll(-length)
+        time.sleep(.1)
 def sendTextWithoutClick(text:str):
     temp=''
     for i in text:
@@ -85,6 +90,7 @@ if __name__ == '__main__':
     config.read('config.ini',encoding='utf-8')
     size: tuple[int, int]=int(config.get('general','width')),int(config.get('general','height'))
     scale=float(config.get('general','scale'))
+    scrollTries=int(config.get('general','scroll'))
     size=(int(size[0]*scale),int(size[1]*scale))
 
     logging.debug(f"size with scale: {size}, scale: {scale}")
@@ -123,29 +129,40 @@ if __name__ == '__main__':
             time.sleep(2)
             
 
-            # chatListTexts=getAllTextWithBoxesDrawn("chatListRedDot.png")
+            # conversation
+            goto(conversationActualSize[0]+((conversationActualSize[2]-conversationActualSize[0])//2),conversationActualSize[1]+((conversationActualSize[3]-conversationActualSize[1])//2))
+            for _ in range(scrollTries):
+                scrollUp()
+            conversationText=set()
+            for scrollTry in range(scrollTries):
+                
+                im=screenshot(positionRect)
+                
 
-            # print(chatListTexts)
+                conversation=im.crop(conversationActualSize)
+                del im
 
-            im=screenshot(positionRect)
-
-            conversation=im.crop(conversationActualSize)
-            del im
-
-            # conversationTexts=getAllTextWithBoxesDrawn("conversation.png")
-            # print(conversationTexts)
-            conversation.save("conversation.png")
+                # conversationTexts=getAllTextWithBoxesDrawn("conversation.png")
+                # print(conversationTexts)
+                fn=f"conversation{scrollTry}.png"
+                conversation.save(fn)
 
 
+                conversation=enhance.getConversation(fn)
+
+
+                for i in ocr.getAllTextWithBoxesDrawn(conversation):
+                    conversationText.add(i)
+                scrollDown()
+
+            
             #send answer
             click(commentSectionActualSize[0]+((commentSectionActualSize[2]-commentSectionActualSize[0])//2),commentSectionActualSize[1]+((commentSectionActualSize[3]-commentSectionActualSize[1])//2))
 
-            conversation=enhance.getConversation("conversation.png")
 
-            conversationText='\n'.join(ocr.getAllTextWithBoxesDrawn(conversation))
             logging.info(f"{Fore.CYAN}{conversationText}{Fore.RESET}")
 
-            result=answer.getAnswer(conversationText)
+            result=answer.getAnswer('\n'.join(list(conversationText)))
             print(Fore.CYAN)
             if type(result)==str:
                 print(result)

@@ -45,6 +45,8 @@
             button2 = new Button();
             button3 = new Button();
             button4 = new Button();
+            textBox7 = new TextBox();
+            label7 = new Label();
             SuspendLayout();
             // 
             // label1
@@ -144,7 +146,7 @@
             // 
             // textBox6
             // 
-            textBox6.Location = new Point(158, 222);
+            textBox6.Location = new Point(158, 275);
             textBox6.Multiline = true;
             textBox6.Name = "textBox6";
             textBox6.Size = new Size(333, 207);
@@ -154,7 +156,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(56, 225);
+            label6.Location = new Point(56, 278);
             label6.Name = "label6";
             label6.Size = new Size(96, 28);
             label6.TabIndex = 11;
@@ -162,7 +164,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(43, 500);
+            button1.Location = new Point(56, 553);
             button1.Name = "button1";
             button1.Size = new Size(118, 42);
             button1.TabIndex = 13;
@@ -172,7 +174,7 @@
             // 
             // button2
             // 
-            button2.Location = new Point(167, 500);
+            button2.Location = new Point(180, 553);
             button2.Name = "button2";
             button2.Size = new Size(118, 42);
             button2.TabIndex = 14;
@@ -182,7 +184,7 @@
             // 
             // button3
             // 
-            button3.Location = new Point(291, 500);
+            button3.Location = new Point(304, 553);
             button3.Name = "button3";
             button3.Size = new Size(118, 42);
             button3.TabIndex = 15;
@@ -192,7 +194,7 @@
             // 
             // button4
             // 
-            button4.Location = new Point(43, 435);
+            button4.Location = new Point(56, 488);
             button4.Name = "button4";
             button4.Size = new Size(242, 42);
             button4.TabIndex = 16;
@@ -200,11 +202,30 @@
             button4.UseVisualStyleBackColor = true;
             button4.Click += button4_Click;
             // 
+            // textBox7
+            // 
+            textBox7.Location = new Point(158, 228);
+            textBox7.Name = "textBox7";
+            textBox7.Size = new Size(220, 34);
+            textBox7.TabIndex = 18;
+            textBox7.TextChanged += textBox7_TextChanged;
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(56, 231);
+            label7.Name = "label7";
+            label7.Size = new Size(96, 28);
+            label7.TabIndex = 17;
+            label7.Text = "滚动次数";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(13F, 28F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(537, 568);
+            ClientSize = new Size(537, 609);
+            Controls.Add(textBox7);
+            Controls.Add(label7);
             Controls.Add(button4);
             Controls.Add(button3);
             Controls.Add(button2);
@@ -254,5 +275,7 @@
         private Button button2;
         private Button button3;
         private Button button4;
+        private TextBox textBox7;
+        private Label label7;
     }
 }

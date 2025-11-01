@@ -21,6 +21,7 @@ namespace Opt
             string apikey = data["general"]["api_key"];
             string serverURL = data["general"]["server_url"];
             string systemPrompt = data["general"]["system"];
+            string scroll= data["general"]["scroll"];
             //parser.WriteFile("Configuration.ini", data);
 
 
@@ -34,6 +35,7 @@ namespace Opt
             textBox4.Text = apikey;
             textBox5.Text = serverURL;
             textBox6.Text = systemPrompt;
+            textBox7.Text = scroll;
             if (textBox5.Text == "Ollama")
             {
                 checkBox1.Checked = true;
@@ -56,6 +58,7 @@ namespace Opt
             data["general"]["api_key"] = textBox4.Text;
             data["general"]["server_url"] = textBox5.Text;
             data["general"]["system"] = textBox6.Text;
+            data["general"]["scroll"]=textBox7.Text;
             parser.WriteFile("config.ini", data, new System.Text.UTF8Encoding(false));
 
 
@@ -140,6 +143,14 @@ namespace Opt
                 }
 
 
+            }
+        }
+
+        private void textBox7_TextChanged(object sender, EventArgs e)
+        {
+            if(!isnumeric(textBox7.Text))
+            {
+                textBox7.Text = 4.ToString();
             }
         }
     }
