@@ -113,6 +113,22 @@ bool LmouseUp()
 	input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
 	return SendInput(1, &input, sizeof(INPUT)) == 1;
 }
+extern "C" __declspec(dllexport)
+bool RmouseUp()
+{
+	INPUT input = { 0 };
+	input.type = INPUT_MOUSE;
+	input.mi.dwFlags = MOUSEEVENTF_RIGHTUP;
+	return SendInput(1, &input, sizeof(INPUT)) == 1;
+}
+extern "C" __declspec(dllexport)
+bool RmouseDown()
+{
+	INPUT input = { 0 };
+	input.type = INPUT_MOUSE;
+	input.mi.dwFlags = MOUSEEVENTF_RIGHTDOWN;
+	return SendInput(1, &input, sizeof(INPUT)) == 1;
+}
 void tweenPosition(unsigned startX, unsigned startY,
 	unsigned endX, unsigned endY,
 	float durationSeconds)
@@ -162,4 +178,12 @@ bool Lclick(unsigned x, unsigned y)
 	if (!LmouseDown()) return false;
 	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	return LmouseUp();
+}
+extern "C" __declspec(dllexport)
+bool Rclick(unsigned x, unsigned y)
+{
+	if (!Mousegoto(x, y)) return false;
+	if (!RmouseDown()) return false;
+	std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	return RmouseUp();
 }

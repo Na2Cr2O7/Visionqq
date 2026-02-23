@@ -67,6 +67,13 @@ extern "C" __declspec(dllexport)
 bool LmouseUp();
 
 extern "C" __declspec(dllexport)
+bool RmouseUp();
+extern "C" __declspec(dllexport)
+bool RmouseDown();
+extern "C" __declspec(dllexport)
+bool Rclick(unsigned x, unsigned y);
+
+extern "C" __declspec(dllexport)
 void DPIAwarenessPrologue2()
 {
     SetProcessDpiAwareness(PROCESS_SYSTEM_DPI_AWARE);
