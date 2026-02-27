@@ -11,6 +11,7 @@ from typing import Any, Generator, Literal
 from random import randint
 import subprocess
 import platform
+import upload
 
 
 
@@ -75,7 +76,7 @@ if __name__ == '__main__':
         ATDetect=config.getboolean('general','ATDetect')
         tab_times=config.getint('general','tab_times')
 
-        print(f"{Fore.YELLOW}{config.get('general','version')}{Fore.RESET}")
+        print(f"{Fore.YELLOW}{config.get('general','version')}{Fore.RESET}",end='\t')
         print(f"{Fore.CYAN}{platform.platform()}{Fore.RESET}")
         sendImagePossibility=int(sendImagePossibility)
 
@@ -139,8 +140,16 @@ if __name__ == '__main__':
         logging.debug(f"开始拖拽位置: {startDraggingAbsolutePosition}")
         logging.debug(f"结束拖拽位置: {endDraggingAbsolutePosition}")
 
+        chatButtonActualPosition=positions.toActualPoint(positions.CHAT_BUTTON_RELATIVE_POSITION,size)
+        logging.debug(f"聊天按钮实际位置: {chatButtonActualPosition}")
+        contactButtonActualPosition=positions.toActualPoint(positions.CONTACT_BUTTON_RELATIVE_POSITION,size)
+        logging.debug(f"联系人按钮实际位置: {contactButtonActualPosition}")
+
 
         cancelButtonActualPosition=positions.toActualPoint(positions.CANCEL_BUTTON_RELATIVE_POSITION,size)
+
+        uploadImagePossibleActualSize=positions.toActualSize(positions.UPLOAD_IMAGE_POSSIBLE_BBOX_RELATIVE_SIZE,size)
+        logging.debug(f"上传图片可能位置: {uploadImagePossibleActualSize}")
         while True:
             try:
                 # im=image.screenshot(*positionRect)
@@ -169,8 +178,6 @@ if __name__ == '__main__':
                     
                     dragFromTo(*startDraggingAbsolutePosition,*endDraggingAbsolutePosition)
 
-
-                    #七次tab找到复制按钮
                     dockLog.setText("🚫🖱️ 请勿移动鼠标")
                     time.sleep(.1)
                     goto(conversationActualSize[0]+((conversationActualSize[2]-conversationActualSize[0])//2),conversationActualSize[1]+((conversationActualSize[3]-conversationActualSize[1])//2))
@@ -184,7 +191,7 @@ if __name__ == '__main__':
                     press('enter')
 
                     
-                    
+
                     time.sleep(2)
                     
                     for _ in range(4):
@@ -246,10 +253,24 @@ if __name__ == '__main__':
                         
                         logging.info("上传图片")
                         dockLog.setText("🚫⌨️ 正在上传图片...")
+                        image.screenshot(*uploadImagePossibleActualSize)
+                    
+                        points=image.find_templates('screenshot.png', './uploadImage.png',30,1)
+                        if len(points)==0:
+                            subprocess.run(['uploadImage2.exe'])
+                            time.sleep(.2)
+                            hotkey('ctrl','v')
+                        else:
+                            point=list(points[0])
+                            point[0]+=uploadImagePossibleActualSize[0]
+                            point[1]+=uploadImagePossibleActualSize[1]
+                            click(*point)
+                            time.sleep(4)
+                            upload.upload()
 
-                        subprocess.run(['uploadImage2.exe'])
-                        time.sleep(.2)
-                        hotkey('ctrl','v')
+                        # subprocess.run(['uploadImage2.exe'])
+                        
+
 
                         # click(sendImageActualSize[0]+((sendImageActualSize[2]-sendImageActualSize[0])//2),sendImageActualSize[1]+((sendImageActualSize[3]-sendImageActualSize[1])//2))
 
@@ -272,6 +293,11 @@ if __name__ == '__main__':
                     # exit conversation
                     logging.info("退出会话")
                     click(chatListActualSize[0]+int(100*scale),chatListActualSize[1]+int(20*scale))
+                    time.sleep(0.1)
+
+                    click(*contactButtonActualPosition)
+                    time.sleep(0.1)
+                    click(*chatButtonActualPosition)
                     time.sleep(1)
                 # else:
                 #     if isVisionModel:

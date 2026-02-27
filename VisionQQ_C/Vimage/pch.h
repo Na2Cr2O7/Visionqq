@@ -6,12 +6,16 @@
 
 #ifndef PCH_H
 #define PCH_H
-
+//'sprintf': This function or variable may be unsafe.Consider using sprintf_s instead.To disable deprecation, use _CRT_SECURE_NO_WARNINGS.See online help for details.
+#define _CRT_SECURE_NO_WARNINGS
 // 添加要在此处预编译的标头
 #include "framework.h"
-#include "CImg.h"
-#include "Point.hpp"
-#include "rgb.h"
-using namespace cimg_library;	
+//#include "CImg.h"
+//#include "Point.hpp"
+//#include "rgb.h"
+#include<optional>
+
+
+//using namespace cimg_library;	
 
 #endif //PCH_H

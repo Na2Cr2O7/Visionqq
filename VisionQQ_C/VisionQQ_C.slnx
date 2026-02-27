@@ -1,23 +1,58 @@
 <Solution>
   <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+    <BuildType Name="release2" />
     <Platform Name="ARM64" />
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
   <Project Path="batWrapperARM64/batWrapperARM64.vcxproj" Id="b88f1ecf-1813-456f-961c-e1d0040e09f6">
+    <BuildType Solution="release2|*" Project="Release" />
     <Platform Solution="*|ARM64" Project="x64" />
   </Project>
-  <Project Path="FocusQQWindow2/FocusQQWindow2.vcxproj" Id="92a5f2dc-82d6-4511-995d-853d782b1c7a" />
-  <Project Path="ImageImport/ImageImport.vcxproj" />
-  <Project Path="InputEvent/InputEvent.vcxproj" Id="b59a5f55-dc63-4cae-aa81-a9c6219a174e" />
-  <Project Path="mfcinstall2/mfcinstall2.vcxproj" />
-  <Project Path="MFCLauncher/MFCLauncher.vcxproj" />
+  <Project Path="FocusQQWindow2/FocusQQWindow2.vcxproj" Id="92a5f2dc-82d6-4511-995d-853d782b1c7a">
+    <BuildType Solution="release2|*" Project="Release" />
+  </Project>
+  <Project Path="ImageImport/ImageImport.vcxproj">
+    <BuildType Solution="release2|*" Project="Release" />
+  </Project>
+  <Project Path="InputEvent/InputEvent.vcxproj" Id="b59a5f55-dc63-4cae-aa81-a9c6219a174e">
+    <BuildType Solution="release2|*" Project="Release" />
+  </Project>
+  <Project Path="mfcinstall2/mfcinstall2.vcxproj">
+    <BuildType Solution="release2|*" Project="Release" />
+  </Project>
+  <Project Path="MFCLauncher/MFCLauncher.vcxproj">
+    <BuildType Solution="release2|*" Project="Release" />
+  </Project>
   <Project Path="MFCUpdate/MFCUpdate.vcxproj">
+    <BuildType Solution="release2|*" Project="Release" />
     <Platform Solution="Debug|ARM64" Project="x64" />
   </Project>
-  <Project Path="ScaleToINI/ScaleToINI.vcxproj" Id="0c76a433-d76d-456b-9b4f-d24f05845967" />
-  <Project Path="update2/wxupdate3.vcxproj" Id="063b4332-2dad-43dd-b5c2-96f83fc21454" />
-  <Project Path="uploadImage2/uploadImage2.vcxproj" Id="2cc22cc3-616e-4be1-84f9-a3a575c22b05" />
-  <Project Path="Vimage/Vimage.vcxproj" Id="ac512d12-3665-49ac-afd1-149b900bcc3d" />
-  <Project Path="wxInstall/wxInstall.vcxproj" Id="7d74c4a6-5311-4a6b-b1a9-5406d0587879" />
+  <Project Path="ScaleToINI/ScaleToINI.vcxproj" Id="0c76a433-d76d-456b-9b4f-d24f05845967">
+    <BuildType Solution="release2|*" Project="Release" />
+  </Project>
+  <Project Path="update2/wxupdate3.vcxproj" Id="063b4332-2dad-43dd-b5c2-96f83fc21454">
+    <BuildType Solution="release2|*" Project="Release" />
+  </Project>
+  <Project Path="uploadFile/uploadFile.vcxproj" Id="7bf54da3-9781-4781-ad30-2e0df178f894">
+    <BuildType Solution="release2|*" Project="Release" />
+    <Platform Solution="Debug|ARM64" Project="x64" />
+    <Platform Solution="release2|ARM64" Project="x64" />
+  </Project>
+  <Project Path="uploadImage2/uploadImage2.vcxproj" Id="2cc22cc3-616e-4be1-84f9-a3a575c22b05">
+    <BuildType Solution="release2|*" Project="Release" />
+  </Project>
+  <Project Path="Vimage/Vimage.vcxproj" Id="ac512d12-3665-49ac-afd1-149b900bcc3d">
+    <BuildType Solution="release2|*" Project="Release" />
+  </Project>
+  <Project Path="Vision/Vision.vcxproj" Id="89a36aa2-1723-4be2-8f97-90c637583075">
+    <BuildType Solution="release2|*" Project="Release" />
+    <Platform Solution="Debug|ARM64" Project="x64" />
+    <Platform Solution="release2|ARM64" Project="x64" />
+  </Project>
+  <Project Path="wxInstall/wxInstall.vcxproj" Id="7d74c4a6-5311-4a6b-b1a9-5406d0587879">
+    <BuildType Solution="release2|*" Project="Release" />
+  </Project>
 </Solution>

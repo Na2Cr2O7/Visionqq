@@ -218,159 +218,130 @@ int fullScreenshot()
 	{
 		scale = float(getWidth()) / getScreenW();
 	}
-	CaptureAnImage(GetDesktopWindow(), scale, L"screenshot.bmp");
-	if (not fileExists(L"screenshot.bmp"))
+	//CaptureAnImage(GetDesktopWindow(), scale, L"screenshot.bmp");
+	screenshot(0, 0, getWidth(), getScreenW());
+	if (not fileExists(L"screenshot.png"))
 	{
 		return 1;
 	}
 	return 0;
 }
-extern "C" __declspec(dllexport)
-int screenshot(int left, int right, int width, int height)
+std::optional<unsigned char*> cropImage(
+	const unsigned char* src_data,
+	int src_w, int src_h, int channels,
+	int crop_x, int crop_y, int crop_w, int crop_h)
 {
+	// 1. 边界检查与修正
+	if (crop_x < 0) crop_x = 0;
+	if (crop_y < 0) crop_y = 0;
+
+	// 如果起点就在图片外，直接失败
+	if (crop_x >= src_w || crop_y >= src_h) {
+		return std::nullopt; 
+	}
+
+	// 修正裁剪尺寸以防止越界
+	if (crop_x + crop_w > src_w) crop_w = src_w - crop_x;
+	if (crop_y + crop_h > src_h) crop_h = src_h - crop_y;
+
+	if (crop_w <= 0 || crop_h <= 0) {
+		return std::nullopt;
+	}
+
+	// 2. 分配内存 (调用者负责 delete[])
+	// 注意：使用 new[] 而不是 new，因为我们要分配数组
+	unsigned char* destData = new(std::nothrow) unsigned char[crop_w * crop_h * channels];
+	if (!destData) {
+		return std::nullopt; // 内存分配失败
+	}
+
+	const int src_row_stride = src_w * channels;
+	const int dst_row_stride = crop_w * channels;
+	const int copy_bytes = dst_row_stride;
+
+	// 3. 逐行拷贝
+	for (int y = 0; y < crop_h; ++y) {
+		const unsigned char* src_row_ptr = src_data + ((crop_y + y) * src_row_stride) + (crop_x * channels);
+		unsigned char* dst_row_ptr = destData + (y * dst_row_stride);
+		std::memcpy(dst_row_ptr, src_row_ptr, copy_bytes);
+	}
+
+	return destData;
+}
+
+extern "C" __declspec(dllexport)
+int screenshot(int left, int top, int width, int height)
+{
+	// 1. 计算缩放比例
 	float scale = 1.0f;
-	if (gethdc())
-	{
-		scale = float(getWidth()) / getScreenW();
-	}
-	CaptureAnImage(GetDesktopWindow(), scale, L"captureqwsx.bmp");
-	if (not fileExists(L"captureqwsx.bmp"))
-	{
-		return 1;
-	}
-	CImg screenshot("captureqwsx.bmp");
-	CImg cropped = screenshot.get_crop(left, right, width + left, right + height);
-	cropped.save("screenshot.bmp");
-	return 0;
-}
-
-extern "C" __declspec(dllexport)
-Point containsRedDot(RECT rect)
-
-{
-	CImg<unsigned char> screenshot("screenshot.bmp");
-	const Color RED_DOT = { 247,76,48 };
-	int width = screenshot.width();
-	int height = screenshot.height();
-	//std::cout<<"(" << rect.right<<"," << rect.top << "),(" << rect.bottom << "," << rect.left << ")\n";
-	for (int x = rect.left; x < rect.right; ++x)
-	{
-		for (int y = rect.top; y < rect.bottom; ++y)
-		{
-			//if (screenshot(x, y, 0) == RED_DOT.r and screenshot(x, y, 1) == RED_DOT.g and screenshot(x, y, 2) == RED_DOT.b)
-			if (std::tie(screenshot(x, y, 0), screenshot(x, y, 1), screenshot(x, y, 2)) == std::tie(RED_DOT.r, RED_DOT.g, RED_DOT.b))
-			{
-				return { static_cast<unsigned>(x), static_cast<unsigned>(y) };
-			}
+	if (gethdc()) {
+		// 防止除以零
+		int screenW = getScreenW();
+		if (screenW > 0) {
+			scale = static_cast<float>(getWidth()) / screenW;
 		}
 	}
 
-	return { 0,0 };
-}
+	const wchar_t* temp_file = L"captureqwsx.bmp";
+	const char* out_file = "screenshot.png";
 
-extern "C" __declspec(dllexport)
-Point containsBlue()
-{
-	CImg<unsigned char> screenshot("screenshot.bmp");
-	const Color RED_DOT = { 0,153,255 };
-	for (int x = 0; x < screenshot.width(); x += 10)
+	// 2. 截图
+	CaptureAnImage(GetDesktopWindow(), scale, temp_file);
 
+	if (!fileExists(temp_file)) {
+		return 1; // 截图失败
+	}
+
+	// 3. 加载图片
+	int img_w, img_h, channels;
+	unsigned char* image = stbi_load("captureqwsx.bmp", &img_w, &img_h, &channels, 0);
+
+	if (!image) {
+		return 2; // 加载图片失败
+	}
+
+	// 4. 执行裁剪
+	// 传入正确的原图尺寸 (img_w, img_h) 和 用户想要的裁剪参数 (left, top, width, height)
+	auto cropped_opt = cropImage(image, img_w, img_h, channels, left, top, width, height);
+
+	// 释放源图片内存 (stb_image 分配的必须用 stbi_image_free)
+	stbi_image_free(image);
+	bool success=DeleteFileW(temp_file);
+	if (!success)
 	{
-		for (int y = 0; y < screenshot.height(); y += 10)
-		{
-			if (std::tie(screenshot(x, y, 0), screenshot(x, y, 1), screenshot(x, y, 2)) == std::tie(RED_DOT.r, RED_DOT.g, RED_DOT.b))
-			{
-				return { static_cast<unsigned>(x), static_cast<unsigned>(y) };
-			}
-		}
-	}
-	return { 0,0 };
-}
-extern "C" __declspec(dllexport)
-Point point(unsigned x, unsigned y)
-
-{
-	return { x,y };
-}
-extern "C" __declspec(dllexport)
-RECT rect(unsigned left, unsigned top, unsigned right, unsigned bottom)
-{
-	RECT r;
-	r.left = left;
-	r.top = top;
-	r.right = right;
-	r.bottom = bottom;
-	return r;
-}
-template<typename T>
-bool inRange(T number,T upper,T lower)
-{
-	if (upper < lower)
-	{
-		return false;
-	}
-	return ((upper - number) > 0) and ((lower - number) < 0);
-}
-
-extern "C" __declspec(dllexport)
-int matchTemplate(
-	const char* image,
-	const char* templateImage,
-	int threshold,
-	int* outX,
-	int* outY
-) {
-	if (!image || !templateImage || !outX || !outY) {
-		return 0; // 无效参数
+		std::cout<<"失败" << GetLastError() << std::endl;;
 	}
 
-	try {
-		CImg<unsigned char> background(image);
-
-		//CImg<unsigned char> background = background.resize(1920,1080);
-
-		CImg<unsigned char> foreground(templateImage);
-
-		const int bg_w = background.width();
-		const int bg_h = background.height();
-		const int fg_w = foreground.width();
-		const int fg_h = foreground.height();
-
-		// 模板不能比背景大
-		if (fg_w > bg_w || fg_h > bg_h) {
-			return 0;
-		}
-
-		const int channels = min(background.spectrum(), foreground.spectrum());
-
-		for (int bx = 0; bx <= bg_w - fg_w; ++bx) {
-			for (int by = 0; by <= bg_h - fg_h; ++by) {
-				bool match = true;
-				for (int fx = 0; fx < fg_w && match; ++fx) {
-					for (int fy = 0; fy < fg_h && match; ++fy) {
-						for (int c = 0; c < channels; ++c) {
-							int diff = background(bx + fx, by + fy, c) -
-								foreground(fx, fy, c);
-							if (diff < 0) diff = -diff;
-							if (diff > threshold) {
-								match = false;
-								break;
-							}
-						}
-					}
-				}
-				if (match) {
-					*outX = bx;
-					*outY = by;
-					return 1; // 找到
-				}
-			}
-		}
-	}
-	catch (...) {
-		// CImg 可能抛异常（如文件不存在）
-		return 0;
+	if (!cropped_opt.has_value()) {
+		// 裁剪失败 (可能是区域越界)
+		return 3;
 	}
 
-	return 0; // 未找到
+	unsigned char* cropped_ptr = cropped_opt.value();
+
+	int final_w = width;
+	int final_h = height;
+
+	// 简单的边界钳制逻辑复现，确保写入尺寸正确
+	if (left < 0) left = 0;
+	if (top < 0) top = 0;
+	if (left + final_w > img_w) final_w = img_w - left;
+	if (top + final_h > img_h) final_h = img_h - top;
+
+	if (final_w <= 0 || final_h <= 0) {
+		delete[] cropped_ptr; // 清理内存
+		return 3;
+	}
+
+	bool write_success = stbi_write_png(out_file, final_w, final_h, channels, cropped_ptr,0);
+
+	// 6. 清理内存 (对应 cropImage 中的 new[])
+	// 无论保存是否成功，都必须删除，防止内存泄漏
+	delete[] cropped_ptr;
+
+	if (!write_success) {
+		return 4; // 保存失败
+	}
+
+	return 0; // 成功
 }

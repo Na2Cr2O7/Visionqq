@@ -1,5 +1,5 @@
 import ctypes
-from ctypes import Structure, c_int, c_uint, c_void_p, POINTER
+from ctypes import Structure, c_int, c_uint, c_void_p, POINTER,c_char_p
 import os
 import configparser
 config = configparser.ConfigParser()
@@ -34,77 +34,110 @@ class RECT(Structure):
         return f"RECT(left={self.left}, top={self.top}, right={self.right}, bottom={self.bottom})"
 
 
-dll = ctypes.CDLL(os.path.abspath('Vimage.dll'))  # 或使用 ctypes.WinDLL 如果是 stdcall
+visionDLL = ctypes.CDLL(os.path.abspath('Vision.dll'))
+screenshotDLL = ctypes.CDLL(os.path.abspath('ScreenCapture.dll'))
 
 # 函数1: screenshot
-dll.screenshot.argtypes = [c_int, c_int, c_int, c_int]
-dll.screenshot.restype = c_int  # 返回 1 表示失败
+screenshotDLL.screenshot.argtypes = [c_int, c_int, c_int, c_int]
+screenshotDLL.screenshot.restype = c_int  # 返回 1 表示失败
 
-dll.fullScreenshot.argtypes = []
-dll.fullScreenshot.restype = c_int
+screenshotDLL.fullScreenshot.argtypes = []
+screenshotDLL.fullScreenshot.restype = c_int
 
 # 函数2: containsRedDot
-dll.containsRedDot.argtypes = [RECT]
-dll.containsRedDot.restype = Point
+visionDLL.containsRedDot.argtypes = [RECT,c_char_p]
+visionDLL.containsRedDot.restype = Point
 
 # 函数3: containsBlue
-dll.containsBlue.argtypes = []
-dll.containsBlue.restype = Point
+visionDLL.containsBlue.argtypes = [c_char_p]
+visionDLL.containsBlue.restype = Point
 
 # 函数4: point（构造 Point）
-dll.point.argtypes = [c_uint, c_uint]
-dll.point.restype = Point
+visionDLL.point.argtypes = [c_uint, c_uint]
+visionDLL.point.restype = Point
 
 # 函数5: rect（构造 RECT）
-dll.rect.argtypes = [c_uint, c_uint, c_uint, c_uint]
-dll.rect.restype = RECT
-# print(0, 0, int(width*scale), int(height*scale))
-# # 截图
-# result = dll.screenshot(0, 0, int(width*scale), int(height*scale))
-# if result == 1:
-#     print("截图失败")
-# else:
-#     print("截图成功")
+visionDLL.rect.argtypes = [c_uint, c_uint, c_uint, c_uint]
+visionDLL.rect.restype = RECT
 
-# # 构造一个区域
-# r = dll.rect(100, 100, 300, 300)
-
-# # 检查红点
-# red_point = dll.containsRedDot(r)
-# if red_point.is_null():
-#     print("没有红点")
-# else:
-#     print("红点位置:", red_point)
-
-# # 检查蓝色按钮
-# blue_point = dll.containsBlue()
-# if blue_point.is_null():
-#     print("没有蓝色按钮")
-# else:
-#     print("蓝色按钮位置:", blue_point)
 def rect(x, y, width, height):
-    return dll.rect(x, y, width, height)
+    return visionDLL.rect(x, y, width, height)
 def point(x, y):
-    return dll.point(x, y)
+    return visionDLL.point(x, y)
 def screenshot(x, y, width, height):
-    result = dll.screenshot(x, y, width, height)
+    result = screenshotDLL.screenshot(x, y, width, height)
     return not result == 1
 def fullScreenShot():
-    result = dll.fullScreenshot()
+    result = screenshotDLL.fullScreenshot()
     return not result == 1
 def containsRedDot(rect):
-    point=dll.containsRedDot(rect)
+    point=visionDLL.containsRedDot(rect,'screenshot.png'.encode())
     return [point.x, point.y]
 
 
 def containsBlue():
-    point=dll.containsBlue()
+    point=visionDLL.containsBlue('screenshot.png'.encode())
 
     return [point.x, point.y]
 
+
+
+
+visionDLL.matchTemplatesBegin.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int, ctypes.c_int]
+visionDLL.matchTemplatesBegin.restype = ctypes.c_int
+
+visionDLL.matchTemplatesMultiScaleBegin.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int, ctypes.c_int]
+visionDLL.matchTemplatesMultiScaleBegin.restype = ctypes.c_int
+
+visionDLL.matchTemplateNext.argtypes = [ctypes.c_int]
+visionDLL.matchTemplateNext.restype = Point
+
+visionDLL.matchTemplateEnd.argtypes = []
+visionDLL.matchTemplateEnd.restype = None
+
+def find_templates(image_path: str, template_path: str, tolerance: int = 30,max_count=1):
+    """
+    在图像中查找模板匹配的位置。
+    
+    参数:
+        image_path: 大图路径
+        template_path: 模板图路径
+        tolerance: 容忍度 (平均每个通道的绝对误差)。越小越严格，越大越宽松。
+                   通常范围: 10 (非常严格) ~ 50 (较宽松). 默认 30.
+    
+    返回:
+        包含所有匹配点坐标 (x, y) 的列表。如果没有找到，返回空列表。
+        如果发生错误 (如文件不存在)，抛出 RuntimeError。
+    """
+    # 转换路径为 bytes (C 字符串)
+    img_bytes = image_path.encode('utf-8')
+    tpl_bytes = template_path.encode('utf-8')
+    
+    # 调用开始匹配
+    count = visionDLL.matchTemplatesMultiScaleBegin(img_bytes, tpl_bytes, tolerance,max_count)
+    
+    if count < 0:
+        visionDLL.matchTemplateEnd() # 清理资源
+        error_map = {
+            -1: "大图尺寸小于模板图尺寸 (图像太小，放不下模板)",
+            -2: f"无法加载大图: {image_path} (文件不存在或格式损坏)",
+            -3: f"无法加载模板图: {template_path} (文件不存在或格式损坏)"
+        }
+        msg = error_map.get(count, f"未知错误代码: {count}")
+        raise RuntimeError(msg)
+    
+    results = []
+    for i in range(count):
+        pt = visionDLL.matchTemplateNext(i)
+        results.append((pt.x, pt.y))
+    
+    # 清理资源
+    visionDLL.matchTemplateEnd()
+    
+    return results
 if __name__ == '__main__':
     print(fullScreenShot())
-    print(dll.rect(0, 0, int(width*scale),int(height*scale)))
-    print(containsRedDot(dll.rect(0, 0, int(width*scale),int(height*scale))))
-    # print(containsBlue())
-    # print(screenshot(0, 0, int(1920*scale),int(1080*scale)))
+    print(visionDLL.rect(0, 0, int(width*scale),int(height*scale)))
+    print(containsRedDot(visionDLL.rect(0, 0, int(width*scale),int(height*scale))))
+    print(containsBlue())
+    print(screenshot(0, 0, int(1920*scale),int(1080*scale)))

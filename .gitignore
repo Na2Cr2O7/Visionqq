@@ -1,5 +1,8 @@
 update/bin
 update/obj
+*.png
+*.bmp
+
 test
 build
 .vscode
