@@ -220,7 +220,7 @@ int matchTemplatesMultiScaleBegin(const char* imagePath, const char* templatePat
 {
     revelants.clear(); // 清空全局结果列表
 
-    const float factors[] = { 1.0f,1.5f,2.0f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f , 1.1f, 1.2f, 1.3f, 1.4f, 1.6f, 1.7f, 1.8f, 1.9f};
+    const float factors[] = { 1.0f,1.5f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f , 1.1f, 1.2f, 1.3f, 1.4f, 1.6f, 1.7f, 1.8f, 1.9f,2.0f };
     const int numFactors = sizeof(factors) / sizeof(factors[0]);
 
     // 1. 加载大图 (只加载一次)

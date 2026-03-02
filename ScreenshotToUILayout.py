@@ -149,7 +149,9 @@ if __name__ == '__main__':
         cancelButtonActualPosition=positions.toActualPoint(positions.CANCEL_BUTTON_RELATIVE_POSITION,size)
 
         uploadImagePossibleActualSize=positions.toActualSize(positions.UPLOAD_IMAGE_POSSIBLE_BBOX_RELATIVE_SIZE,size)
+        copyButtonPossibleActualSize=positions.toActualSize(positions.COPY_BUTTON_POSSIBLE_BBOX_RELATIVE_SIZE,size)
         logging.debug(f"上传图片可能位置: {uploadImagePossibleActualSize}")
+        logging.debug(f"复制按钮可能位置: {copyButtonPossibleActualSize}")
         while True:
             try:
                 # im=image.screenshot(*positionRect)
@@ -184,25 +186,30 @@ if __name__ == '__main__':
                     
                     for i in range(scrollTries):
                         scrollDown()
-
-                    for i in range(tab_times):
-                        tab()
-                        time.sleep(.4)
-                    press('enter')
-
-                    
-
-                    time.sleep(2)
-                    
-                    for _ in range(4):
-                        click(cancelButtonActualPosition[0],cancelButtonActualPosition[1])
+                    image.screenshot(*copyButtonPossibleActualSize)
+                    time.sleep(1)
+                    points=image.find_templates('screenshot.png', './copy.png',30,1)
+                    if len(points)==0:
+                        dockLog.setText("使用模板匹配查找复制按钮失败")
+                        for i in range(tab_times):
+                            tab()
+                            time.sleep(.4)
+                        press('enter')
+                        time.sleep(2)
+                        
+                        for _ in range(4):
+                            click(cancelButtonActualPosition[0],cancelButtonActualPosition[1])
+                            time.sleep(.2)
+                    else:
+                        dockLog.setText("🚫🖱️ 请勿移动鼠标")
+                        click(points[0][0],points[0][1])
                         time.sleep(.2)
                     # click(cancelButtonActualPosition[0],cancelButtonActualPosition[1])
 
 
                     ChatContents=extract(pyperclip.paste())
 
-                    dockLog.setText("等待扩展完成操作")
+                    # dockLog.setText("等待扩展完成操作")
                     extensionLoader.callEveryExtension("after_receiving_messages",ChatContents)
 
                     # print(ChatContents,ChatContentsList) 
@@ -223,7 +230,7 @@ if __name__ == '__main__':
                         dockLog.setText("× 语言模型生成答案失败")
                         result=""
                     
-                    dockLog.setText("等待扩展完成操作")
+                    # dockLog.setText("等待扩展完成操作")
                     result2=extensionLoader.callEveryExtension("before_sending_the_message_by_AI_generated",result)
 
 
@@ -257,6 +264,7 @@ if __name__ == '__main__':
                     
                         points=image.find_templates('screenshot.png', './uploadImage.png',30,1)
                         if len(points)==0:
+                            dockLog.setText("使用模板匹配查找上传图片按钮失败")
                             subprocess.run(['uploadImage2.exe'])
                             time.sleep(.2)
                             hotkey('ctrl','v')

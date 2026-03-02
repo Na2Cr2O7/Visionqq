@@ -12,7 +12,7 @@ sendImageBBoxAbsoluteSize=(663,917,663+44,917+44)
 copyButtonBBoxAbsoluteSize=(1698,1028,1698+52,1028+45)
 atPlaceBBoxAbsoluteSize=(108,160,108+165,180+1099)  
 uploadImagePossibleBBoxAbsoluteSize=(546,885,546+784,885+188)
-
+copyButtonPossibleBBoxAbsoluteSize=(525,912,525+1121,912+283)
 
 
 
@@ -34,6 +34,7 @@ SEND_IMAGE_BBOX_RELATIVE_SIZE=(sendImageBBoxAbsoluteSize[0]/DEFAULT_SIZE[0],send
 COPY_BUTTON_BBOX_RELATIVE_SIZE=(copyButtonBBoxAbsoluteSize[0]/DEFAULT_SIZE[0],copyButtonBBoxAbsoluteSize[1]/DEFAULT_SIZE[1],copyButtonBBoxAbsoluteSize[2]/DEFAULT_SIZE[0],copyButtonBBoxAbsoluteSize[3]/DEFAULT_SIZE[1])
 AT_PLACE_BBOX_RELATIVE_SIZE=(atPlaceBBoxAbsoluteSize[0]/DEFAULT_SIZE[0],atPlaceBBoxAbsoluteSize[1]/DEFAULT_SIZE[1],atPlaceBBoxAbsoluteSize[2]/DEFAULT_SIZE[0],atPlaceBBoxAbsoluteSize[3]/DEFAULT_SIZE[1])
 UPLOAD_IMAGE_POSSIBLE_BBOX_RELATIVE_SIZE=(uploadImagePossibleBBoxAbsoluteSize[0]/DEFAULT_SIZE[0],uploadImagePossibleBBoxAbsoluteSize[1]/DEFAULT_SIZE[1],uploadImagePossibleBBoxAbsoluteSize[2]/DEFAULT_SIZE[0],uploadImagePossibleBBoxAbsoluteSize[3]/DEFAULT_SIZE[1])
+COPY_BUTTON_POSSIBLE_BBOX_RELATIVE_SIZE=(copyButtonPossibleBBoxAbsoluteSize[0]/DEFAULT_SIZE[0],copyButtonPossibleBBoxAbsoluteSize[1]/DEFAULT_SIZE[1],copyButtonPossibleBBoxAbsoluteSize[2]/DEFAULT_SIZE[0],copyButtonPossibleBBoxAbsoluteSize[3]/DEFAULT_SIZE[1])
 
 
 
