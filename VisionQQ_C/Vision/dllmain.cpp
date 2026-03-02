@@ -338,6 +338,23 @@ int matchTemplatesMultiScaleBegin(const char* imagePath, const char* templatePat
     // 5. 返回最终去重后的总数
     return static_cast<int>(revelants.size());
 }
+void column(int x, int y, const PackedImage& imgObj, const PackedImage& tplObj, int tolerance, std::mutex& vectorMutex, std::vector<Point>& Points, int maxCount) {
+    Point pos;
+    pos.x = static_cast<unsigned>(x);
+    pos.y = static_cast<unsigned>(y);
+
+    // 注意：这里传入的是 const 引用，确保 matchScore 不修改图像
+    double score = matchScore(imgObj, tplObj, pos, static_cast<double>(tolerance));
+
+    // 只有当分数低于 tolerance (假设你的逻辑是找差异/低分匹配) 时才记录
+    // 原代码逻辑: if (score < tolerance) ->  push
+    if (score < tolerance) {
+        std::lock_guard<std::mutex> lock(vectorMutex);
+        Points.push_back(pos);
+        // 注意：这里检查 size 只能防止当前线程继续添加，不能阻止其他线程已经正在执行的任务
+        // 如果需要严格限制，需要在 lock 之前或之后做更复杂的原子检查，但通常这样写即可
+    }
+}
 
 void _matchTemplate(const PackedImage& imgObj, const PackedImage& tplObj, int tolerance, int maxCount,std::vector<Point>& dest)
 {
@@ -347,22 +364,35 @@ void _matchTemplate(const PackedImage& imgObj, const PackedImage& tplObj, int to
 
     // 边界检查：如果模板比大图大，直接返回
     if (max_y < 0 || max_x < 0) return;
-
+    std::mutex vectorMutex;
+    // 使用 vector 存储线程，利用 jthread 的自动 join 特性
+    std::vector<std::jthread> threads;
+    threads.reserve((max_y + 1) * (max_x + 1));
     for (int y = 0; y <= max_y; ++y) {
         //std::cout << "row " << y << std::endl;
         for (int x = 0; x <= max_x; ++x) {
-            Point pos;
-            pos.x = static_cast<unsigned>(x);
-            pos.y = static_cast<unsigned>(y);
+            //Point pos;
+            //pos.x = static_cast<unsigned>(x);
+            //pos.y = static_cast<unsigned>(y);
 
-            double score = matchScore(imgObj, tplObj, pos, static_cast<double>(tolerance));
+            //double score = matchScore(imgObj, tplObj, pos, static_cast<double>(tolerance));
+            threads.emplace_back(
+                column,
+                x,
+                y,
+                std::cref(imgObj),
+                std::cref(tplObj),
+                tolerance,
+                std::ref(vectorMutex),
+                std::ref(dest),
+                maxCount
+            );
 
-            if (score < tolerance) {
-                dest.push_back(pos);
-
-                if (static_cast<int>(dest.size()) >= maxCount) {
-                    return;
-                }
+        }
+        {
+            std::lock_guard<std::mutex> lock(vectorMutex);
+            if (static_cast<int>(dest.size()) >= maxCount) {
+                return;
             }
         }
     }
