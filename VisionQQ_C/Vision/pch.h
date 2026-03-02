@@ -18,4 +18,7 @@
 #include <optional>
 #include<algorithm>
 #include<iostream>
+#include<future>      //std::future std::promise
+#include<thread>      //std::thread
+#include<utility>
 #endif //PCH_H

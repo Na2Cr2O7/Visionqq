@@ -202,7 +202,7 @@ static double matchScore(const PackedImage& image, const PackedImage& templ, Poi
 // ==========================================
 // DLL 导出接口
 // ==========================================
-void _matchTemplate(const PackedImage& imgObj, const PackedImage& tplObj, int tolerance,int maxCount);
+void _matchTemplate(const PackedImage& imgObj, const PackedImage& tplObj, int tolerance,int maxCount, std::vector<Point>& dest = revelants);
 static bool isPointDuplicate(const std::vector<Point>& existingPoints, const Point& newPt, int minDistance) {
     for (const auto& pt : existingPoints) {
         int dx = static_cast<int>(pt.x) - static_cast<int>(newPt.x);
@@ -220,9 +220,7 @@ int matchTemplatesMultiScaleBegin(const char* imagePath, const char* templatePat
 {
     revelants.clear(); // 清空全局结果列表
 
-    // 缩放因子列表 (可根据需要调整)
-    // 包含 1.0f，这样逻辑统一，不需要单独处理原始模板
-    const float factors[] = { 1.0f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f , 1.1f, 1.2f, 1.3f, 1.4f, 1.5f, 1.6f, 1.7f, 1.8f, 1.9f, 2.0f };
+    const float factors[] = { 1.0f,1.5f,2.0f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f , 1.1f, 1.2f, 1.3f, 1.4f, 1.6f, 1.7f, 1.8f, 1.9f};
     const int numFactors = sizeof(factors) / sizeof(factors[0]);
 
     // 1. 加载大图 (只加载一次)
@@ -290,10 +288,15 @@ int matchTemplatesMultiScaleBegin(const char* imagePath, const char* templatePat
         size_t countBefore = revelants.size();
 
         // 2. 调用现有的 _matchTemplate (它会向 revelants 追加新结果)
-        _matchTemplate(imgObj, currentTplObj, tolerance,count);
-        if (revelants.size() >= count)
+        //std::vector<Point> temp = {};
+        std::vector<Point> newMatches;
+
+        _matchTemplate(imgObj, currentTplObj, tolerance,count, newMatches);
+        if (newMatches.size() >= count)
         {
-            if (needsFree && resizedData) {
+            std::copy(newMatches.begin(), newMatches.end(), std::back_inserter(revelants));
+            if (needsFree && resizedData) 
+            {
                 free(resizedData);
                 resizedData = nullptr;
             }
@@ -301,25 +304,24 @@ int matchTemplatesMultiScaleBegin(const char* imagePath, const char* templatePat
         }
 
         // 3. 提取本次循环新增的结果
-        std::vector<Point> newMatches;
-        for (size_t k = countBefore; k < revelants.size(); ++k) {
-            newMatches.push_back(revelants[k]);
-        }
-
+        //for (size_t k = countBefore; k < revelants.size(); ++k) {
+        //    newMatches.push_back(revelants[k]);
+        //}
         // 4. 回滚全局列表到添加前的状态 (因为我们要手动添加去重后的结果)
-        revelants.resize(countBefore);
+        //revelants.resize(countBefore);
 
         // 5. 动态计算去重阈值 (基于当前模板大小，例如模板宽度的 20%)
         int dedupThreshold = static_cast<int>(currentTplW * 0.2f);
         if (dedupThreshold < 5) dedupThreshold = 5; // 最小阈值保护
 
         // 6. 将新结果去重后加入全局列表
-        for (const auto& pt : newMatches) {
-            // 检查是否与【已经确认保留】的点重复
-            if (!isPointDuplicate(revelants, pt, dedupThreshold)) {
-                revelants.push_back(pt);
-            }
-        }
+        //for (const auto& pt : newMatches) {
+        //    // 检查是否与【已经确认保留】的点重复
+        //    if (!isPointDuplicate(revelants, pt, dedupThreshold)) {
+        //        revelants.push_back(pt);
+        //    }
+        //}
+        std::copy_if(newMatches.begin(), newMatches.end(), std::back_inserter(revelants), [dedupThreshold](const Point& pt) {return !isPointDuplicate(revelants, pt, dedupThreshold); });
         
         // 7. 【关键】如果当前模板是缩放生成的，释放内存
         if (needsFree && resizedData) {
@@ -337,8 +339,9 @@ int matchTemplatesMultiScaleBegin(const char* imagePath, const char* templatePat
     return static_cast<int>(revelants.size());
 }
 
-void _matchTemplate(const PackedImage& imgObj, const PackedImage& tplObj, int tolerance, int maxCount)
+void _matchTemplate(const PackedImage& imgObj, const PackedImage& tplObj, int tolerance, int maxCount,std::vector<Point>& dest)
 {
+    //std::cout<< "id:" << std::this_thread::get_id() << "\n";
     int max_y = imgObj.height - tplObj.height;
     int max_x = imgObj.width - tplObj.width;
 
@@ -355,11 +358,9 @@ void _matchTemplate(const PackedImage& imgObj, const PackedImage& tplObj, int to
             double score = matchScore(imgObj, tplObj, pos, static_cast<double>(tolerance));
 
             if (score < tolerance) {
-                revelants.push_back(pos);
+                dest.push_back(pos);
 
-                // 【关键优化】只有当成功添加了一个点后，才检查是否达到上限
-                // 一旦达到，立即终止函数，节省后续所有像素的计算时间
-                if (static_cast<int>(revelants.size()) >= maxCount) {
+                if (static_cast<int>(dest.size()) >= maxCount) {
                     return;
                 }
             }
@@ -398,7 +399,7 @@ int matchTemplatesBegin(const char* imagePath, const char* templatePath, int tol
     PackedImage imgObj = { image_data, img_w, img_h, img_channels };
     PackedImage tplObj = { template_data, template_w, template_h, template_channels };
 
-    _matchTemplate(imgObj, tplObj, tolerance,count);
+    _matchTemplate(imgObj, tplObj, tolerance,count,revelants);
 
     // 5. 清理内存
     stbi_image_free(image_data);

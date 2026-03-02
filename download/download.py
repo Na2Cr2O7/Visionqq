@@ -10,13 +10,13 @@ import sys
 import urllib.parse
 import urllib.error
 import urllib.request
-
+from ua import generate_headers_based_on_os
+import platform
 import HighDPIPrologue as HighDPIPrologue
 
 
-headers = {
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 YaBrowser/19.7.0.1635 Yowser/2.5 Safari/537.36',
-}
+headers = generate_headers_based_on_os()['headers']
+print(headers)
 os.chdir(os.path.abspath('./download'))
 def open_folder(filepath):
     """打开文件所在文件夹"""
@@ -44,6 +44,16 @@ class DownloadApp:
             description = download.get("description")
             url = download.get("url")
             filename = download.get("filename")
+            system_name=download.get("system")
+            if system_name.lower() == platform.system().lower() or system_name.lower() == "all":
+                pass
+            else:
+                continue
+            arch=download.get("arch")
+            if arch.lower() == list(platform.architecture())[0].lower() or arch.lower() == "all":
+                pass
+            else:
+                continue
             self.create_download_section(description, url, i, filename)
         self.root.geometry(f"800x{100+int(250 * len(self.index))}")
 
