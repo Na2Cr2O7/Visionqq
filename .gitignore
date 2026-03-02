@@ -2,7 +2,7 @@ update/bin
 update/obj
 *.png
 *.bmp
-*.dll
+
 test
 build
 .vscode
