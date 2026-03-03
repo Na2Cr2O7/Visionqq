@@ -1,43 +1,51 @@
 [
-{
-    "description":"QQ x64",
-    "filename":"QQ.exe",
-    "url":"https://dldir1v6.qq.com/qqfile/qq/QQNT/Windows/QQ_9.9.23_251124_x64_01.exe"
-    ,"system":"Windows","arch":"64bit"
-},
-{
-    "description":"QQ arm",
-    "filename":"QQ.exe",
-    "url":"https://dldir1v6.qq.com/qqfile/qq/QQNT/Windows/QQ_9.9.27_260205_arm64_01.exe"
-    ,"system":"Windows","arch":"arm"
-},
-{
-    "description":"Ollama用于使用离线LLM模型进行推理",
-    "filename":"OllamaSetup.exe",
-    "url":"https://ollama.com/download/OllamaSetup.exe"
-    ,"system":"Windows","arch":"64bit"
-},
-{
-    "description":"Firefox 115 ESR Windows7,8,8.1",
-    "filename":"Firefox.exe",
-    "url":"https://ftp.mozilla.org/pub/firefox/releases/115.1.0esr/win64/zh-CN/Firefox%20Setup%20115.1.0esr.exe"
-    ,"system":"Windows","arch":"64bit"
-},
-{
-    "description":"QQ Linux x64",
-    "filename":"QQ.AppImage",
-    "url":"https://dldir1v6.qq.com/qqfile/qq/QQNT/Linux/QQ_3.2.25_260205_x86_64_01.AppImage"
-    ,"system":"Linux","arch":"64bit"
-},{
-    "description":"QQ Linux arm",
-    "filename":"QQ.AppImage",
-    "url":"https://dldir1v6.qq.com/qqfile/qq/QQNT/Linux/QQ_3.2.25_260205_arm64_01.AppImage"
-    ,"system":"Linux","arch":"arm"
-}
-
-
-
-
-
-
+    {
+        "description": "QQ x64",
+        "filename": "QQ.exe",
+        "url": "https://dldir1v6.qq.com/qqfile/qq/QQNT/Windows/QQ_9.9.23_251124_x64_01.exe",
+        "system": "Windows",
+        "arch": "64bit"
+    },
+    {
+        "description": "QQ arm",
+        "filename": "QQ.exe",
+        "url": "https://dldir1v6.qq.com/qqfile/qq/QQNT/Windows/QQ_9.9.27_260205_arm64_01.exe",
+        "system": "Windows",
+        "arch": "arm"
+    },
+    {
+        "description": "Ollama用于使用离线LLM模型进行推理",
+        "filename": "OllamaSetup.exe",
+        "url": "https://ollama.com/download/OllamaSetup.exe",
+        "system": "Windows",
+        "arch": "64bit"
+    },
+    {
+        "description": "Firefox 115 ESR Windows7,8,8.1",
+        "filename": "Firefox.exe",
+        "url": "https://ftp.mozilla.org/pub/firefox/releases/115.1.0esr/win64/zh-CN/Firefox%20Setup%20115.1.0esr.exe",
+        "system": "Windows",
+        "arch": "64bit"
+    },
+    {
+        "description": "QQ Linux x64",
+        "filename": "QQ.AppImage",
+        "url": "https://dldir1v6.qq.com/qqfile/qq/QQNT/Linux/QQ_3.2.25_260205_x86_64_01.AppImage",
+        "system": "Linux",
+        "arch": "64bit"
+    },
+    {
+        "description": "QQ Linux arm",
+        "filename": "QQ.AppImage",
+        "url": "https://dldir1v6.qq.com/qqfile/qq/QQNT/Linux/QQ_3.2.25_260205_arm64_01.AppImage",
+        "system": "Linux",
+        "arch": "arm"
+    },
+    {
+        "description": "Ollama用于使用离线LLM模型进行推理",
+        "filename": "install.sh",
+        "url": "https://ollama.com/install.sh",
+        "system": "Linux",
+        "arch": "all"
+    }
 ]

@@ -10,12 +10,14 @@ import sys
 import urllib.parse
 import urllib.error
 import urllib.request
-from ua import generate_headers_based_on_os
+# from ua import generate_headers_based_on_os
 import platform
 import HighDPIPrologue as HighDPIPrologue
+from fake_useragent import UserAgent
+ua = UserAgent()
+headers = ua.random
 
-
-headers = generate_headers_based_on_os()['headers']
+headers = {"User-Agent": ua.random}
 print(headers)
 os.chdir(os.path.abspath('./download'))
 def open_folder(filepath):
@@ -55,7 +57,7 @@ class DownloadApp:
             else:
                 continue
             self.create_download_section(description, url, i, filename)
-        self.root.geometry(f"800x{100+int(250 * len(self.index))}")
+        self.root.geometry(f"800x{100+int(250 * 3)}")
 
     def create_download_section(self, name, url, index, filename=None):
         frame = tk.Frame(self.root, bg='white', relief='groove', bd=2)
@@ -78,6 +80,11 @@ class DownloadApp:
                               bg='#4CAF50', fg='white', font=("Arial", 10), width=12)
         start_btn.pack(side='left', padx=5)
 
+        open_in_browser_btn = tk.Button(btn_frame, text="🌐 在浏览器中打开",
+                                         command=lambda: self.open_in_browser(url),
+                                         bg="#424566", width=20,fg='white')
+        open_in_browser_btn.pack(side='left', padx=5)
+
         # “打开文件夹”按钮（初始隐藏）
         open_btn = tk.Button(btn_frame, text="📂 打开文件夹",
                              command=lambda f=filename: open_folder(f),
@@ -89,6 +96,13 @@ class DownloadApp:
         setattr(self, f'status_{index}', status)
         setattr(self, f'start_btn_{index}', start_btn)
         setattr(self, f'open_btn_{index}', open_btn)
+
+    def open_in_browser(self, url):
+        try:
+            subprocess.run(['cmd', '/c', 'start', url], check=True)
+        except:
+            subprocess.run(['start', url], check=True)
+            
 
     def start_download(self, url, progress_bar, status_label, filename, open_btn):
         if "下载中" in status_label.cget("text"):
