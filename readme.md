@@ -38,11 +38,15 @@ QQPilot 是一个全自动的 QQ 聊天机器人，通过以下流程实现智�
 ### 步骤 1：下载项目
 前往 [Releases 页面](https://github.com/Na2Cr2O7/QQPilot/releases) 下载最新压缩包并解压。
 
+* 本质来说Linux版本的[安装](installOnLinux/installonLinux.md)和使用适用于所有类似unix的系统
+
 ### 步骤 2：安装依赖
 双击运行 `安装.exe`（需联网）：
 - 自动部署内置 Python 3.13 环境
 - 安装必要依赖： `pyperclip`, `requests`, `ollama`, `colorama` 等
 - 总体积 ≤ 150MB
+
+Linux用户请[参考](installOnLinux/installonLinux.md)
 
 ### 步骤 3：配置大模型（推荐使用 Ollama）
 
