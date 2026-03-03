@@ -160,7 +160,7 @@ if __name__ == '__main__':
                 # chatList: Image.Image=im.crop(chatListActualSize)
                 chatList=image.fullScreenShot()
 
-                dockLog.setText("等待扩展完成操作")
+                # dockLog.setText("等待扩展完成操作")
                 extensionLoader.callEveryExtension("after_screenshot")
 
                 # del im
@@ -186,9 +186,11 @@ if __name__ == '__main__':
                     
                     for i in range(scrollTries):
                         scrollDown()
+                    dockLog.setText("正在查找复制按钮")
                     image.screenshot(*copyButtonPossibleActualSize)
                     time.sleep(1)
                     points=image.find_templates('screenshot.png', './copy.png',30,1)
+                    logging.info(points)
                     if len(points)==0:
                         dockLog.setText("使用模板匹配查找复制按钮失败")
                         for i in range(tab_times):
@@ -201,8 +203,9 @@ if __name__ == '__main__':
                             click(cancelButtonActualPosition[0],cancelButtonActualPosition[1])
                             time.sleep(.2)
                     else:
+                        time.sleep(2)
                         dockLog.setText("🚫🖱️ 请勿移动鼠标")
-                        click(points[0][0],points[0][1])
+                        click(points[0][0]+copyButtonPossibleActualSize[0],points[0][1]+copyButtonPossibleActualSize[1])
                         time.sleep(.2)
                     # click(cancelButtonActualPosition[0],cancelButtonActualPosition[1])
 
@@ -259,7 +262,7 @@ if __name__ == '__main__':
                     if withImage and randint(0,99)<sendImagePossibility:
                         
                         logging.info("上传图片")
-                        dockLog.setText("🚫⌨️ 正在上传图片...")
+                        dockLog.setText("🚫⌨️ 正在上传图片-查找上传按钮")
                         image.screenshot(*uploadImagePossibleActualSize)
                     
                         points=image.find_templates('screenshot.png', './uploadImage.png',30,1)
