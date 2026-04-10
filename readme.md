@@ -1,4 +1,4 @@
-# QQPilot正在往.NET迁移.
+# QQPilot正在往.NET迁移并且完全失败了
 
 ```plain text
    ____     ____    _____    _   _           _   
