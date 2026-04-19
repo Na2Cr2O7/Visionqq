@@ -1,0 +1,254 @@
+<h1>QQPilot正在往.NET迁移并且完全失败了</h1>
+<pre><code class="language-plain">   ____     ____    _____    _   _           _   
+  / __ \   / __ \  |  __ \  (_) | |         | |  
+ | |  | | | |  | | | |__) |  _  | |   ___   | |_ 
+ | |  | | | |  | | |  ___/  | | | |  / _ \  | __|
+ | |__| | | |__| | | |      | | | | | (_) | | |_ 
+  \___\_\  \___\_\ |_|      |_| |_|  \___/   \__|
+                                        
+</code></pre>
+<h1>QQPilot - 基于窗口自动化的 QQ 自动回复机器人</h1>
+
+<div align="center">
+<img alt="示例截图" src="./assets/qqpilot.png" width="300">
+</div>
+<blockquote>
+<p>使用纯视觉 + 窗口自动化实现 QQ 消息自动回复，<strong>零 API 依赖、零注入、低封号风险</strong>。</p>
+</blockquote>
+<h2>🌟 项目简介</h2>
+<p>QQPilot 是一个全自动的 QQ 聊天机器人，通过以下流程实现智能回复：</p>
+<blockquote>
+<p><strong>复制聊天内容 → 解析消息（含图片/表情包）→ 调用 LLM 生成回复 → 模拟输入并发送</strong></p>
+</blockquote>
+<p>全程 <strong>不调用 QQ 内部接口、不 Hook 进程、不注入 DLL</strong>，极大降低账号封禁风险。</p>
+<hr>
+<h2>📦 安装指南</h2>
+<h3>步骤 1：下载项目</h3>
+<p>前往 <a href="https://github.com/Na2Cr2O7/QQPilot/releases">Releases 页面</a> 下载最新压缩包并解压。</p>
+<ul>
+<li>本质来说Linux版本的<a href="installOnLinux/installonLinux.md">安装</a>和使用适用于所有类似unix的系统</li>
+</ul>
+<h3>步骤 2：安装依赖</h3>
+<p>双击运行 <code>安装.exe</code>（需联网）：</p>
+<ul>
+<li>自动部署内置 Python 3.13 环境</li>
+<li>安装必要依赖： <code>pyperclip</code>, <code>requests</code>, <code>ollama</code>, <code>colorama</code> 等</li>
+<li>总体积 ≤ 150MB</li>
+</ul>
+<p>Linux用户请<a href="installOnLinux/installonLinux.md">参考</a></p>
+<h3>步骤 3：配置大模型（推荐使用 Ollama）</h3>
+<p>安装 <a href="https://ollama.com/">Ollama</a> 并拉取模型：</p>
+<pre><code class="language-bash"># 推荐主力模型（8B，性能与效果平衡）
+ollama pull huihui_ai/deepseek-r1-abliterated:8b
+
+# 低配设备可选（1.5B，轻量快速）
+ollama pull huihui_ai/deepseek-r1-abliterated:1.5b
+
+# 视觉多模态模型（实验性，效果一般，慎用）
+ollama pull huihui_ai/qwen3-vl-abliterated:latest
+</code></pre>
+<ul>
+<li>可以在虚拟机上使用，详情见<a href="useollamainVM/useOllamainVM.md">教程</a></li>
+</ul>
+<blockquote>
+<p>💡 <strong>强烈建议使用纯文本模型</strong>。当前本地视觉模型对表情包/截图理解能力有限，易出错。</p>
+</blockquote>
+<blockquote>
+<p>如需使用自定义 API（如 OpenAI、Claude、自建 LLM），请在 <code>设置.exe</code> 中配置。</p>
+</blockquote>
+<h3>步骤 4：初始化设置</h3>
+<p>运行 <code>设置.exe</code> 配置模型类型、API 地址、截图区域等参数。</p>
+<h2>▶️ 使用方法</h2>
+<ol>
+<li>（可选）将自定义表情包放入 <code>.\Images</code> 文件夹</li>
+<li>打开 QQ 客户端并登录账号</li>
+<li><strong>确保 QQ 主窗口始终可见（不要最小化或遮挡）</strong></li>
+<li>双击运行 <code>run.bat</code> 启动主程序</li>
+<li>程序将自动监控未读消息并智能回复</li>
+</ol>
+<blockquote>
+<p>📌 <strong>关键提醒</strong>：运行期间请勿移动 QQ 窗口或更改 DPI/分辨率！</p>
+</blockquote>
+<hr>
+<h2>⚙️ QQ 推荐设置（提升识别准确率）</h2>
+<div class="table-wrapper"><table><thead><tr><th>设置项</th><th>推荐值</th></tr></thead><tbody><tr><td><strong>发送消息</strong></td><td><strong>Ctrl+Enter</strong></td></tr><tr><td>联系人面板宽度</td><td>拖动至<strong>最窄</strong></td></tr><tr><td>自动更新</td><td><strong>关闭</strong></td></tr><tr><td>字体大小</td><td>设为“<strong>最小</strong>”</td></tr><tr><td>聊天背景</td><td>使用<strong>默认白色背景</strong></td></tr><tr><td>系统显示缩放</td><td><strong>100% 或 125%</strong>（避免 150%+）</td></tr><tr><td>群</td><td>关闭右边栏</td></tr></tbody></table></div>
+<blockquote>
+<p>📷 参考图示：<br>
+<img src="./notice1.jpeg" alt="注意事项说明"><br>
+<img src="image.png" alt="alt text"></p>
+</blockquote>
+<hr>
+<h2>✅ 核心优势</h2>
+<ul>
+<li><strong>安全无痕</strong>：纯视觉操作，零注入、零 Hook，几乎无封号风险</li>
+<li><strong>隐私可控</strong>：支持完全本地运行，数据不出设备</li>
+<li><strong>灵活扩展</strong>：可对接任意本地大模型（如 Ollama）或远程 HTTP API</li>
+<li><strong>开箱即用</strong>：内置 Python 3.13 环境，无需手动配置依赖</li>
+</ul>
+<hr>
+<h2>配置要求</h2>
+<blockquote>
+<p>⚠️该程序不支持无头模式（至少外接一台显示器）</p>
+</blockquote>
+<h3>最低要求</h3>
+<h3>AMD64</h3>
+<h4>Windows</h4>
+<ul>
+<li>
+<p>Windows 8.1 或更高版本 64位</p>
+</li>
+<li>
+<p>单核处理器，主频1GHz以上</p>
+</li>
+<li>
+<p>1GB RAM</p>
+</li>
+<li>
+<p>350M 可用空间</p>
+</li>
+<li>
+<p>1920x1080 显示器</p>
+</li>
+</ul>
+<blockquote>
+<p>对于windows7 可以尝试安装 <a href="https://github.com/YuZhouRen86/VxKex-NEXT">VkKex</a></p>
+</blockquote>
+<h4>Linux:</h4>
+<ul>
+<li>具有桌面（Gnome，Cinnamon等）环境的Linux发行版 64位系统(系统架构不限)</li>
+<li>1GB RAM</li>
+<li>600M 可用空间</li>
+<li>1920x1080 显示器</li>
+</ul>
+<blockquote>
+<p>详情见<a href="installOnLinux/installonLinux.md">教程</a></p>
+</blockquote>
+<h3>ARM64</h3>
+<ul>
+<li>
+<p>Windows 10ARM64 及以上</p>
+</li>
+<li>
+<p>1GB RAM</p>
+</li>
+<li>
+<p>350M 可用空间</p>
+</li>
+<li>
+<p>1920x1080 显示器</p>
+</li>
+</ul>
+<img src="success.png">
+<p>QQPilot在最低配置上成功运行，使用内置语言模型进行回复</p>
+<h3>推荐配置</h3>
+<ul>
+<li>
+<p>Windows 10 x64</p>
+</li>
+<li>
+<p>4核心，2GHz以上</p>
+</li>
+<li>
+<p>4GB RAM</p>
+</li>
+<li>
+<p>8GB 可用空间(用于Ollama)</p>
+</li>
+<li>
+<p>支持CUDA的GPU</p>
+</li>
+<li>
+<p>1920x1080 显示器</p>
+</li>
+</ul>
+<hr>
+<h2>⚠️ 使用限制</h2>
+<ul>
+<li>需图形界面，不支持服务器/远程桌面无头模式/窗口管理器</li>
+<li>对 <strong>屏幕分辨率</strong> 和 <strong>DPI 缩放比例</strong> 敏感（推荐设置为 <strong>100% 或 125%</strong>）</li>
+<li>QQ 主窗口必须 <strong>可见且未最小化</strong>（不可被其他窗口遮挡）</li>
+</ul>
+<hr>
+<h2>🔧 工作原理</h2>
+<ol>
+<li>
+<p><strong>窗口置顶</strong><br>
+通过 <code>FocusqqWindow.dll</code>（Python ctypes 调用）强制将 QQ 主窗口置顶，确保截图一致性。</p>
+</li>
+<li>
+<p><strong>DPI 自适应</strong><br>
+运行 <code>ScaleToINI.exe</code> 自动检测系统缩放比例，并写入 <code>config.ini</code> 用于坐标校准。</p>
+</li>
+<li>
+<p><strong>未读消息检测</strong><br>
+在联系人列表区域扫描“小红点”，定位有新消息的会话。</p>
+</li>
+<li>
+<p><strong>自动交互</strong><br>
+模拟鼠标点击红点位置，打开对应聊天窗口。</p>
+</li>
+<li>
+<p><strong>内容识别</strong></p>
+<ul>
+<li>使用框选功能提取聊天内容（含文本与图片）</li>
+<li>示例格式：
+<pre><code class="language-markdown">Username: 11-01 08:12:19
+&lt;img src="file://C:/Image.png" /&gt;
+内容内容内容...
+
+aaaaaaaaaaa: 11-25 08:10:36
+普通文字，没有图片
+
+bbbbbbbbbbb: 11-25 08:11:00
+&lt;img src="file:///C:/Users/Admin/Pictures/test%20image.png" /&gt;
+还有这张图！
+</code></pre>
+</li>
+<li>支持提取普通文本、时间戳、用户昵称及本地图片路径</li>
+<li>可识别并提取表情包（需启用视觉模型）</li>
+</ul>
+</li>
+<li>
+<p><strong>智能回复生成</strong><br>
+将解析后的内容传入本地大模型（如 Ollama）或自定义 HTTP API，生成自然语言回复。</p>
+</li>
+<li>
+<p><strong>自动发送</strong></p>
+<ul>
+<li>将回复粘贴至 QQ 输入框</li>
+<li>（可选）随机插入 <code>.\Images</code> 中的表情包  （Linux不支持）</li>
+<li>模拟回车键发送消息</li>
+</ul>
+</li>
+<li>
+<p><strong>会话清理</strong><br>
+发送完成后自动关闭当前聊天窗口，返回主界面继续监听。</p>
+</li>
+</ol>
+<hr>
+<h2>🛠️ 编译说明（开发者）</h2>
+<p>本项目基于 <strong>Python 3.13</strong> 开发，依赖见 <code>requirements.txt</code>。</p>
+<p>使用 <strong>Visual Studio 2022 或 2026</strong> 打开并编译以下解决方案（仅Windows）：</p>
+<ul>
+<li><code>VisionQQ_C.slnx</code></li>
+</ul>
+<hr>
+<h2>🛡️ 免责声明</h2>
+<p>本软件 <strong>仅限技术学习与研究用途</strong>，严禁用于：</p>
+<ul>
+<li>自动骚扰、刷屏、诈骗等恶意行为</li>
+<li>违反《QQ 软件许可协议》的操作</li>
+<li>任何违法违规场景</li>
+</ul>
+<p>使用者须自行承担因使用本软件引发的一切法律责任，作者概不负责。</p>
+<hr>
+<h2>📄 开源协议</h2>
+<p>本项目采用 <a href="LICENSE">MIT License</a>。欢迎 Star ⭐、Fork 🍴 与贡献代码！</p>
+<hr>
+<h2>🙌 贡献与反馈</h2>
+<ul>
+<li>🐞 发现 Bug？ → 提交 <a href="https://github.com/Na2Cr2O7/QQPilot/issues">Issue</a></li>
+<li>💡 想改进功能？ → 提交 Pull Request</li>
+<li>🌍 有新语言/模型建议？ → 欢迎讨论！</li>
+</ul>
+<p>让我们一起打造更安全、智能的视觉自动化工具！</p>
