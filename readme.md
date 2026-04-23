@@ -11,6 +11,7 @@
 ```
 # QQPilot - 基于窗口自动化的 QQ 自动回复机器人
 
+<img src="https://stone.professorlee.work/api/stone/Na2Cr2O7/QQPilot" alt="Stone Badge" width="200" />
 
 <!-- [![示例截图](./QQPilot.jpeg)](./QQPilot.jpeg) -->
 <div align="center">
