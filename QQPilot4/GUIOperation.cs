@@ -5,10 +5,11 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Windows.Clipboard;
+using System.Windows;
+using TextCopy;
 //using Xamarin.Essentials;
 
-namespace QQPilot
+namespace QQPilot4
 {
     class GUIOperation
     {
@@ -249,7 +250,9 @@ namespace QQPilot
                 if (c == '\n')
                 {
                     //Clipboard.SetTextAsync(temp);
-                    Clipboard.SetData(DataFormats.Text, (Object)textData);
+                    //Clipboard.SetData(DataFormats.Text, (Object)temp);
+                    ClipboardService.SetText(temp);
+
                     Thread.Sleep(200);
                     temp = "";
                     HotKey("ctrl", "v");
@@ -260,7 +263,10 @@ namespace QQPilot
             }
             if (!string.IsNullOrEmpty(temp))
             {
-                Clipboard.SetTextAsync(temp);
+                //Clipboard.SetTextAsync(temp);
+                //Clipboard.SetData(DataFormats.Text, (Object)temp);
+                ClipboardService.SetText(temp);
+
                 Thread.Sleep(200);
                 HotKey("ctrl", "v");
             }

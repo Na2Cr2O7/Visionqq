@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace QQPilot
+namespace QQPilot4
 {
     public class ChatContent
     {

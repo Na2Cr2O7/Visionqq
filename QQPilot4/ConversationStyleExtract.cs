@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace QQPilot
+namespace QQPilot4
 {
     /// <summary>
     /// 聊天记录解析器，用于从特定格式的字符串中提取结构化的聊天内容。
@@ -57,7 +57,7 @@ namespace QQPilot
             }
 
             // 2. Windows 路径修复 (/D:/... -> D:/...)
-            if (src.StartsWith('/') && src.Length >= 3 && src[2] == ':')
+            if (src.StartsWith("/") && src.Length >= 3 && src[2] == ':')
             {
                 src = src[1..];
             }

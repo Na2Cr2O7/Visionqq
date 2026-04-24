@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace QQPilot
+namespace QQPilot4
 {
     internal class Focus
     {
