@@ -17,7 +17,7 @@ namespace QQPilot4
         private const int WHEEL_DELTA = 120;
         private const string DLL_NAME = "InputEvent.dll";
         private const string CONFIG = "config.ini";
-        private static readonly string ConfigPath = CONFIG;
+        private const string ConfigPath = CONFIG;
 
         // === 全局变量 ===
         private static IntPtr _libHandle = IntPtr.Zero;
@@ -125,6 +125,11 @@ namespace QQPilot4
         public static bool Init()
         {
             LoadDll();
+            IniParser.FileIniDataParser parser = new();
+            //autoFocusing=config.getboolean('general','autoFocusing')
+            var ini = parser.ReadFile(CONFIG);
+            ScrollCount = int.Parse(ini["general"]["scroll"]);
+            autoFocusing = (ini["general"]["autofocusing"].Equals("true", StringComparison.CurrentCultureIgnoreCase))!;
             bool success = _dpiAwareness();
             if (!success)
                 Console.WriteLine("⚠️ 警告: DPI 感知设置失败（可能影响高分屏坐标精度）");
@@ -134,8 +139,21 @@ namespace QQPilot4
         // === 封装函数 ===
         public static bool MouseMove(int x, int y) => _mouseGoto((uint)x, (uint)y);
         public static bool Click(int x, int y) => _lClick((uint)x, (uint)y);
+        public static bool ClickCenter((int,int,int,int) area)
+        {
+            var (x, y) = getAreaCenter(area);
+            return Click(x, y);
+        }
+
         public static bool DragFromTo(int x1, int y1, int x2, int y2, float duration = 0.1f) =>
             _dragFromTo((uint)x1, (uint)y1, (uint)x2, (uint)y2, duration);
+        public static void DragFromTo2(int x1, int y1, int x2, int y2)
+        {
+            MouseMove(x1, y1);
+            MouseDown();
+            MouseMove(x2, y2);
+            Thread.Sleep(ScrollCount);
+        }
 
         public static bool ScrollUp(int delta = WHEEL_DELTA) => _scrollUp(delta);
         public static bool ScrollDown(int delta = WHEEL_DELTA) => _scrollDown(delta);
@@ -218,8 +236,11 @@ namespace QQPilot4
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate int UploadDelegate();
 
-        public static void Focus()
+        static bool? autoFocusing;
+        public static void Focus_()
         {
+
+            Focus.focus((bool)(autoFocusing??false));
         }
 
         public static void ScrollUpBatch(int length = 120)
@@ -241,7 +262,17 @@ namespace QQPilot4
         }
 
         public static void Goto(int x, int y) => MouseMove(x, y);
-
+        public static (int,int) getAreaCenter((int, int, int, int) area)
+        {
+            int pos1 = area.Item1 + ((area.Item3 - area.Item1) % 2);
+            int pos2 = area.Item2 + ((area.Item4 - area.Item2) % 2);
+            return (pos1, pos2);
+        }
+        public static void GotoCenter((int,int,int,int) area)
+        {
+            var (pos1, pos2) = getAreaCenter(area);
+            Goto(pos1, pos2);
+        }
         public static void SendTextWithoutClick(string text)
         {
             string temp = "";
@@ -275,9 +306,11 @@ namespace QQPilot4
         public static void DragFromToSimple(int x1, int y1, int x2, int y2)
         {
             MouseMove(x1, y1);
+            Thread.Sleep(100);
             MouseDown();
+            Thread.Sleep(100);
             MouseMove(x2, y2);
-            Thread.Sleep(ScrollCount * 100); 
+            Thread.Sleep(ScrollCount * 1000); 
             MouseUp();
         }
     }

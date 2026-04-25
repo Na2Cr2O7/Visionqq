@@ -229,7 +229,8 @@ void CMFCUpdateDlg::OnEnChangeEdit1()
 
 	// TODO:  在此添加控件通知处理程序代码
 }
-
+constexpr auto CONFIG_FILE = "config.ini";
+//constexpr auto LCONFIG_FILE = L"config.ini";
 void CMFCUpdateDlg::OnBnClickedButton2()
 {
 	setlocale(LC_ALL, "zh_CN.UTF-8");
@@ -240,8 +241,10 @@ void CMFCUpdateDlg::OnBnClickedButton2()
 	std::wstring oldIniPath = destPath.GetBuffer();
 	//std::wstring_view oldPath(oldIniPath);
 	oldIniPath += L"\\config.ini";
-	auto newIni = std::make_unique<IniManager>("config.ini");
+	auto newIni = std::make_unique<IniManager>(CONFIG_FILE);
 	//IniManager* newIni = new IniManager("config.ini");
+
+
 
 	int bufferSize = WideCharToMultiByte(CP_UTF8, 0, oldIniPath.c_str(), -1, NULL, 0, NULL, NULL);
 	std::unique_ptr<char> path2 = std::make_unique<char>(bufferSize);		
@@ -249,11 +252,10 @@ void CMFCUpdateDlg::OnBnClickedButton2()
 	//char* path2 = new char[bufferSize];
 
 	WideCharToMultiByte(CP_UTF8, 0, oldIniPath.c_str(), -1, path2.get(), bufferSize, NULL, NULL);
-	std::string_view oldPath(path2.get(),path2.get() + bufferSize - 11);
+	std::string_view oldPath(path2.get(), path2.get() + bufferSize - (std::strlen(CONFIG_FILE)+1));
 
 	//IniManager* oldIni = new IniManager(path2.get());
 	auto oldIni = std::make_unique<IniManager>(path2.get());
-
 
 	std::string version = (*newIni)[general]["version"];
 	for (auto& kv : oldIni->sectionMap(general))
@@ -268,6 +270,17 @@ void CMFCUpdateDlg::OnBnClickedButton2()
 	oldIni.release();
 	newIni.release();
 
+	//读取system.txt(1.5.11+)
+	try
+	{
+		std::ifstream src(std::string(oldPath)+"system.txt", std::ios::binary);
+		std::ofstream dst("system.txt", std::ios::binary);
+		dst << src.rdbuf();
+	}
+	catch(std::exception e)
+	{
+
+	}
 
 
 	auto files2 = recursiveFiles(std::filesystem::current_path());

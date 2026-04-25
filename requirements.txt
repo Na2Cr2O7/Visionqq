@@ -1,9 +1,0 @@
-ollama
-colorama
-pyperclip
-flask
-openai
-fake-useragent
-pillow; sys_platform == "linux"
-pyautogui; sys_platform == "linux"
-opencv-python; sys_platform == "linux"

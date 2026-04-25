@@ -1,25 +1,267 @@
-﻿using System;
+﻿using IniParser.Model;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TextCopy;
 
 namespace QQPilot4
 {
     internal class Program
     {
+        static bool autoFocusShouldRun = true;
+        static readonly bool debug =false;
         static void Main(string[] args)
         {
-            //GUIOperation.Init();
-            //GUIOperation.Click(3, 3);
             Console.OutputEncoding = Encoding.UTF8;
 
+            //Answer g = new();
+            //g.Test();
+            //return;
+            Process p=Process.Start("ScaleToINI.exe");
+            //GUIOperation.Init();
+            //GUIOperation.Click(3, 3);
+            ArrowLoad.StartLoading(ConsoleColor.Green, "正在初始化");
+            GUIOperation.Init();
+            IniParser.FileIniDataParser parser = new();
+            IniData ini                 = parser.ReadFile("config.ini", Encoding.UTF8);
+            KeyDataCollection general   = ini["general"];
+            (int, int) size             = (int.Parse(general["width"]), int.Parse(general["height"]));
+            p.WaitForExit();
+            float scale                 = float.Parse(general["scale"]);
+            int scrollTries             = int.Parse(general["scroll"]);
+            bool withImage              = (general["withimage"].Equals("true", StringComparison.CurrentCultureIgnoreCase));
+            bool autoLogin              = (general["autologin"].Equals("true", StringComparison.CurrentCultureIgnoreCase));
+            int sendimagepossibility    = int.Parse(general["sendimagepossibility"]);
+            bool isVisionModel          = (general["isvisionmodel"].Equals("true", StringComparison.CurrentCultureIgnoreCase));
+            bool ATDetect               = (general["atdetect"].Equals("true", StringComparison.CurrentCultureIgnoreCase));
+            int tapTimes                =  int.Parse(general["tab_times"]);
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(general["version"]);
+            ArrowLoad.StopLoading();
+            Console.ResetColor();
 
-            //Console.WriteLine(AppDomain.CurrentDomain.BaseDirectory);
 
-            //Focus.focus(false);
-            Answer answer = new Answer();
-            answer.Test();
+            Console.WriteLine("初始化完成");
+
+            string OSDescription = System.Runtime.InteropServices.RuntimeInformation.OSDescription;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(OSDescription);
+            Console.ResetColor();
+
+            Thread autoFocusThread = new(autoFocus);
+            autoFocusThread.Start();
+
+
+
+
+            Console.WriteLine("自动聚焦功能已开启");
+            if(autoLogin)
+            {
+                Console.WriteLine("自动登录功能已开启");
+                Console.WriteLine("正在尝试登录...");
+                for (int i = 0; i < 4; i++)
+                {
+                    Image.FullScreenShot();
+                    var (x, y) = Image.ContainsBlue();
+                    if(x==0 && y==0)
+                    {
+                        Thread.Sleep(1000);
+                        continue;
+                    }
+                    GUIOperation.Click((int)x, (int)y);
+                    Thread.Sleep(2000);
+
+                }
+                Thread.Sleep(1000);
+            }
+
+
+            size = ((int)(size.Item1 * scale), (int)(size.Item2 * scale));
+            (int,int,int,int) positionRect=(0,0,size.Item1,size.Item2);
+
+            // 聊天列表实际大小
+            var chatListActualSize = Positions.ToActualSize(Positions.CHAT_LIST_BBOX_RELATIVE_SIZE, size);
+            Console.WriteLine( $"聊天列表实际大小: {chatListActualSize}");
+            // 聊天区域实际大小
+            var conversationActualSize = Positions.ToActualSize(Positions.CONVERSATION_BBOX_RELATIVE_SIZE, size);
+            Console.WriteLine( $"聊天区域实际大小: {conversationActualSize}");
+            // 输入框实际大小
+            var commentSectionActualSize = Positions.ToActualSize(Positions.COMMENT_SECTION_BBOX_RELATIVE_SIZE, size);
+            Console.WriteLine( $"输入框实际大小: {commentSectionActualSize}");
+            // 发送按钮实际大小
+            var sendButtonActualSize = Positions.ToActualSize(Positions.SEND_BUTTON_BBOX_RELATIVE_SIZE, size);
+            Console.WriteLine( $"发送按钮实际大小: {sendButtonActualSize}");
+            // 退出会话按钮实际大小
+            var exitConversationActualSize = Positions.ToActualSize(Positions.EXIT_CONVERSATION_BBOX_RELATIVE_SIZE, size);
+            Console.WriteLine( $"退出会话按钮实际大小: {exitConversationActualSize}");
+            // 发送图片按钮实际大小
+            var sendImageActualSize = Positions.ToActualSize(Positions.SEND_IMAGE_BBOX_RELATIVE_SIZE, size);
+            Console.WriteLine( $"发送图片按钮实际大小: {sendImageActualSize}");
+            // @位置实际大小
+            var atPlaceActualSize = Positions.ToActualSize(Positions.AT_PLACE_BBOX_RELATIVE_SIZE, size);
+            Console.WriteLine( $"@位置实际大小: {atPlaceActualSize}");
+            // 拖拽起止位置
+            var startDraggingAbsolutePosition = Positions.ToActualPoint(Positions.START_DRAGGING_RELATIVE_POSITION, size);
+            var endDraggingAbsolutePosition = Positions.ToActualPoint(Positions.END_DRAGGING_RELATIVE_POSITION, size);
+            Console.WriteLine( $"开始拖拽位置: {startDraggingAbsolutePosition}");
+            Console.WriteLine( $"结束拖拽位置: {endDraggingAbsolutePosition}");
+            // 聊天按钮和联系人按钮位置
+            var chatButtonActualPosition = Positions.ToActualPoint(Positions.CHAT_BUTTON_RELATIVE_POSITION, size);
+            Console.WriteLine( $"聊天按钮实际位置: {chatButtonActualPosition}");
+            var contactButtonActualPosition = Positions.ToActualPoint(Positions.CONTACT_BUTTON_RELATIVE_POSITION, size);
+            Console.WriteLine( $"联系人按钮实际位置: {contactButtonActualPosition}");
+            // 取消按钮位置（未打印日志，按需添加）
+            var cancelButtonActualPosition = Positions.ToActualPoint(Positions.CANCEL_BUTTON_RELATIVE_POSITION, size);
+            // 上传图片和复制按钮可能区域
+            var uploadImagePossibleActualSize = Positions.ToActualSize(Positions.UPLOAD_IMAGE_POSSIBLE_BBOX_RELATIVE_SIZE, size);
+            var copyButtonPossibleActualSize = Positions.ToActualSize(Positions.COPY_BUTTON_POSSIBLE_BBOX_RELATIVE_SIZE, size);
+            Console.WriteLine( $"上传图片可能位置: {uploadImagePossibleActualSize}");
+            Console.WriteLine( $"复制按钮可能位置: {copyButtonPossibleActualSize}");
+            Answer? answer = null;
+            bool cancelled=false;
+            Console.CancelKeyPress += (sender, e) =>
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\n结束运行");
+                Console.ResetColor();
+                // 设置 e.Cancel = true 可以阻止程序立即终止，
+                // 允许执行清理逻辑后再退出
+                cancelled = true;
+                autoFocusShouldRun = false;
+                autoFocusThread.Join();
+                e.Cancel = true;
+                throw new SystemException("Terminate");
+            };
+
+            while (! cancelled)
+            {
+                Console.Write("正在寻找新信息...\r");
+                var chatList = Image.FullScreenShot();
+                (uint,uint) contain=(0,0);
+                if(ATDetect)
+                {
+                    contain = Image.ContainsRedDot(Image.Rect(atPlaceActualSize));
+                }
+                else
+                {
+                    contain = Image.ContainsRedDot(Image.Rect(chatListActualSize));
+                }
+                if(contain!=(0,0))
+                {
+                    Console.ForegroundColor= ConsoleColor.Green;
+                    Console.WriteLine($"发现红点: {contain}");
+                    Console.ResetColor();
+                    GUIOperation.Click((int)contain.Item1,(int)contain.Item2);
+                    Thread.Sleep(1000);
+                    Console.WriteLine(startDraggingAbsolutePosition.Item1.ToString(), startDraggingAbsolutePosition.Item2, endDraggingAbsolutePosition.Item1, endDraggingAbsolutePosition.Item2);
+                    GUIOperation.DragFromToSimple(startDraggingAbsolutePosition.Item1,startDraggingAbsolutePosition.Item2,endDraggingAbsolutePosition.Item1,endDraggingAbsolutePosition.Item2);
+                    Thread.Sleep(500);
+                    GUIOperation.GotoCenter(conversationActualSize);
+                    Thread.Sleep(500);
+                    for (int i = 0; i < scrollTries; i++)
+                    {
+                        Thread.Sleep(400);
+                        GUIOperation.ScrollDown(480);
+
+                    }
+                    Image.Screenshot(copyButtonPossibleActualSize);
+                    Thread.Sleep(1000);
+                    List<(uint x, uint y)> points = Image.FindTemplates("screenshot.png", "./copy.png",30,1);
+                    if (points.Count == 0)
+                    {
+                        Console.WriteLine("使用模板匹配查找复制按钮失败");
+                        for (int i = 0; i <tapTimes; i++)
+                        {
+                            GUIOperation.Tab();
+                            Thread.Sleep(400);
+
+                        }
+                        GUIOperation.PressKey("enter");
+                        Thread.Sleep(200);
+
+                    }
+                    else
+                    {
+                        Thread.Sleep(2000);
+                        GUIOperation.Click((int)(points[0].x + copyButtonPossibleActualSize.Item1),(int)(points[0].y+copyButtonPossibleActualSize.Item2));
+                        Thread.Sleep(200);
+
+                    }
+
+                    Clipboard pyperclip = new();
+                    string chatContentStr=pyperclip.GetText()??"";
+                    List<ChatContent> ChatContents = ConversationStyleExtract.ParseChatLog(chatContentStr);
+                    SpinnerLoad.Start(ConsoleColor.Green,"等待语言模型生成答案");
+                    GUIOperation.ClickCenter(commentSectionActualSize);
+                    answer ??= new();
+                    string result = answer.GetAnswer(ChatContents)??"";
+                    SpinnerLoad.Stop();
+                    Thread.Sleep(100);
+                    result += ConversationStyleExtract.IdentificationString;
+                    GUIOperation.SendTextWithoutClick(result);
+                    Random r = new();
+
+ 
+                    if(withImage  && ((int)(r.NextInt64() % 100) < sendimagepossibility))
+                    {
+                        Console.WriteLine("上传图片");
+                        Image.Screenshot(uploadImagePossibleActualSize);
+                        points = Image.FindTemplates("screenshot.png", "uploadImage.png", 30, 1);
+                        if (points.Count <= 0)
+                        {
+                            Console.WriteLine("使用模板匹配查找上传图片按钮失败");
+                            Process.Start("uploadImage2.exe").WaitForExit();
+                            Thread.Sleep(200);
+                            GUIOperation.HotKey("ctrl","v");
+
+                        }
+                        else
+                        {
+                            var (x, y) = points[0];
+                            x += (uint)uploadImagePossibleActualSize.Item1;
+                            y += (uint)uploadImagePossibleActualSize.Item2;
+                            GUIOperation.Click((int)x, (int)y);
+                            Thread.Sleep(4000);
+                            Upload.upload();
+
+
+                        }
+                        Thread.Sleep(4000);
+
+                    }
+                    Thread.Sleep(4000);
+                    Console.WriteLine("发送消息 🎉");
+                    GUIOperation.HotKey("ctrl", "enter");
+                    Thread.Sleep(100);
+                    Console.WriteLine("退出会话");
+                    GUIOperation.Click(chatButtonActualPosition.Item1 + (int)(100 * scale), chatButtonActualPosition.Item2 + (int)(80 * scale));
+                    Thread.Sleep(3000);
+                    GUIOperation.Click(contactButtonActualPosition.Item1, contactButtonActualPosition.Item2);
+                    Thread.Sleep(100);
+                    GUIOperation.Click(chatButtonActualPosition.Item1, chatButtonActualPosition.Item2);
+                    Thread.Sleep(1000);
+                }
+                else
+                {
+                    Thread.Sleep(2000);
+                }
+            }
+            autoFocusShouldRun = false;
+            autoFocusThread.Join();
+        }
+        static void autoFocus()
+        {
+            while(autoFocusShouldRun)
+            {
+                if(! debug)
+                { 
+                    GUIOperation.Focus_();
+                }
+                Thread.Sleep(4000);
+            }
         }
     }
 }

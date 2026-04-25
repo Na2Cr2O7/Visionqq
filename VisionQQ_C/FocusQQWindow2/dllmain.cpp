@@ -94,6 +94,7 @@ extern "C" int __declspec(dllexport) focus(bool alwaysOnTop)
 
     /*  std::cout << "Hello World!\n";*/
 }
+static bool correct(const std::wstring_view& text);
 
 static BOOL CALLBACK addToListIfIsQQ(HWND hwnd, LPARAM lparam)
 {
@@ -109,18 +110,27 @@ static BOOL CALLBACK addToListIfIsQQ(HWND hwnd, LPARAM lparam)
     length = GetWindowText(hwnd, windowName.get(), MAX_PATH);
     if (not length) return true;
 
-    if (stringInString(std::wstring(windowName.get(), length), QQ))
+    //if (stringInString(std::wstring(windowName.get(), length), QQ))
+    //{
+    //    hwnds.push_back(hwnd);
+    //}
+
+    if (correct(std::wstring_view(windowName.get(), length)))
     {
         hwnds.push_back(hwnd);
     }
-
     return true;
 }
 static bool stringInString(const std::wstring& text, const std::wstring& search)
 {
     return text.find(search) != std::wstring::npos;
 }
+static bool correct(const std::wstring_view& text)
+{
+    std::wstring correct2 = L"[#] QQ [#]";
+    return (text == correct2 or text == QQ);
 
+}
 bool fileExists(const wchar_t* fileName)
 {
     wchar_t workingDirectory[MAX_PATH]{};

@@ -2,7 +2,7 @@
 using System.Diagnostics;
 namespace QQPilot4
 {
-public static class QQChatUIConstants
+public static class Positions
 {
     // 默认分辨率
     public static readonly (int Width, int Height) DEFAULT_SIZE = (2240, 1260);
@@ -117,7 +117,7 @@ public static class QQChatUIConstants
     }
 
     // 初始化时输出调试日志（模拟 logging.debug）
-    static QQChatUIConstants()
+    static Positions()
     {
         Debug.WriteLine($"chatListBBoxRelativeSize: {CHAT_LIST_BBOX_RELATIVE_SIZE}");
         Debug.WriteLine($"conversationBBoxRelativeSize: {CONVERSATION_BBOX_RELATIVE_SIZE}");

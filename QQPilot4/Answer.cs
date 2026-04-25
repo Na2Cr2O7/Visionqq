@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -158,8 +159,139 @@ namespace QQPilot4
         }
 
         // --- 主逻辑：直接 POST 调用 API ---
-
+        JsonSerializerOptions? jsonSerializerOptionsForPosting;
+        JsonSerializerOptions? jsonSerializerOptionsForPrinting;
         public async Task<string?> GetAnswerAsync(List<ChatContent> text, string systemPrompt = "auto")
+        {
+            if (text == null || text.Count == 0) return "";
+
+            // 内置模型
+            if (Builtin)
+            {
+                foreach (var t in text.AsEnumerable().Reverse())
+                {
+                    if (string.IsNullOrEmpty(t.Text) || t.OwnByMyself) continue;
+                    TinyLangJaccard ??= new TinyLangJaccardCS("datasetTiny.json");
+                    return TinyLangJaccard.Answer(t.Text);
+                }
+                return "";
+            }
+
+            // 系统提示
+            string finalSystemPrompt = systemPrompt switch
+            {
+                "auto" => sysPmpt,
+                "" or "None" => "",
+                _ => systemPrompt
+            };
+
+            // 收集图片
+            var imageList = new List<string>();
+            foreach (var t in text)
+            {
+                if (!t.OwnByMyself)
+                {
+                    foreach (var img in t.ImagePaths)
+                    {
+                        if (File.Exists(img))
+                        {
+                            imageList.Add(img);
+                            if (imageList.Count >= MaxImageCount) break;
+                        }
+                        else
+                        {
+                            Console.WriteLine($"× 没有找到图片 {img}");
+                        }
+                    }
+                    if (imageList.Count >= MaxImageCount) break;
+                }
+            }
+
+            // 构建 messages
+            var messages = new List<Dictionary<string, object>>();
+            if (!string.IsNullOrEmpty(finalSystemPrompt))
+            {
+                messages.Add(new Dictionary<string, object>
+                {
+                    ["role"] = "system",
+                    ["content"] = finalSystemPrompt
+                });
+            }
+
+            messages.AddRange(ConcatenateText(text, imageList));
+
+            // 构造请求体
+            var requestBody = new Dictionary<string, object>
+            {
+                ["model"] = ModelName,
+                ["messages"] = messages,
+                ["max_tokens"] = MAX_LENGTH,
+                ["temperature"] = 0.7
+            };
+
+            jsonSerializerOptionsForPosting ??= new JsonSerializerOptions { WriteIndented = false };
+            string json = JsonSerializer.Serialize(requestBody,jsonSerializerOptionsForPosting! );
+
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            // 设置 Headers
+            if (!string.IsNullOrEmpty(ApiKey) && !ServerUrl.Contains("localhost") && !ServerUrl.Contains("127.0.0.1"))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", ApiKey);
+            }
+            else
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = null;
+            }
+
+            try
+            {
+                var startTime = DateTime.UtcNow;
+                Console.WriteLine($"Sending request to: {ServerUrl}/chat/completions");
+                jsonSerializerOptionsForPrinting ??= new JsonSerializerOptions
+                {
+                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                    WriteIndented = true // 可选：美化输出
+                };
+                 Console.WriteLine(JsonSerializer.Serialize(requestBody, jsonSerializerOptionsForPrinting!)); 
+
+                HttpResponseMessage response = await _httpClient.PostAsync($"{ServerUrl}/chat/completions", content);
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"API Error: {response.StatusCode} - {responseBody}");
+                    return null;
+                }
+                Console.WriteLine($"\n\nResponse:\n{responseBody}");
+
+                using JsonDocument doc = JsonDocument.Parse(responseBody);
+                string? answer = doc.RootElement
+                    .GetProperty("choices")[0]
+                    .GetProperty("message")
+                    .GetProperty("content")
+                    .GetString();
+
+                var elapsed = (DateTime.UtcNow - startTime).TotalSeconds;
+                Console.WriteLine($"用时 {elapsed:F2}s");
+                Console.WriteLine(answer?.Trim());
+
+                return answer?.Trim();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] HTTP request failed: {ex.Message}");
+                return null;
+            }
+        }
+
+        // 同步版本
+        public string? GetAnswer(List<ChatContent> text, string systemPrompt = "auto")
+        {
+            return GetAnswerAsync(text, systemPrompt).GetAwaiter().GetResult();
+        }
+        public string? GetAnswerSync(List<ChatContent> text, string systemPrompt = "auto")
         {
             if (text == null || text.Count == 0) return "";
 
@@ -245,10 +377,11 @@ namespace QQPilot4
             {
                 var startTime = DateTime.UtcNow;
                 Console.WriteLine($"Sending request to: {ServerUrl}/chat/completions");
-                // Console.WriteLine(json); // 可选：调试输出
+                Console.WriteLine(json); // 可选：调试输出
 
-                HttpResponseMessage response = await _httpClient.PostAsync($"{ServerUrl}/chat/completions", content);
-                string responseBody = await response.Content.ReadAsStringAsync();
+                // 同步调用
+                HttpResponseMessage response = _httpClient.PostAsync($"{ServerUrl}/chat/completions", content).GetAwaiter().GetResult();
+                string responseBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -275,38 +408,12 @@ namespace QQPilot4
                 return null;
             }
         }
-
-        // 同步版本（不推荐，仅兼容）
-        public string? GetAnswer(List<ChatContent> text, string systemPrompt = "auto")
-        {
-            return GetAnswerAsync(text, systemPrompt).GetAwaiter().GetResult();
-        }
-
         public void Test()
         {
             try
             {
-                var testMsg = new List<Dictionary<string, object>>
-                {
-                    new() { ["role"] = "user", ["content"] = "Say 'this is a test.'" }
-                };
-                var body = new Dictionary<string, object>
-                {
-                    ["model"] = ModelName,
-                    ["messages"] = testMsg
-                };
-                string json = JsonSerializer.Serialize(body);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                ServerUrl = "http://localhost:11434/v1";
-                Console.WriteLine($" ServerUrl={ServerUrl}");
-
-                var res = _httpClient.PostAsync($"{ServerUrl}/chat/completions", content).Result;
-                string r = res.Content.ReadAsStringAsync().Result;
-                Console.WriteLine($"r={r}");
-                using var doc = JsonDocument.Parse(r);
-                string ans = doc.RootElement.GetProperty("choices")[0].GetProperty("message").GetProperty("content").GetString();
-                Console.WriteLine($"[ASSISTANT]: {ans}");
+                ChatContent c = new("", [], "你好", "", false);
+                Console.WriteLine($"[ASSISTANT]: {GetAnswer([c])}");
             }
             catch (Exception ex)
             {
