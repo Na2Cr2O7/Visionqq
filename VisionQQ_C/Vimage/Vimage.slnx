@@ -1,7 +1,0 @@
-<Solution>
-  <Configurations>
-    <Platform Name="x64" />
-    <Platform Name="x86" />
-  </Configurations>
-  <Project Path="Vimage.vcxproj" Id="ac512d12-3665-49ac-afd1-149b900bcc3d" />
-</Solution>

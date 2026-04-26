@@ -1,1 +1,0 @@
-cd .\data\ && PythonPath.cmd extensionViewer.py

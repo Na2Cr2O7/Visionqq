@@ -1,7 +1,0 @@
-<Solution>
-  <Configurations>
-    <Platform Name="x64" />
-    <Platform Name="x86" />
-  </Configurations>
-  <Project Path="wxInstall.vcxproj" Id="7d74c4a6-5311-4a6b-b1a9-5406d0587879" />
-</Solution>

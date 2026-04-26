@@ -1,5 +1,0 @@
-ollama
-colorama
-pyperclip
-flask
-openai
