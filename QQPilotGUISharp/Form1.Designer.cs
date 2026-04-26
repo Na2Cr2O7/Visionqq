@@ -224,6 +224,7 @@
             Scroll.Size = new Size(120, 56);
             Scroll.TabIndex = 26;
             Scroll.Text = "0";
+            Scroll.ValueChanged += Scroll_ValueChanged;
             // 
             // label9
             // 

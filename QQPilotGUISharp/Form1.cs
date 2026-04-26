@@ -27,7 +27,7 @@ namespace QQPilotGUISharp
             IniData ini;
             if (File.Exists("config.ini"))
             {
-                ini = parser.ReadFile("config.ini", Encoding.UTF8);
+                ini = parser.ReadFile("config.ini", new UTF8Encoding(false));
             }
             else
             {
@@ -64,15 +64,15 @@ namespace QQPilotGUISharp
             general["tab_times"] = tabTime.ToString();
 
             // 写回 config.ini
-            parser.WriteFile("config.ini", ini, Encoding.UTF8);
+            parser.WriteFile("config.ini", ini, new UTF8Encoding(false));
 
             // 保存 system.txt
-            File.WriteAllText("system.txt", SystemText.Text, Encoding.UTF8);
+            File.WriteAllText("system.txt", SystemText.Text, new UTF8Encoding(false));
         }
         private void Form1_Load(object sender, EventArgs e)
         {
             parser = new();
-            IniData ini = parser.ReadFile("config.ini", fileEncoding: Encoding.UTF8);
+            IniData ini = parser.ReadFile("config.ini", fileEncoding: new UTF8Encoding(false));
             KeyDataCollection general = ini["general"];
             vname.Text = general["version"];
             winWidth.Value = int.Parse(general["width"]);
@@ -105,7 +105,7 @@ namespace QQPilotGUISharp
                 _ => 1
 
             };
-            SystemText.Text = File.ReadAllText("system.txt", Encoding.UTF8);
+            SystemText.Text = File.ReadAllText("system.txt", new UTF8Encoding(false));
         }
 
         private void inputNumber1_ValueChanged(object sender, AntdUI.DecimalEventArgs e)
@@ -152,6 +152,12 @@ namespace QQPilotGUISharp
         private void MaxImageCount_ValueChanged(object sender, AntdUI.DecimalEventArgs e)
         {
             MaxImageCount.Value = Math.Clamp(MaxImageCount.Value, 0, 4);
+        }
+
+        private void Scroll_ValueChanged(object sender, AntdUI.DecimalEventArgs e)
+        {
+            Scroll.Value = Math.Clamp(Scroll.Value, 1, 200);
+
         }
     }
 }

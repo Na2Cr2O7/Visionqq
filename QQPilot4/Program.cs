@@ -16,7 +16,7 @@ namespace QQPilot4
         static readonly bool debug =false;
         static void Main(string[] args)
         {
-            Console.OutputEncoding = Encoding.UTF8;
+            //Console.OutputEncoding = Encoding.UTF8;
 
             //Answer g = new();
             //g.Test();
@@ -27,7 +27,7 @@ namespace QQPilot4
             ArrowLoad.StartLoading(ConsoleColor.Green, "正在初始化");
             GUIOperation.Init();
             IniParser.FileIniDataParser parser = new();
-            IniData ini                 = parser.ReadFile("config.ini", Encoding.UTF8);
+            IniData ini                 = parser.ReadFile("config.ini", new UTF8Encoding(false));
             KeyDataCollection general   = ini["general"];
             (int, int) size             = (int.Parse(general["width"]), int.Parse(general["height"]));
             p.WaitForExit();
@@ -205,12 +205,37 @@ namespace QQPilot4
                     GUIOperation.SendTextWithoutClick(result);
                     Random r = new();
 
- 
-                    if(withImage  && ((int)(r.NextInt64() % 100) < sendimagepossibility))
+                    int poss= ((int)(r.NextInt64() % 100));
+                    Console.WriteLine(poss);
+                    if (withImage  && poss < sendimagepossibility)
                     {
-                        var imageDir = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory,"Images");
-                        List<string> dirs = [.. Directory.EnumerateDirectories(imageDir)];
-                        if (imageDir is not null && dirs.Count!=0)
+
+                        var imageDir = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Images");
+                        Console.WriteLine(imageDir);
+
+                        List<string> dirs = [.. Directory.EnumerateFiles(imageDir)];
+                        bool containsImage = false;
+
+
+                        // 定义支持的图像扩展名（可根据需要调整）
+                        var imageExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                        {
+                            ".jpg", ".jpeg", ".png", ".gif"
+                        };
+
+                        foreach (string dir in dirs)
+                        {
+                            Console.WriteLine(dir);
+
+                            if (imageExtensions.Contains(Path.GetExtension(dir)))
+                            {
+                                containsImage = true;
+                                Console.WriteLine("Image:", dir);
+                                break;
+                            }
+
+                        }
+                        if (imageDir is not null && containsImage)
                         {
                         
                             Console.WriteLine("上传图片");

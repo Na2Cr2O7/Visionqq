@@ -81,7 +81,7 @@ namespace QQPilot4
         static Image()
         {
             var parser = new FileIniDataParser();
-            var data = parser.ReadFile("config.ini", Encoding.UTF8);
+            var data = parser.ReadFile("config.ini", new UTF8Encoding(false));
             Width = int.Parse(data["general"]["width"]);
             Height = int.Parse(data["general"]["height"]);
             Scale = float.Parse(data["general"]["scale"]);
