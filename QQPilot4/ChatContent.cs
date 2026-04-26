@@ -6,24 +6,14 @@ using System.Text;
 
 namespace QQPilot4
 {
-    public class ChatContent
+    public class ChatContent(string username, List<string> imagePaths, string text, string time, bool ownByMyself)
     {
         // 属性定义
-        public string Username { get; set; } = string.Empty;
-        public List<string> ImagePaths { get; set; } = new List<string>();
-        public string Text { get; set; } = string.Empty;
-        public string Time { get; set; } = string.Empty;
-        public bool OwnByMyself { get; set; } = false;
-
-        // 构造函数
-        public ChatContent(string username, List<string> imagePaths, string text, string time, bool ownByMyself)
-        {
-            Username = username;
-            ImagePaths = imagePaths;
-            Text = text;
-            Time = time;
-            OwnByMyself = ownByMyself;
-        }
+        public string Username { get; set; } = username;
+        public List<string> ImagePaths { get; set; } = imagePaths;
+        public string Text { get; set; } = text;
+        public string Time { get; set; } = time;
+        public bool OwnByMyself { get; set; } = ownByMyself;
 
         // 生成报告的方法
         // 逻辑：检查文件是否存在，格式化输出
@@ -58,13 +48,14 @@ namespace QQPilot4
         {
             string content = string.IsNullOrEmpty(Text) ? "【空】" : Text;
 
-            if (!OwnByMyself)
+
+            if (OwnByMyself)
             {
-                return $"{Username}:{content}";
+                return content[..(content.ToString().Length-1)];
             }
             else
             {
-                return content;
+                return $"{Username}:{content}";
             }
         }
     }

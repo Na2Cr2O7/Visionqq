@@ -100,12 +100,12 @@ namespace QQPilot4
                 messages.Add(new Dictionary<string, object>
                 {
                     ["role"] = t.OwnByMyself ? "assistant" : "user",
-                    ["content"] = t.Text
+                    ["content"] = t.ToString()
                 });
             }
 
             // 最后一条消息
-            string lastText = textList.Any() ? textList.Last().Text : "_";
+            string lastText = textList.Any() ? textList.Last().ToString() : "_";
             if (string.IsNullOrEmpty(lastText)) lastText = "_";
 
             if (IsVisionModel && images.Any())

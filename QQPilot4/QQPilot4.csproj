@@ -6,7 +6,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Platforms>AnyCPU;x64;ARM64</Platforms>
+    <ApplicationIcon>qqpilot.ICO</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="qqpilot.ICO" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="ini-parser" Version="2.5.2" />

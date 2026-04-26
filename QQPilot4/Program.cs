@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TextCopy;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace QQPilot4
 {
@@ -161,7 +162,7 @@ namespace QQPilot4
                     Thread.Sleep(500);
                     GUIOperation.GotoCenter(conversationActualSize);
                     Thread.Sleep(500);
-                    for (int i = 0; i < scrollTries; i++)
+                    for (int i = 0; i < scrollTries*2; i++)
                     {
                         Thread.Sleep(400);
                         GUIOperation.ScrollDown(480);
@@ -207,30 +208,33 @@ namespace QQPilot4
  
                     if(withImage  && ((int)(r.NextInt64() % 100) < sendimagepossibility))
                     {
-                        Console.WriteLine("上传图片");
-                        Image.Screenshot(uploadImagePossibleActualSize);
-                        points = Image.FindTemplates("screenshot.png", "uploadImage.png", 30, 1);
-                        if (points.Count <= 0)
+                        var imageDir = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory,"Images");
+                        List<string> dirs = [.. Directory.EnumerateDirectories(imageDir)];
+                        if (imageDir is not null && dirs.Count!=0)
                         {
-                            Console.WriteLine("使用模板匹配查找上传图片按钮失败");
-                            Process.Start("uploadImage2.exe").WaitForExit();
-                            Thread.Sleep(200);
-                            GUIOperation.HotKey("ctrl","v");
+                        
+                            Console.WriteLine("上传图片");
+                            Image.Screenshot(uploadImagePossibleActualSize);
+                            points = Image.FindTemplates("screenshot.png", "uploadImage.png", 30, 1);
+                            if (points.Count <= 0)
+                            {
+                                Console.WriteLine("使用模板匹配查找上传图片按钮失败");
+                                Process.Start("uploadImage2.exe").WaitForExit();
+                                Thread.Sleep(200);
+                                GUIOperation.HotKey("ctrl","v");
 
-                        }
-                        else
-                        {
-                            var (x, y) = points[0];
-                            x += (uint)uploadImagePossibleActualSize.Item1;
-                            y += (uint)uploadImagePossibleActualSize.Item2;
-                            GUIOperation.Click((int)x, (int)y);
+                            }
+                            else
+                            {
+                                var (x, y) = points[0];
+                                x += (uint)uploadImagePossibleActualSize.Item1;
+                                y += (uint)uploadImagePossibleActualSize.Item2;
+                                GUIOperation.Click((int)x, (int)y);
+                                Thread.Sleep(4000);
+                                Upload.upload();
+                             }
                             Thread.Sleep(4000);
-                            Upload.upload();
-
-
                         }
-                        Thread.Sleep(4000);
-
                     }
                     Thread.Sleep(4000);
                     Console.WriteLine("发送消息 🎉");

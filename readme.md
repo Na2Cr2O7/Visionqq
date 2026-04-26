@@ -9,7 +9,16 @@
 ```
 # QQPilot - 基于窗口自动化的 QQ 自动回复机器人
 
+## 1.5.11
+
+自1.5.11后python部分已经更新为C#，**不再支持Linux**。
+
+Linux请使用1.5.10
+
+<div align="center">
+
 <img src="https://stone.professorlee.work/api/stone/Na2Cr2O7/QQPilot" alt="Stone Badge" width="200"  />
+</div>
 
 <!-- [![示例截图](./QQPilot.jpeg)](./QQPilot.jpeg) -->
 <div align="center">
@@ -38,17 +47,17 @@ QQPilot 是一个全自动的 QQ 聊天机器人，通过以下流程实现智�
 ### 步骤 1：下载项目
 前往 [Releases 页面](https://github.com/Na2Cr2O7/QQPilot/releases) 下载最新压缩包并解压。
 
+解压后大小<6M.
+
+可能需要安装[.NET10](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-10.0.203-windows-x64-installer)
+
+
 * 本质来说Linux版本的[安装](installOnLinux/installonLinux.md)和使用适用于所有类似unix的系统
 
-### 步骤 2：安装依赖
-双击运行 `安装.exe`（需联网）：
-- 自动部署内置 Python 3.13 环境
-- 安装必要依赖： `pyperclip`, `requests`, `ollama`, `colorama` 等
-- 总体积 ≤ 150MB
 
 Linux用户请[参考](installOnLinux/installonLinux.md)
 
-### 步骤 3：配置大模型（推荐使用 Ollama）
+### 步骤 2：配置大模型（推荐使用 Ollama）
 
 安装 [Ollama](https://ollama.com/) 并拉取模型：
 
@@ -65,11 +74,11 @@ ollama pull huihui_ai/qwen3-vl-abliterated:latest
 
 * 可以在虚拟机上使用，详情见[教程](useollamainVM/useOllamainVM.md)
 
-> 💡 **强烈建议使用纯文本模型**。当前本地视觉模型对表情包/截图理解能力有限，易出错。
+~~ > 💡 **强烈建议使用纯文本模型**。当前本地视觉模型对表情包/截图理解能力有限，易出错。~~
 
 > 如需使用自定义 API（如 OpenAI、Claude、自建 LLM），请在 `设置.exe` 中配置。
 
-### 步骤 4：初始化设置
+### 步骤 3：初始化设置
 运行 `设置.exe` 配置模型类型、API 地址、截图区域等参数。
 
 
@@ -78,7 +87,7 @@ ollama pull huihui_ai/qwen3-vl-abliterated:latest
 1. （可选）将自定义表情包放入 `.\Images` 文件夹  
 2. 打开 QQ 客户端并登录账号  
 3. **确保 QQ 主窗口始终可见（不要最小化或遮挡）**  
-4. 双击运行 `run.bat` 启动主程序  
+4. 双击运行 `QQPilot菜单` 启动主程序  
 5. 程序将自动监控未读消息并智能回复
 
 > 📌 **关键提醒**：运行期间请勿移动 QQ 窗口或更改 DPI/分辨率！
@@ -97,7 +106,6 @@ ollama pull huihui_ai/qwen3-vl-abliterated:latest
 | 字体大小           | 设为“**最小**”            |
 | 聊天背景           | 使用**默认白色背景**       |
 | 系统显示缩放       | **100% 或 125%**（避免 150%+）|
-|群                 | 关闭右边栏                    |
 
 > 📷 参考图示：
 ![注意事项说明](./notice1.jpeg)
@@ -110,7 +118,6 @@ ollama pull huihui_ai/qwen3-vl-abliterated:latest
 - **安全无痕**：纯视觉操作，零注入、零 Hook，几乎无封号风险  
 - **隐私可控**：支持完全本地运行，数据不出设备  
 - **灵活扩展**：可对接任意本地大模型（如 Ollama）或远程 HTTP API  
-- **开箱即用**：内置 Python 3.13 环境，无需手动配置依赖
 
 
 
@@ -134,7 +141,7 @@ ollama pull huihui_ai/qwen3-vl-abliterated:latest
 
  - 1GB RAM
 
- - 350M 可用空间
+ - 200M 可用空间
 
  - 1920x1080 显示器
 
@@ -156,7 +163,7 @@ ollama pull huihui_ai/qwen3-vl-abliterated:latest
 
  - 1GB RAM
 
- - 350M 可用空间
+ - 200M 可用空间
 
  - 1920x1080 显示器
 
@@ -244,10 +251,9 @@ QQPilot在最低配置上成功运行，使用内置语言模型进行回复
 
 ## 🛠️ 编译说明（开发者）
 
-本项目基于 **Python 3.13** 开发，依赖见 `requirements.txt`。
-
 使用 **Visual Studio 2022 或 2026** 打开并编译以下解决方案（仅Windows）：
 - `VisionQQ_C.slnx`
+- `QQPilot4\QQPilot4.slnx`
 
 ---
 

@@ -104,12 +104,13 @@ void CMFCLauncherDlg::OnBnClickedOk()
 
 void CMFCLauncherDlg::OnBnClickedButton1()
 {
-	system("start run.exe");
+	//system("start run.exe");
+	run(L"QQPilot4.exe");
 }
 
 void CMFCLauncherDlg::OnBnClickedButton4()
 {
-	run(L"下载助手.exe");
+	run(L"Download.exe");
 
 }
 bool run(const wchar_t* fn)
@@ -129,7 +130,7 @@ bool run(const wchar_t* fn)
 
 void CMFCLauncherDlg::OnBnClickedButton3()
 {
-    run(L"设置.exe");
+    run(L"Option2.exe");
 	
 }
 
@@ -154,6 +155,6 @@ void CMFCLauncherDlg::OnBnClickedOk2()
 
 void CMFCLauncherDlg::OnBnClickedButton6()
 {
-	run(L"升级助手.exe");
+	run(L"MFCUpdate.exe");
 	// TODO: 在此添加控件通知处理程序代码
 }
