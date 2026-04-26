@@ -1,1 +1,0 @@
-./PythonPath.sh menu.py
