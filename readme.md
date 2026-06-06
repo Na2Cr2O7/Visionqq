@@ -10,12 +10,6 @@
 # QQPilot - 基于窗口自动化的 QQ 自动回复机器人
 
 
-> ## 1.5.11
->
->自1.5.11后python部分已经更新为C#，**不再支持Linux**。
->
- >Linux请使用1.5.10
-
 <div align="center">
 
 <img src="https://stone.professorlee.work/api/stone/Na2Cr2O7/QQPilot" alt="Stone Badge" width="200"  />
@@ -52,11 +46,6 @@ QQPilot 是一个全自动的 QQ 聊天机器人，通过以下流程实现智�
 
 可能需要安装[.NET10](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-10.0.203-windows-x64-installer)
 
-
-* 本质来说Linux版本的[安装](installOnLinux/installonLinux.md)和使用适用于所有类似Unix的系统
-
-
-Linux用户请[参考](installOnLinux/installonLinux.md)
 
 ### 步骤 2：配置大模型（推荐使用 Ollama）
 
@@ -147,14 +136,6 @@ ollama pull huihui_ai/qwen3-vl-abliterated:latest
 > 对于windows7 可以尝试安装 [VkKex](https://github.com/YuZhouRen86/VxKex-NEXT)
 
 
-#### Linux(仅1.5.10-):
-
- - 具有桌面（Gnome，Cinnamon等）环境的Linux发行版 64位系统(系统架构不限)
- - 1GB RAM
- - 600M 可用空间
- - 1920x1080 显示器
-
->详情见[教程](installOnLinux/installonLinux.md)
 
 ### ARM64
 
