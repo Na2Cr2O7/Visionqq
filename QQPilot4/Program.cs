@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using TextCopy;
 using static System.Net.Mime.MediaTypeNames;
-
 namespace QQPilot4
 {
     internal class Program
@@ -16,21 +15,27 @@ namespace QQPilot4
         static readonly bool debug =false;
         static void Main(string[] args)
         {
-            //Console.OutputEncoding = Encoding.UTF8;
+            DockLog.Init();
+            Process? p=null;
+            try
+            {
+                p= Process.Start("ScaleToINI.exe");
 
-            //Answer g = new();
-            //g.Test();
-            //return;
-            Process p=Process.Start("ScaleToINI.exe");
+            }
+            catch (Exception e)
+            {
+                Log.Print(e.ToString(),Log.Stat.ERROR);
+            }
             //GUIOperation.Init();
             //GUIOperation.Click(3, 3);
             ArrowLoad.StartLoading(ConsoleColor.Green, "正在初始化");
+            DockLog.Log2("正在初始化");
             GUIOperation.Init();
             IniParser.FileIniDataParser parser = new();
             IniData ini                 = parser.ReadFile("config.ini", new UTF8Encoding(false));
             KeyDataCollection general   = ini["general"];
             (int, int) size             = (int.Parse(general["width"]), int.Parse(general["height"]));
-            p.WaitForExit();
+            p?.WaitForExit();
             float scale                 = float.Parse(general["scale"]);
             int scrollTries             = int.Parse(general["scroll"]);
             bool withImage              = (general["withimage"].Equals("true", StringComparison.CurrentCultureIgnoreCase));
@@ -40,16 +45,16 @@ namespace QQPilot4
             bool ATDetect               = (general["atdetect"].Equals("true", StringComparison.CurrentCultureIgnoreCase));
             int tapTimes                =  int.Parse(general["tab_times"]);
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine(general["version"]);
+            Log.Print(general["version"]);
             ArrowLoad.StopLoading();
             Console.ResetColor();
 
-
-            Console.WriteLine("初始化完成");
+            DockLog.Log2("初始化完成");
+            Log.Print("初始化完成");
 
             string OSDescription = System.Runtime.InteropServices.RuntimeInformation.OSDescription;
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(OSDescription);
+            Log.Print(OSDescription);
             Console.ResetColor();
 
             Thread autoFocusThread = new(autoFocus);
@@ -58,11 +63,13 @@ namespace QQPilot4
 
 
 
-            Console.WriteLine("自动聚焦功能已开启");
+            Log.Print("自动聚焦功能已开启");
             if(autoLogin)
             {
-                Console.WriteLine("自动登录功能已开启");
-                Console.WriteLine("正在尝试登录...");
+                Log.Print("自动登录功能已开启");
+                Log.Print("正在尝试登录...");
+                DockLog.Log2("正在尝试登录...");
+
                 for (int i = 0; i < 4; i++)
                 {
                     Image.FullScreenShot();
@@ -85,48 +92,49 @@ namespace QQPilot4
 
             // 聊天列表实际大小
             var chatListActualSize = Positions.ToActualSize(Positions.CHAT_LIST_BBOX_RELATIVE_SIZE, size);
-            Console.WriteLine( $"聊天列表实际大小: {chatListActualSize}");
+            Log.Print( $"聊天列表实际大小: {chatListActualSize}");
             // 聊天区域实际大小
             var conversationActualSize = Positions.ToActualSize(Positions.CONVERSATION_BBOX_RELATIVE_SIZE, size);
-            Console.WriteLine( $"聊天区域实际大小: {conversationActualSize}");
+            Log.Print( $"聊天区域实际大小: {conversationActualSize}");
             // 输入框实际大小
             var commentSectionActualSize = Positions.ToActualSize(Positions.COMMENT_SECTION_BBOX_RELATIVE_SIZE, size);
-            Console.WriteLine( $"输入框实际大小: {commentSectionActualSize}");
+            Log.Print( $"输入框实际大小: {commentSectionActualSize}");
             // 发送按钮实际大小
             var sendButtonActualSize = Positions.ToActualSize(Positions.SEND_BUTTON_BBOX_RELATIVE_SIZE, size);
-            Console.WriteLine( $"发送按钮实际大小: {sendButtonActualSize}");
+            Log.Print( $"发送按钮实际大小: {sendButtonActualSize}");
             // 退出会话按钮实际大小
             var exitConversationActualSize = Positions.ToActualSize(Positions.EXIT_CONVERSATION_BBOX_RELATIVE_SIZE, size);
-            Console.WriteLine( $"退出会话按钮实际大小: {exitConversationActualSize}");
+            Log.Print( $"退出会话按钮实际大小: {exitConversationActualSize}");
             // 发送图片按钮实际大小
             var sendImageActualSize = Positions.ToActualSize(Positions.SEND_IMAGE_BBOX_RELATIVE_SIZE, size);
-            Console.WriteLine( $"发送图片按钮实际大小: {sendImageActualSize}");
+            Log.Print( $"发送图片按钮实际大小: {sendImageActualSize}");
             // @位置实际大小
             var atPlaceActualSize = Positions.ToActualSize(Positions.AT_PLACE_BBOX_RELATIVE_SIZE, size);
-            Console.WriteLine( $"@位置实际大小: {atPlaceActualSize}");
+            Log.Print( $"@位置实际大小: {atPlaceActualSize}");
             // 拖拽起止位置
             var startDraggingAbsolutePosition = Positions.ToActualPoint(Positions.START_DRAGGING_RELATIVE_POSITION, size);
             var endDraggingAbsolutePosition = Positions.ToActualPoint(Positions.END_DRAGGING_RELATIVE_POSITION, size);
-            Console.WriteLine( $"开始拖拽位置: {startDraggingAbsolutePosition}");
-            Console.WriteLine( $"结束拖拽位置: {endDraggingAbsolutePosition}");
+            Log.Print( $"开始拖拽位置: {startDraggingAbsolutePosition}");
+            Log.Print( $"结束拖拽位置: {endDraggingAbsolutePosition}");
             // 聊天按钮和联系人按钮位置
             var chatButtonActualPosition = Positions.ToActualPoint(Positions.CHAT_BUTTON_RELATIVE_POSITION, size);
-            Console.WriteLine( $"聊天按钮实际位置: {chatButtonActualPosition}");
+            Log.Print( $"聊天按钮实际位置: {chatButtonActualPosition}");
             var contactButtonActualPosition = Positions.ToActualPoint(Positions.CONTACT_BUTTON_RELATIVE_POSITION, size);
-            Console.WriteLine( $"联系人按钮实际位置: {contactButtonActualPosition}");
+            Log.Print( $"联系人按钮实际位置: {contactButtonActualPosition}");
             // 取消按钮位置（未打印日志，按需添加）
             var cancelButtonActualPosition = Positions.ToActualPoint(Positions.CANCEL_BUTTON_RELATIVE_POSITION, size);
             // 上传图片和复制按钮可能区域
             var uploadImagePossibleActualSize = Positions.ToActualSize(Positions.UPLOAD_IMAGE_POSSIBLE_BBOX_RELATIVE_SIZE, size);
             var copyButtonPossibleActualSize = Positions.ToActualSize(Positions.COPY_BUTTON_POSSIBLE_BBOX_RELATIVE_SIZE, size);
-            Console.WriteLine( $"上传图片可能位置: {uploadImagePossibleActualSize}");
-            Console.WriteLine( $"复制按钮可能位置: {copyButtonPossibleActualSize}");
+            Log.Print( $"上传图片可能位置: {uploadImagePossibleActualSize}");
+            Log.Print( $"复制按钮可能位置: {copyButtonPossibleActualSize}");
             Answer? answer = null;
             bool cancelled=false;
             Console.CancelKeyPress += (sender, e) =>
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("\n结束运行");
+                Log.Print("\n结束运行");
+                DockLog.Exit();
                 Console.ResetColor();
                 // 设置 e.Cancel = true 可以阻止程序立即终止，
                 // 允许执行清理逻辑后再退出
@@ -140,6 +148,7 @@ namespace QQPilot4
             while (! cancelled)
             {
                 Console.Write("正在寻找新信息...\r");
+                DockLog.Log2("正在寻找新信息...");
                 var chatList = Image.FullScreenShot();
                 (uint,uint) contain=(0,0);
                 if(ATDetect)
@@ -153,11 +162,13 @@ namespace QQPilot4
                 if(contain!=(0,0))
                 {
                     Console.ForegroundColor= ConsoleColor.Green;
-                    Console.WriteLine($"发现红点: {contain}");
+                    Log.Print($"发现红点: {contain}");
+                    DockLog.Log2($"发现红点: {contain}");
+
                     Console.ResetColor();
                     GUIOperation.Click((int)contain.Item1,(int)contain.Item2);
                     Thread.Sleep(1000);
-                    Console.WriteLine(startDraggingAbsolutePosition.Item1.ToString(), startDraggingAbsolutePosition.Item2, endDraggingAbsolutePosition.Item1, endDraggingAbsolutePosition.Item2);
+                    //Log.Print(startDraggingAbsolutePosition.Item1.ToString(), startDraggingAbsolutePosition.Item2, endDraggingAbsolutePosition.Item1, endDraggingAbsolutePosition.Item2);
                     GUIOperation.DragFromToSimple(startDraggingAbsolutePosition.Item1,startDraggingAbsolutePosition.Item2,endDraggingAbsolutePosition.Item1,endDraggingAbsolutePosition.Item2);
                     Thread.Sleep(500);
                     GUIOperation.GotoCenter(conversationActualSize);
@@ -173,7 +184,9 @@ namespace QQPilot4
                     List<(uint x, uint y)> points = Image.FindTemplates("screenshot.png", "./copy.png",30,1);
                     if (points.Count == 0)
                     {
-                        Console.WriteLine("使用模板匹配查找复制按钮失败");
+                        Log.Print("使用模板匹配查找复制按钮失败");
+                        DockLog.Log2("使用模板匹配查找复制按钮失败");
+
                         for (int i = 0; i <tapTimes; i++)
                         {
                             GUIOperation.Tab();
@@ -196,6 +209,8 @@ namespace QQPilot4
                     string chatContentStr=pyperclip.GetText()??"";
                     List<ChatContent> ChatContents = ConversationStyleExtract.ParseChatLog(chatContentStr);
                     SpinnerLoad.Start(ConsoleColor.Green,"等待语言模型生成答案");
+                    DockLog.Log2("等待语言模型生成答案");
+
                     GUIOperation.ClickCenter(commentSectionActualSize);
                     answer ??= new();
                     string result = answer.GetAnswer(ChatContents)??"";
@@ -206,18 +221,28 @@ namespace QQPilot4
                     Random r = new();
 
                     int poss= ((int)(r.NextInt64() % 100));
-                    Console.WriteLine(poss);
+                    Log.Print(poss.ToString());
                     if (withImage  && poss < sendimagepossibility)
                     {
 
                         var imageDir = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Images");
-                        Console.WriteLine(imageDir);
+                        Log.Print(imageDir);
+                        List<string> dirs;
+                        if (!Path.Exists(imageDir))
+                        {
+                            dirs = [];
+                            Log.Print("没有找到图片目录",Log.Stat.ERROR);
+               
+                        }
+                        else
+                        {
+                            dirs = [.. Directory.EnumerateFiles(imageDir)];
 
-                        List<string> dirs = [.. Directory.EnumerateFiles(imageDir)];
+                        }
                         bool containsImage = false;
 
 
-                        // 定义支持的图像扩展名（可根据需要调整）
+                        // 支持的图像扩展名
                         var imageExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
                         {
                             ".jpg", ".jpeg", ".png", ".gif"
@@ -225,12 +250,12 @@ namespace QQPilot4
 
                         foreach (string dir in dirs)
                         {
-                            Console.WriteLine(dir);
+                            Log.Print(dir);
 
                             if (imageExtensions.Contains(Path.GetExtension(dir)))
                             {
                                 containsImage = true;
-                                Console.WriteLine("Image:", dir);
+                                Log.Print("Image:"+ dir);
                                 break;
                             }
 
@@ -238,12 +263,16 @@ namespace QQPilot4
                         if (imageDir is not null && containsImage)
                         {
                         
-                            Console.WriteLine("上传图片");
+                            Log.Print("上传图片");
+                            DockLog.Log2("上传图片");
+
                             Image.Screenshot(uploadImagePossibleActualSize);
                             points = Image.FindTemplates("screenshot.png", "uploadImage.png", 30, 1);
                             if (points.Count <= 0)
                             {
-                                Console.WriteLine("使用模板匹配查找上传图片按钮失败");
+                                Log.Print("使用模板匹配查找上传图片按钮失败");
+                                DockLog.Log2("使用模板匹配查找上传图片按钮失败");
+
                                 Process.Start("uploadImage2.exe").WaitForExit();
                                 Thread.Sleep(200);
                                 GUIOperation.HotKey("ctrl","v");
@@ -262,10 +291,14 @@ namespace QQPilot4
                         }
                     }
                     Thread.Sleep(4000);
-                    Console.WriteLine("发送消息 🎉");
+                    Log.Print("发送消息 🎉");
+                    DockLog.Log2("发送消息 🎉");
+
                     GUIOperation.HotKey("ctrl", "enter");
                     Thread.Sleep(100);
-                    Console.WriteLine("退出会话");
+                    Log.Print("退出会话");
+                    //DockLog.Log2("发送消息 🎉");
+
                     GUIOperation.Click(chatButtonActualPosition.Item1 + (int)(100 * scale), chatButtonActualPosition.Item2 + (int)(80 * scale));
                     Thread.Sleep(3000);
                     GUIOperation.Click(contactButtonActualPosition.Item1, contactButtonActualPosition.Item2);

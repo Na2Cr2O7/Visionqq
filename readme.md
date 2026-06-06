@@ -9,11 +9,12 @@
 ```
 # QQPilot - 基于窗口自动化的 QQ 自动回复机器人
 
-## 1.5.11
 
-自1.5.11后python部分已经更新为C#，**不再支持Linux**。
-
-Linux请使用1.5.10
+> ## 1.5.11
+>
+>自1.5.11后python部分已经更新为C#，**不再支持Linux**。
+>
+ >Linux请使用1.5.10
 
 <div align="center">
 
@@ -32,7 +33,7 @@ Linux请使用1.5.10
 
 > 使用纯视觉 + 窗口自动化实现 QQ 消息自动回复，**零 API 依赖、零注入、低封号风险**。  
 
-## 🌟 项目简介
+##  项目简介
 
 QQPilot 是一个全自动的 QQ 聊天机器人，通过以下流程实现智能回复：
 
@@ -42,7 +43,7 @@ QQPilot 是一个全自动的 QQ 聊天机器人，通过以下流程实现智�
 
 ---
 
-## 📦 安装指南
+## 安装指南
 
 ### 步骤 1：下载项目
 前往 [Releases 页面](https://github.com/Na2Cr2O7/QQPilot/releases) 下载最新压缩包并解压。
@@ -52,7 +53,7 @@ QQPilot 是一个全自动的 QQ 聊天机器人，通过以下流程实现智�
 可能需要安装[.NET10](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-10.0.203-windows-x64-installer)
 
 
-* 本质来说Linux版本的[安装](installOnLinux/installonLinux.md)和使用适用于所有类似unix的系统
+* 本质来说Linux版本的[安装](installOnLinux/installonLinux.md)和使用适用于所有类似Unix的系统
 
 
 Linux用户请[参考](installOnLinux/installonLinux.md)
@@ -65,8 +66,8 @@ Linux用户请[参考](installOnLinux/installonLinux.md)
 # 推荐主力模型（8B，性能与效果平衡）
 ollama pull huihui_ai/deepseek-r1-abliterated:8b
 
-# 低配设备可选（1.5B，轻量快速）
-ollama pull huihui_ai/deepseek-r1-abliterated:1.5b
+# 低配设备可选（0.5B，轻量快速）
+ollama pull qwen2.5:0.5b
 
 # 视觉多模态模型（实验性，效果一般，慎用）
 ollama pull huihui_ai/qwen3-vl-abliterated:latest
@@ -74,7 +75,7 @@ ollama pull huihui_ai/qwen3-vl-abliterated:latest
 
 * 可以在虚拟机上使用，详情见[教程](useollamainVM/useOllamainVM.md)
 
-~~ > 💡 **强烈建议使用纯文本模型**。当前本地视觉模型对表情包/截图理解能力有限，易出错。~~
+<!-- ~~  💡 强烈建议使用纯文本模型。当前本地视觉模型对表情包/截图理解能力有限，易出错。~~ -->
 
 > 如需使用自定义 API（如 OpenAI、Claude、自建 LLM），请在 `设置.exe` 中配置。
 
@@ -90,7 +91,7 @@ ollama pull huihui_ai/qwen3-vl-abliterated:latest
 4. 双击运行 `QQPilot菜单` 启动主程序  
 5. 程序将自动监控未读消息并智能回复
 
-> 📌 **关键提醒**：运行期间请勿移动 QQ 窗口或更改 DPI/分辨率！
+> ******运行期间请勿更改 DPI/分辨率！******
 
 
 
@@ -102,28 +103,26 @@ ollama pull huihui_ai/qwen3-vl-abliterated:latest
 |--------------------|---------------------------|
 | **发送消息**          | **Ctrl+Enter**             |
 | 联系人面板宽度     | 拖动至**最窄**             |
-| 自动更新          | **关闭**             |
-| 字体大小           | 设为“**最小**”            |
-| 聊天背景           | 使用**默认白色背景**       |
-| 系统显示缩放       | **100% 或 125%**（避免 150%+）|
+<!-- | 自动更新          | **关闭**             | -->
+<!-- | 字体大小           | 设为“**最小**”            | -->
+<!-- | 聊天背景           | 使用**默认白色背景**       | -->
+<!-- | 系统显示缩放       | **100% 或 125%**（避免 150%+）| -->
 
-> 📷 参考图示：
+<!-- > 📷 参考图示：
 ![注意事项说明](./notice1.jpeg)
-![alt text](image.png)
+![alt text](image.png) -->
 
 ---
 
-## ✅ 核心优势
+## 核心优势
 
 - **安全无痕**：纯视觉操作，零注入、零 Hook，几乎无封号风险  
 - **隐私可控**：支持完全本地运行，数据不出设备  
-- **灵活扩展**：可对接任意本地大模型（如 Ollama）或远程 HTTP API  
+- **灵活扩展**：可对接任意Open AI API本地大模型（如 Ollama）或远程 HTTP API  
 
 
 
 ---
-
-
 
 
 ## 配置要求
@@ -148,7 +147,7 @@ ollama pull huihui_ai/qwen3-vl-abliterated:latest
 > 对于windows7 可以尝试安装 [VkKex](https://github.com/YuZhouRen86/VxKex-NEXT)
 
 
-#### Linux:
+#### Linux(仅1.5.10-):
 
  - 具有桌面（Gnome，Cinnamon等）环境的Linux发行版 64位系统(系统架构不限)
  - 1GB RAM
@@ -168,11 +167,6 @@ ollama pull huihui_ai/qwen3-vl-abliterated:latest
  - 1920x1080 显示器
 
 
- 
-<img src="success.png" />
-
-QQPilot在最低配置上成功运行，使用内置语言模型进行回复
-
 ### 推荐配置
 
  - Windows 10 x64
@@ -188,11 +182,6 @@ QQPilot在最低配置上成功运行，使用内置语言模型进行回复
 - 1920x1080 显示器
  
 
-
-
-
-
-
 ---
 
 ## ⚠️ 使用限制
@@ -206,7 +195,7 @@ QQPilot在最低配置上成功运行，使用内置语言模型进行回复
 ## 🔧 工作原理
 
 1. **窗口置顶**  
-   通过 `FocusqqWindow.dll`（Python ctypes 调用）强制将 QQ 主窗口置顶，确保截图一致性。
+   通过 `FocusqqWindow.dll`强制将 QQ 主窗口置顶，确保截图一致性。
 
 2. **DPI 自适应**  
    运行 `ScaleToINI.exe` 自动检测系统缩放比例，并写入 `config.ini` 用于坐标校准。
@@ -251,7 +240,7 @@ QQPilot在最低配置上成功运行，使用内置语言模型进行回复
 
 ## 🛠️ 编译说明（开发者）
 
-使用 **Visual Studio 2022 或 2026** 打开并编译以下解决方案（仅Windows）：
+使用 **Visual Studio 2026** 打开并编译以下解决方案（仅Windows）：
 - `VisionQQ_C.slnx`
 - `QQPilot4\QQPilot4.slnx`
 
@@ -266,22 +255,7 @@ QQPilot在最低配置上成功运行，使用内置语言模型进行回复
 
 使用者须自行承担因使用本软件引发的一切法律责任，作者概不负责。
 
----
-
-## 📄 开源协议
-
-本项目采用 [MIT License](LICENSE)。欢迎 Star ⭐、Fork 🍴 与贡献代码！
-
----
-
-## 🙌 贡献与反馈
-
-- 🐞 发现 Bug？ → 提交 [Issue](https://github.com/Na2Cr2O7/QQPilot/issues)  
-- 💡 想改进功能？ → 提交 Pull Request  
-- 🌍 有新语言/模型建议？ → 欢迎讨论！
-
-
-让我们一起打造更安全、智能的视觉自动化工具！
+本项目采用 [MIT License](LICENSE)
 
 
 

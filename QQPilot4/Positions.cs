@@ -12,7 +12,7 @@ public static class Positions
     public static readonly (int, int, int, int) chatListBBoxAbsoluteSize = (105, 154, 105 + 305, 154 + 1055);
     public static readonly (int, int, int, int) conversationBBoxAbsoluteSize = (421, 163, 421 + 1796, 163 + 734);
     public static readonly (int, int, int, int) sendButtonBBoxAbsoluteSize = (2023, 1167, 2023 + 182, 1167 + 79);
-    public static readonly (int, int, int, int) commentSectionBBoxAbsoluteSize = (563, 963, 563 + 1455, 963 + 271);
+    public static readonly (int, int, int, int) commentSectionBBoxAbsoluteSize = (427,1028, 427+2, 1028+2);
     public static readonly (int, int, int, int) exitConversationBBoxAbsoluteSize = (367, 228, 367 + 31, 228 + 33);
     public static readonly (int, int, int, int) sendImageBBoxAbsoluteSize = (663, 917, 663 + 44, 917 + 44);
     public static readonly (int, int, int, int) copyButtonBBoxAbsoluteSize = (1698, 1028, 1698 + 52, 1028 + 45);
