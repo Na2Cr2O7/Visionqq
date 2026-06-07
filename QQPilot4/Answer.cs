@@ -243,7 +243,7 @@ namespace QQPilot4
             else
             {
                 _httpClient.DefaultRequestHeaders.Authorization = null;
-            }
+            }   
 
             try
             {

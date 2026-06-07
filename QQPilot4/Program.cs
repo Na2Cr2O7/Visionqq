@@ -161,6 +161,19 @@ namespace QQPilot4
                 }
                 if(contain!=(0,0))
                 {
+                    Thread.Sleep(500); 
+                    if (ATDetect)
+                    {
+                        contain = Image.ContainsRedDot(Image.Rect(atPlaceActualSize));
+                    }
+                    else
+                    {
+                        contain = Image.ContainsRedDot(Image.Rect(chatListActualSize));
+                    }
+                    if (contain == (0,0))
+                    {
+                        continue;
+                    }
                     Console.ForegroundColor= ConsoleColor.Green;
                     Log.Print($"发现红点: {contain}");
                     DockLog.Log2($"发现红点: {contain}");
