@@ -9,7 +9,7 @@
    id="svg1"
    inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
    sodipodi:docname="qqpilot.svg"
-   inkscape:export-filename="qqpilot.png"
+   inkscape:export-filename="qqpilotPE.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -26,17 +26,29 @@
      inkscape:pagecheckerboard="true"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="2.1367164"
-     inkscape:cx="277.29464"
-     inkscape:cy="271.44454"
-     inkscape:window-width="1920"
-     inkscape:window-height="1057"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:zoom="1.0683582"
+     inkscape:cx="587.34982"
+     inkscape:cy="348.66583"
+     inkscape:window-width="2560"
+     inkscape:window-height="1334"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
      id="defs1">
+    <rect
+       x="236.34395"
+       y="105.76977"
+       width="160.52668"
+       height="26.676446"
+       id="rect2" />
+    <rect
+       x="304.20509"
+       y="71.605198"
+       width="179.71501"
+       height="166.61079"
+       id="rect1" />
     <filter
        style="color-interpolation-filters:sRGB;"
        inkscape:label="Drop Shadow"
@@ -251,6 +263,116 @@
          in="fbSourceGraphic"
          in2="comp1" />
     </filter>
+    <filter
+       style="color-interpolation-filters:sRGB"
+       inkscape:label="Drop Shadow"
+       id="filter169-4"
+       x="-0.12075571"
+       y="-0.12110405"
+       width="1.2573462"
+       height="1.2580437">
+      <feGaussianBlur
+         in="SourceGraphic"
+         stdDeviation="0.001 0.01"
+         result="blur1"
+         id="feGaussianBlur166-8" />
+      <feColorMatrix
+         in="blur1"
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 41.25 50 50 1 0 "
+         result="colormatrix1"
+         id="feColorMatrix166-8" />
+      <feColorMatrix
+         in="colormatrix1"
+         type="luminanceToAlpha"
+         result="colormatrix2"
+         id="feColorMatrix167-2" />
+      <feComposite
+         in2="blur1"
+         operator="arithmetic"
+         k2="1"
+         k3="32.5301"
+         result="composite1"
+         id="feComposite167-4"
+         k1="0"
+         k4="0" />
+      <feGaussianBlur
+         in="composite1"
+         stdDeviation="1.1765"
+         result="blur2"
+         id="feGaussianBlur167-5" />
+      <feSpecularLighting
+         lighting-color="#ffffff"
+         surfaceScale="20.20960045"
+         specularConstant="0.91317397"
+         specularExponent="12"
+         result="lighting"
+         id="feSpecularLighting167-5">
+        <feDistantLight
+           azimuth="206"
+           elevation="46"
+           id="feDistantLight167-1" />
+      </feSpecularLighting>
+      <feFlood
+         flood-color="rgb(197,41,41)"
+         flood-opacity="1"
+         result="flood"
+         id="feFlood167-7" />
+      <feComposite
+         in="lighting"
+         in2="blur1"
+         operator="arithmetic"
+         k3="1"
+         k2="1"
+         result="composite2"
+         id="feComposite168-1"
+         k1="0"
+         k4="0" />
+      <feBlend
+         in2="SourceGraphic"
+         mode="normal"
+         result="blend"
+         id="feBlend168-1" />
+      <feComposite
+         in="blend"
+         in2="SourceGraphic"
+         operator="in"
+         result="fbSourceGraphic"
+         id="feComposite169-5" />
+      <feColorMatrix
+         result="fbSourceGraphicAlpha"
+         in="fbSourceGraphic"
+         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
+         id="feColorMatrix169-2" />
+      <feFlood
+         id="feFlood169-7"
+         result="flood"
+         in="fbSourceGraphic"
+         flood-opacity="0.498039"
+         flood-color="rgb(0,0,0)" />
+      <feGaussianBlur
+         id="feGaussianBlur169-6"
+         result="blur"
+         in="fbSourceGraphic"
+         stdDeviation="2.000000" />
+      <feOffset
+         id="feOffset169-1"
+         result="offset"
+         in="blur"
+         dx="1.000000"
+         dy="1.000000" />
+      <feComposite
+         id="feComposite170-4"
+         result="comp1"
+         operator="in"
+         in="flood"
+         in2="offset" />
+      <feComposite
+         id="feComposite171-2"
+         result="comp2"
+         operator="over"
+         in="fbSourceGraphic"
+         in2="comp1" />
+    </filter>
   </defs>
   <g
      inkscape:label="图层 1"
@@ -266,5 +388,16 @@
        d="M 85.147776,-11.805811 93.04263,13.940664 68.840367,12.578566 48.512379,32.906554 45.33041,36.088523 53.056446,43.814559 56.238415,40.63259 73.931449,22.939556 H 104.77331 L 98.239456,-1.4429944 117.1471,-1.4437253 c 0.23539,2.39618054 2.24528,4.2559019 4.70536,4.2559019 l 43.07863,0 c 2.61941,0 4.72837,-2.10896003 4.72837,-4.7283738 v -8.0550442 c 0,-2.6194136 -2.10896,-4.7283736 -4.72837,-4.7283736 h -43.07863 c -2.45999,0 -4.46985,1.859842 -4.70536,4.255902 z"
        transform="rotate(45)"
        sodipodi:nodetypes="cccccccccccsssssscc" />
+    <path
+       id="rect165-2"
+       style="fill:#d1d1d1;fill-opacity:1;fill-rule:evenodd;stroke-width:1.852;stroke-linecap:square;stroke-dashoffset:4.83;paint-order:stroke markers fill;filter:url(#filter169-4)"
+       d="m 44.968367,36.289083 3.181969,3.181969 12.533479,12.53348 3.181969,3.181969 4.825572,4.825572 15.715448,15.715448 0.979292,-1.034834 2.193542,-2.193542 20.541022,-20.54102 -7.93885,-7.512779 -15.802777,15.80278 -7.989636,-7.989636 12.301001,-12.301001 -7.938844,-7.51278 -12.087604,12.087604 -8.162474,-8.162474 16.278176,-16.278176 -7.93921,-7.513145 -16.065143,16.065143 -0.08075,-0.08075 z"
+       transform="rotate(45,96.791105,70.947239)"
+       sodipodi:nodetypes="ccccccccccccccccccccc" />
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text2"
+       style="font-size:21.3333px;writing-mode:lr-tb;direction:ltr;white-space:pre;shape-inside:url(#rect2);display:inline;fill:none;stroke:#00ffff;stroke-width:5.66929" />
   </g>
 </svg>

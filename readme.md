@@ -10,6 +10,8 @@
 # QQPilot - 基于窗口自动化的 QQ 自动回复机器人
 
 [Linux版本](https://github.com/QQPilotOrganization/QQPilotLinux)
+[Android](https://github.com/QQPilotOrganization/QQPilotPocketEdition)
+
 
 <div align="center">
 

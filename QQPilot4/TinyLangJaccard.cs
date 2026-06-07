@@ -61,7 +61,7 @@ namespace QQPilot4
             }
 
             string answer = _qaPairs[bestMatch];
-            Console.WriteLine(answer); // 模拟 print
+            Console.WriteLine(answer); 
             return answer;
         }
     }
