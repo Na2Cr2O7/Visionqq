@@ -200,8 +200,11 @@ namespace QQPilot4
                         Log.Print("使用模板匹配查找复制按钮失败");
                         DockLog.Log2("使用模板匹配查找复制按钮失败");
 
+                        GUIOperation.ClickCenter(commentSectionActualSize);
+
                         for (int i = 0; i <tapTimes; i++)
                         {
+
                             GUIOperation.Tab();
                             Thread.Sleep(400);
 
