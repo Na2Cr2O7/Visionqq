@@ -200,7 +200,7 @@ namespace QQPilot4
                         }
                         else
                         {
-                            Console.WriteLine($"× 没有找到图片 {img}");
+                            Log.Print($"× 没有找到图片 {img}",Log.Stat.WARN);
                         }
                     }
                     if (imageList.Count >= MaxImageCount) break;
@@ -248,23 +248,23 @@ namespace QQPilot4
             try
             {
                 var startTime = DateTime.UtcNow;
-                Console.WriteLine($"Sending request to: {ServerUrl}/chat/completions");
+                Log.Print($"Sending request to: {ServerUrl}/chat/completions");
                 jsonSerializerOptionsForPrinting ??= new JsonSerializerOptions
                 {
                     Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
                     WriteIndented = true // 可选：美化输出
                 };
-                 Console.WriteLine(JsonSerializer.Serialize(requestBody, jsonSerializerOptionsForPrinting!)); 
+                 Log.Print(JsonSerializer.Serialize(requestBody, jsonSerializerOptionsForPrinting!)); 
 
                 HttpResponseMessage response = await _httpClient.PostAsync($"{ServerUrl}/chat/completions", content);
                 string responseBody = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine($"API Error: {response.StatusCode} - {responseBody}");
+                    Log.Print($"API Error: {response.StatusCode} - {responseBody}",Log.Stat.ERROR);
                     return null;
                 }
-                Console.WriteLine($"\n\nResponse:\n{responseBody}");
+                Log.Print($"\n\nResponse:\n{responseBody}");
 
                 using JsonDocument doc = JsonDocument.Parse(responseBody);
                 string? answer = doc.RootElement
@@ -274,14 +274,14 @@ namespace QQPilot4
                     .GetString();
 
                 var elapsed = (DateTime.UtcNow - startTime).TotalSeconds;
-                Console.WriteLine($"用时 {elapsed:F2}s");
-                Console.WriteLine(answer?.Trim());
+                Log.Print($"用时 {elapsed:F2}s");
+                Log.Print(answer?.Trim()??"");
 
                 return answer?.Trim();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[ERROR] HTTP request failed: {ex.Message}");
+                Log.Print($"HTTP request failed: {ex.Message}",Log.Stat.ERROR);
                 return null;
             }
         }
@@ -330,7 +330,7 @@ namespace QQPilot4
                         }
                         else
                         {
-                            Console.WriteLine($"× 没有找到图片 {img}");
+                            Log.Print($"× 没有找到图片 {img}",Log.Stat.WARN);
                         }
                     }
                     if (imageList.Count >= MaxImageCount) break;
@@ -376,8 +376,8 @@ namespace QQPilot4
             try
             {
                 var startTime = DateTime.UtcNow;
-                Console.WriteLine($"Sending request to: {ServerUrl}/chat/completions");
-                Console.WriteLine(json); // 可选：调试输出
+                Log.Print($"Sending request to: {ServerUrl}/chat/completions");
+                Log.Print(json); // 可选：调试输出
 
                 // 同步调用
                 HttpResponseMessage response = _httpClient.PostAsync($"{ServerUrl}/chat/completions", content).GetAwaiter().GetResult();
@@ -385,7 +385,7 @@ namespace QQPilot4
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine($"API Error: {response.StatusCode} - {responseBody}");
+                    Log.Print($"API Error: {response.StatusCode} - {responseBody}",Log.Stat.ERROR);
                     return null;
                 }
 
@@ -397,14 +397,14 @@ namespace QQPilot4
                     .GetString();
 
                 var elapsed = (DateTime.UtcNow - startTime).TotalSeconds;
-                Console.WriteLine($"用时 {elapsed:F2}s");
-                Console.WriteLine(answer?.Trim());
+                Log.Print($"用时 {elapsed:F2}s");
+                Log.Print(answer?.Trim()??"");
 
                 return answer?.Trim();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[ERROR] HTTP request failed: {ex.Message}");
+                Log.Print($"HTTP request failed: {ex.Message}", Log.Stat.ERROR  );
                 return null;
             }
         }
@@ -413,11 +413,11 @@ namespace QQPilot4
             try
             {
                 ChatContent c = new("", [], "你好", "", false);
-                Console.WriteLine($"[ASSISTANT]: {GetAnswer([c])}");
+                Log.Print($"[ASSISTANT]: {GetAnswer([c])}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Test failed: {ex.Message}");
+                Log.Print($"Test failed: {ex.Message}"  , Log.Stat.ERROR);
             }
         }
     }

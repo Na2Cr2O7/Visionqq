@@ -19,11 +19,11 @@ namespace QQPilot4
                 case Stat.NORMAL:
                     break;
                 case Stat.WARN:
-                    output += "[WARN]";
+                    output = "[WARN]"+output;
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     break;
                 case Stat.ERROR:
-                    output += "[ERR]";
+                    output = "[ERR]"+output;
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
                 default:
