@@ -272,7 +272,14 @@ namespace QQPilot4
                     .GetProperty("message")
                     .GetProperty("content")
                     .GetString();
+                if (doc.RootElement.TryGetProperty("usage", out JsonElement usage))
+                {
+                    int promptTokens = usage.TryGetProperty("prompt_tokens", out var pt) ? pt.GetInt32() : 0;
+                    int completionTokens = usage.TryGetProperty("completion_tokens", out var ct) ? ct.GetInt32() : 0;
+                    int totalTokens = usage.TryGetProperty("total_tokens", out var tt) ? tt.GetInt32() : 0;
 
+                    Log.Print($"Token 用量: 输入 {promptTokens} | 输出 {completionTokens} | 总计 {totalTokens}");
+                }
                 var elapsed = (DateTime.UtcNow - startTime).TotalSeconds;
                 Log.Print($"用时 {elapsed:F2}s");
                 Log.Print(answer?.Trim()??"");
@@ -291,123 +298,7 @@ namespace QQPilot4
         {
             return GetAnswerAsync(text, systemPrompt).GetAwaiter().GetResult();
         }
-        public string? GetAnswerSync(List<ChatContent> text, string systemPrompt = "auto")
-        {
-            if (text == null || text.Count == 0) return "";
 
-            // 内置模型
-            if (Builtin)
-            {
-                foreach (var t in text.AsEnumerable().Reverse())
-                {
-                    if (string.IsNullOrEmpty(t.Text) || t.OwnByMyself) continue;
-                    TinyLangJaccard ??= new TinyLangJaccardCS("datasetTiny.json");
-                    return TinyLangJaccard.Answer(t.Text);
-                }
-                return "";
-            }
-
-            // 系统提示
-            string finalSystemPrompt = systemPrompt switch
-            {
-                "auto" => sysPmpt,
-                "" or "None" => "",
-                _ => systemPrompt
-            };
-
-            // 收集图片
-            var imageList = new List<string>();
-            foreach (var t in text)
-            {
-                if (!t.OwnByMyself)
-                {
-                    foreach (var img in t.ImagePaths)
-                    {
-                        if (File.Exists(img))
-                        {
-                            imageList.Add(img);
-                            if (imageList.Count >= MaxImageCount) break;
-                        }
-                        else
-                        {
-                            Log.Print($"× 没有找到图片 {img}",Log.Stat.WARN);
-                        }
-                    }
-                    if (imageList.Count >= MaxImageCount) break;
-                }
-            }
-
-            // 构建 messages
-            var messages = new List<Dictionary<string, object>>();
-            if (!string.IsNullOrEmpty(finalSystemPrompt))
-            {
-                messages.Add(new Dictionary<string, object>
-                {
-                    ["role"] = "system",
-                    ["content"] = finalSystemPrompt
-                });
-            }
-
-            messages.AddRange(ConcatenateText(text, imageList));
-
-            // 构造请求体
-            var requestBody = new Dictionary<string, object>
-            {
-                ["model"] = ModelName,
-                ["messages"] = messages,
-                ["max_tokens"] = MAX_LENGTH,
-                ["temperature"] = 0.7
-            };
-
-            string json = JsonSerializer.Serialize(requestBody, new JsonSerializerOptions { WriteIndented = false });
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            // 设置 Headers
-            if (!string.IsNullOrEmpty(ApiKey) && !ServerUrl.Contains("localhost") && !ServerUrl.Contains("127.0.0.1"))
-            {
-                _httpClient.DefaultRequestHeaders.Authorization =
-                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", ApiKey);
-            }
-            else
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = null;
-            }
-
-            try
-            {
-                var startTime = DateTime.UtcNow;
-                Log.Print($"Sending request to: {ServerUrl}/chat/completions");
-                Log.Print(json); // 可选：调试输出
-
-                // 同步调用
-                HttpResponseMessage response = _httpClient.PostAsync($"{ServerUrl}/chat/completions", content).GetAwaiter().GetResult();
-                string responseBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    Log.Print($"API Error: {response.StatusCode} - {responseBody}",Log.Stat.ERROR);
-                    return null;
-                }
-
-                using JsonDocument doc = JsonDocument.Parse(responseBody);
-                string? answer = doc.RootElement
-                    .GetProperty("choices")[0]
-                    .GetProperty("message")
-                    .GetProperty("content")
-                    .GetString();
-
-                var elapsed = (DateTime.UtcNow - startTime).TotalSeconds;
-                Log.Print($"用时 {elapsed:F2}s");
-                Log.Print(answer?.Trim()??"");
-
-                return answer?.Trim();
-            }
-            catch (Exception ex)
-            {
-                Log.Print($"HTTP request failed: {ex.Message}", Log.Stat.ERROR  );
-                return null;
-            }
-        }
         public void Test()
         {
             try

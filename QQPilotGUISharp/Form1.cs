@@ -159,5 +159,10 @@ namespace QQPilotGUISharp
             Scroll.Value = Math.Clamp(Scroll.Value, 1, 200);
 
         }
+
+        private void IsVisionModel_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
+        {
+
+        }
     }
 }

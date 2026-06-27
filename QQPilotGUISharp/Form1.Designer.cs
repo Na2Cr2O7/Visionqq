@@ -176,6 +176,7 @@
             IsVisionModel.Name = "IsVisionModel";
             IsVisionModel.Size = new Size(112, 55);
             IsVisionModel.TabIndex = 19;
+            IsVisionModel.CheckedChanged += IsVisionModel_CheckedChanged;
             // 
             // label7
             // 
