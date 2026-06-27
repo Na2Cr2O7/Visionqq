@@ -12,7 +12,7 @@ namespace QQPilot4
     public static class ConversationStyleExtract
     {
         // 全局标识符，用于判断消息是否由“自己”发送
-        public static readonly string IdentificationString = "⨋";
+        public const string IdentificationString = "⨋";
 
         /// <summary>
         /// 从文本中提取所有 &lt;img src="..."&gt; 的本地路径，并返回：

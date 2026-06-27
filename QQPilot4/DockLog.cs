@@ -9,7 +9,16 @@ namespace QQPilot4
     {
         public static void Log2(string s)
         {
-            File.WriteAllText("dockLog.txt", s);
+            try
+            {
+                File.WriteAllText("dockLog.txt", s);
+
+            }
+            catch (Exception e)
+            {
+                Log.Print(e.ToString());
+            }
+
         }
         public static void Init()
         {
