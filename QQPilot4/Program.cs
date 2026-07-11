@@ -15,6 +15,10 @@ namespace QQPilot4
         static readonly bool debug =false;
         static void Main(string[] args)
         {
+            Console.OutputEncoding= Encoding.UTF8;
+            //Answer a = new();
+            //a.Test();
+            //return;
             DockLog.Init();
             Process? p=null;
             try
@@ -232,7 +236,6 @@ namespace QQPilot4
                     string result = answer.GetAnswer(ChatContents)??"";
                     SpinnerLoad.Stop();
                     Thread.Sleep(100);
-                    result += ConversationStyleExtract.IdentificationString;
                     GUIOperation.SendTextWithoutClick(result);
                     Random r = new();
 

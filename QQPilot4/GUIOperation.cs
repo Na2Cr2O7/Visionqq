@@ -275,23 +275,32 @@ namespace QQPilot4
         }
         public static void SendTextWithoutClick(string text)
         {
+            Log.Print("发消息.." + text, Log.Stat.ERROR);
+            string[] result=text.Split("[[NEXT]]");
+            //Log.Print($"{result}");
             string temp = "";
-            foreach (char c in text)
-            {
-                if (c == '\n')
-                {
-                    //Clipboard.SetTextAsync(temp);
-                    //Clipboard.SetData(DataFormats.Text, (Object)temp);
-                    ClipboardService.SetText(temp);
 
+            foreach (var item in result)
+            {
+                Log.Print(item + ";");
+
+                string[] inputs = item.Split('\n');
+                foreach (var item1 in inputs)
+                {
+                    ClipboardService.SetText(item1+ ConversationStyleExtract.IdentificationString);
                     Thread.Sleep(200);
-                    temp = "";
                     HotKey("ctrl", "v");
+                    Thread.Sleep(800);
+
+                    ;
                     PressKey("ENTER");
-                    continue;
                 }
-                temp += c;
+                Thread.Sleep(1000);
+                HotKey("ctrl", "enter");
+
+
             }
+
             if (!string.IsNullOrEmpty(temp))
             {
                 //Clipboard.SetTextAsync(temp);

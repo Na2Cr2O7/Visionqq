@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 
 namespace QQPilot4
 {
@@ -14,6 +15,8 @@ namespace QQPilot4
         public string Text { get; set; } = text;
         public string Time { get; set; } = time;
         public bool OwnByMyself { get; set; } = ownByMyself;
+        public bool Empty { get => string.IsNullOrEmpty(Text);
+             private set; } = false;
 
         // 生成报告的方法
         // 逻辑：检查文件是否存在，格式化输出
@@ -24,7 +27,8 @@ namespace QQPilot4
 
             // 2. 文本处理 (空内容显示为【空】)
             string content = string.IsNullOrEmpty(Text) ? "【空】" : Text;
-
+            Empty = string.IsNullOrEmpty(Text);
+            
             // 3. 图片有效性检查 (核心逻辑移植)
             // 筛选出真实存在于硬盘上的图片路径
             var validImages = ImagePaths.Where(path => File.Exists(path)).ToList();
@@ -55,8 +59,20 @@ namespace QQPilot4
             }
             else
             {
-                return $"{Username}:{content}";
+                //Unc unc=new();
+                //unc.Username = Username;
+                //unc.Content=content;
+                //string serialized=JsonSerializer.Serialize(unc);
+                //Console.WriteLine(serialized);
+                ;
+                return $"{{ [username] \n {Username} \n\n [content] \n {content}\n}}";
+                
             }
         }
     }
+    //public class Unc()
+    //{
+    //    public string Username{ get; set; }
+    //    public string Content { get; set; }
+    //}
 }

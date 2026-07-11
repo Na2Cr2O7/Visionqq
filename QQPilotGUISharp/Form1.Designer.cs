@@ -70,65 +70,73 @@
             // 
             // winHeight
             // 
-            winHeight.Location = new Point(350, 54);
+            winHeight.Location = new Point(245, 32);
+            winHeight.Margin = new Padding(2, 2, 2, 2);
             winHeight.Name = "winHeight";
-            winHeight.Size = new Size(120, 56);
+            winHeight.Size = new Size(84, 34);
             winHeight.TabIndex = 11;
             winHeight.Text = "0";
             // 
             // label3
             // 
-            label3.Location = new Point(244, 65);
+            label3.Location = new Point(171, 39);
+            label3.Margin = new Padding(2, 2, 2, 2);
             label3.Name = "label3";
-            label3.Size = new Size(100, 36);
+            label3.Size = new Size(70, 22);
             label3.TabIndex = 10;
             label3.Text = "窗口高度";
             // 
             // winWidth
             // 
-            winWidth.Location = new Point(118, 54);
+            winWidth.Location = new Point(83, 32);
+            winWidth.Margin = new Padding(2, 2, 2, 2);
             winWidth.Name = "winWidth";
-            winWidth.Size = new Size(120, 56);
+            winWidth.Size = new Size(84, 34);
             winWidth.TabIndex = 9;
             winWidth.Text = "0";
             // 
             // label2
             // 
-            label2.Location = new Point(12, 65);
+            label2.Location = new Point(8, 39);
+            label2.Margin = new Padding(2, 2, 2, 2);
             label2.Name = "label2";
-            label2.Size = new Size(100, 36);
+            label2.Size = new Size(70, 22);
             label2.TabIndex = 8;
             label2.Text = "窗口宽度";
             // 
             // vname
             // 
-            vname.Location = new Point(84, 12);
+            vname.Location = new Point(59, 7);
+            vname.Margin = new Padding(2, 2, 2, 2);
             vname.Name = "vname";
-            vname.Size = new Size(642, 36);
+            vname.Size = new Size(449, 22);
             vname.TabIndex = 7;
             vname.Text = "版本";
             // 
             // label1
             // 
-            label1.Location = new Point(12, 12);
+            label1.Location = new Point(8, 7);
+            label1.Margin = new Padding(2, 2, 2, 2);
             label1.Name = "label1";
-            label1.Size = new Size(66, 36);
+            label1.Size = new Size(46, 22);
             label1.TabIndex = 6;
             label1.Text = "版本";
             // 
             // label4
             // 
-            label4.Location = new Point(12, 126);
+            label4.Location = new Point(8, 76);
+            label4.Margin = new Padding(2, 2, 2, 2);
             label4.Name = "label4";
-            label4.Size = new Size(100, 36);
+            label4.Size = new Size(70, 22);
             label4.TabIndex = 12;
             label4.Text = "解析图片数";
             // 
             // MaxImageCount
             // 
-            MaxImageCount.Location = new Point(118, 116);
+            MaxImageCount.Location = new Point(83, 70);
+            MaxImageCount.Margin = new Padding(2, 2, 2, 2);
             MaxImageCount.Name = "MaxImageCount";
-            MaxImageCount.Size = new Size(120, 56);
+            MaxImageCount.Size = new Size(84, 34);
             MaxImageCount.TabIndex = 13;
             MaxImageCount.Text = "0";
             MaxImageCount.ValueChanged += MaxImageCount_ValueChanged;
@@ -138,245 +146,274 @@
             tooltip1.Back = SystemColors.ActiveCaptionText;
             tooltip1.BackColor = SystemColors.ButtonFace;
             tooltip1.ForeColor = SystemColors.AppWorkspace;
-            tooltip1.Location = new Point(244, 116);
-            tooltip1.MaximumSize = new Size(340, 57);
-            tooltip1.MinimumSize = new Size(340, 57);
+            tooltip1.Location = new Point(171, 70);
+            tooltip1.Margin = new Padding(2, 2, 2, 2);
+            tooltip1.MaximumSize = new Size(227, 38);
+            tooltip1.MinimumSize = new Size(227, 38);
             tooltip1.Name = "tooltip1";
-            tooltip1.Size = new Size(340, 57);
+            tooltip1.Size = new Size(227, 38);
             tooltip1.TabIndex = 15;
             tooltip1.Text = "(本地模型解析>1张图片时速度极慢)";
             tooltip1.Click += tooltip1_Click;
             // 
             // label5
             // 
-            label5.Location = new Point(12, 187);
+            label5.Location = new Point(8, 112);
+            label5.Margin = new Padding(2, 2, 2, 2);
             label5.Name = "label5";
-            label5.Size = new Size(100, 36);
+            label5.Size = new Size(70, 22);
             label5.TabIndex = 16;
             label5.Text = "模型名称";
             // 
             // ModelName
             // 
-            ModelName.Location = new Point(118, 173);
+            ModelName.Location = new Point(83, 104);
+            ModelName.Margin = new Padding(2, 2, 2, 2);
             ModelName.Name = "ModelName";
-            ModelName.Size = new Size(654, 60);
+            ModelName.Size = new Size(458, 36);
             ModelName.TabIndex = 17;
             // 
             // label6
             // 
-            label6.Location = new Point(12, 249);
+            label6.Location = new Point(8, 149);
+            label6.Margin = new Padding(2, 2, 2, 2);
             label6.Name = "label6";
-            label6.Size = new Size(100, 36);
+            label6.Size = new Size(70, 22);
             label6.TabIndex = 18;
             label6.Text = "视觉模型";
             // 
             // IsVisionModel
             // 
-            IsVisionModel.Location = new Point(118, 239);
+            IsVisionModel.Location = new Point(83, 143);
+            IsVisionModel.Margin = new Padding(2, 2, 2, 2);
             IsVisionModel.Name = "IsVisionModel";
-            IsVisionModel.Size = new Size(112, 55);
+            IsVisionModel.Size = new Size(78, 33);
             IsVisionModel.TabIndex = 19;
             IsVisionModel.CheckedChanged += IsVisionModel_CheckedChanged;
             // 
             // label7
             // 
-            label7.Location = new Point(12, 314);
+            label7.Location = new Point(8, 188);
+            label7.Margin = new Padding(2, 2, 2, 2);
             label7.Name = "label7";
-            label7.Size = new Size(100, 36);
+            label7.Size = new Size(70, 22);
             label7.TabIndex = 20;
             label7.Text = "API Key";
             // 
             // APIKey
             // 
-            APIKey.Location = new Point(116, 300);
+            APIKey.Location = new Point(81, 180);
+            APIKey.Margin = new Padding(2, 2, 2, 2);
             APIKey.Name = "APIKey";
             APIKey.PasswordChar = '·';
-            APIKey.Size = new Size(656, 60);
+            APIKey.Size = new Size(459, 36);
             APIKey.TabIndex = 21;
             // 
             // label8
             // 
-            label8.Location = new Point(12, 392);
+            label8.Location = new Point(8, 235);
+            label8.Margin = new Padding(2, 2, 2, 2);
             label8.Name = "label8";
-            label8.Size = new Size(100, 36);
+            label8.Size = new Size(70, 22);
             label8.TabIndex = 22;
             label8.Text = "服务器";
             // 
             // ServerName
             // 
-            ServerName.Location = new Point(118, 379);
+            ServerName.Location = new Point(83, 227);
+            ServerName.Margin = new Padding(2, 2, 2, 2);
             ServerName.Name = "ServerName";
-            ServerName.Size = new Size(158, 60);
+            ServerName.Size = new Size(111, 36);
             ServerName.TabIndex = 23;
             ServerName.Text = "select1";
             ServerName.SelectedIndexChanged += ServerName_SelectedIndexChanged;
             // 
             // ServerUrl
             // 
-            ServerUrl.Location = new Point(282, 379);
+            ServerUrl.Location = new Point(197, 227);
+            ServerUrl.Margin = new Padding(2, 2, 2, 2);
             ServerUrl.Name = "ServerUrl";
-            ServerUrl.Size = new Size(490, 60);
+            ServerUrl.Size = new Size(343, 36);
             ServerUrl.TabIndex = 24;
             // 
             // Scroll
             // 
-            Scroll.Location = new Point(146, 445);
+            Scroll.Location = new Point(102, 267);
+            Scroll.Margin = new Padding(2, 2, 2, 2);
             Scroll.Name = "Scroll";
-            Scroll.Size = new Size(120, 56);
+            Scroll.Size = new Size(84, 34);
             Scroll.TabIndex = 26;
             Scroll.Text = "0";
             Scroll.ValueChanged += Scroll_ValueChanged;
             // 
             // label9
             // 
-            label9.Location = new Point(12, 458);
+            label9.Location = new Point(8, 275);
+            label9.Margin = new Padding(2, 2, 2, 2);
             label9.Name = "label9";
-            label9.Size = new Size(128, 36);
+            label9.Size = new Size(90, 22);
             label9.TabIndex = 25;
             label9.Text = "框选消息时长";
             // 
             // label10
             // 
-            label10.Location = new Point(12, 524);
+            label10.Location = new Point(8, 314);
+            label10.Margin = new Padding(2, 2, 2, 2);
             label10.Name = "label10";
-            label10.Size = new Size(100, 36);
+            label10.Size = new Size(70, 22);
             label10.TabIndex = 27;
             label10.Text = "包含图片";
             // 
             // WithImage
             // 
-            WithImage.Location = new Point(118, 515);
+            WithImage.Location = new Point(83, 309);
+            WithImage.Margin = new Padding(2, 2, 2, 2);
             WithImage.Name = "WithImage";
-            WithImage.Size = new Size(112, 55);
+            WithImage.Size = new Size(78, 33);
             WithImage.TabIndex = 28;
             // 
             // label11
             // 
-            label11.Location = new Point(244, 524);
+            label11.Location = new Point(171, 314);
+            label11.Margin = new Padding(2, 2, 2, 2);
             label11.Name = "label11";
-            label11.Size = new Size(128, 36);
+            label11.Size = new Size(90, 22);
             label11.TabIndex = 29;
             label11.Text = "自动点击登录";
             // 
             // label12
             // 
-            label12.Location = new Point(476, 524);
+            label12.Location = new Point(333, 314);
+            label12.Margin = new Padding(2, 2, 2, 2);
             label12.Name = "label12";
-            label12.Size = new Size(194, 36);
+            label12.Size = new Size(136, 22);
             label12.TabIndex = 29;
             label12.Text = "持续将窗口置于最前";
             // 
             // AutoLogin
             // 
-            AutoLogin.Location = new Point(358, 515);
+            AutoLogin.Location = new Point(251, 309);
+            AutoLogin.Margin = new Padding(2, 2, 2, 2);
             AutoLogin.Name = "AutoLogin";
-            AutoLogin.Size = new Size(112, 55);
+            AutoLogin.Size = new Size(78, 33);
             AutoLogin.TabIndex = 30;
             // 
             // AutoFocusing
             // 
-            AutoFocusing.Location = new Point(660, 515);
+            AutoFocusing.Location = new Point(462, 309);
+            AutoFocusing.Margin = new Padding(2, 2, 2, 2);
             AutoFocusing.Name = "AutoFocusing";
-            AutoFocusing.Size = new Size(112, 55);
+            AutoFocusing.Size = new Size(78, 33);
             AutoFocusing.TabIndex = 31;
             // 
             // label13
             // 
-            label13.Location = new Point(9, 585);
+            label13.Location = new Point(6, 351);
+            label13.Margin = new Padding(2, 2, 2, 2);
             label13.Name = "label13";
-            label13.Size = new Size(168, 36);
+            label13.Size = new Size(118, 22);
             label13.TabIndex = 32;
             label13.Text = "发送图片概率 (%)";
             // 
             // SendImagePossibility
             // 
-            SendImagePossibility.Location = new Point(167, 576);
+            SendImagePossibility.Location = new Point(117, 346);
+            SendImagePossibility.Margin = new Padding(2, 2, 2, 2);
             SendImagePossibility.Name = "SendImagePossibility";
-            SendImagePossibility.Size = new Size(605, 55);
+            SendImagePossibility.Size = new Size(424, 33);
             SendImagePossibility.TabIndex = 34;
             SendImagePossibility.Text = "slider1";
             // 
             // ATDetect
             // 
-            ATDetect.Location = new Point(118, 635);
+            ATDetect.Location = new Point(83, 381);
+            ATDetect.Margin = new Padding(2, 2, 2, 2);
             ATDetect.Name = "ATDetect";
-            ATDetect.Size = new Size(112, 55);
+            ATDetect.Size = new Size(78, 33);
             ATDetect.TabIndex = 36;
             ATDetect.CheckedChanged += ATDetect_CheckedChanged;
             // 
             // label14
             // 
-            label14.Location = new Point(12, 644);
+            label14.Location = new Point(8, 386);
+            label14.Margin = new Padding(2, 2, 2, 2);
             label14.Name = "label14";
-            label14.Size = new Size(100, 36);
+            label14.Size = new Size(70, 22);
             label14.TabIndex = 35;
             label14.Text = "只检查 @";
             // 
             // label15
             // 
-            label15.Location = new Point(12, 698);
+            label15.Location = new Point(8, 419);
+            label15.Margin = new Padding(2, 2, 2, 2);
             label15.Name = "label15";
-            label15.Size = new Size(192, 36);
+            label15.Size = new Size(134, 22);
             label15.TabIndex = 35;
             label15.Text = "远程服务器超时 (秒):";
             // 
             // RemoteServerTimeout
             // 
-            RemoteServerTimeout.Location = new Point(244, 687);
+            RemoteServerTimeout.Location = new Point(171, 412);
+            RemoteServerTimeout.Margin = new Padding(2, 2, 2, 2);
             RemoteServerTimeout.Name = "RemoteServerTimeout";
-            RemoteServerTimeout.Size = new Size(120, 56);
+            RemoteServerTimeout.Size = new Size(84, 34);
             RemoteServerTimeout.TabIndex = 37;
             RemoteServerTimeout.Text = "0";
             RemoteServerTimeout.ValueChanged += RemoteServerTimeout_ValueChanged;
             // 
             // label16
             // 
-            label16.Location = new Point(411, 698);
+            label16.Location = new Point(288, 419);
+            label16.Margin = new Padding(2, 2, 2, 2);
             label16.Name = "label16";
-            label16.Size = new Size(192, 36);
+            label16.Size = new Size(134, 22);
             label16.TabIndex = 38;
             label16.Text = "tab按下次数";
             // 
             // TabTimes
             // 
-            TabTimes.Location = new Point(614, 683);
+            TabTimes.Location = new Point(430, 410);
+            TabTimes.Margin = new Padding(2, 2, 2, 2);
             TabTimes.Name = "TabTimes";
-            TabTimes.Size = new Size(158, 60);
+            TabTimes.Size = new Size(111, 36);
             TabTimes.TabIndex = 39;
             TabTimes.Text = "select1";
             // 
             // SystemText
             // 
-            SystemText.Location = new Point(789, 65);
+            SystemText.Location = new Point(552, 39);
+            SystemText.Margin = new Padding(2, 2, 2, 2);
             SystemText.Multiline = true;
             SystemText.Name = "SystemText";
-            SystemText.Size = new Size(735, 678);
+            SystemText.Size = new Size(514, 407);
             SystemText.TabIndex = 40;
             SystemText.Text = "input1";
             // 
             // label17
             // 
-            label17.Location = new Point(789, 12);
+            label17.Location = new Point(552, 7);
+            label17.Margin = new Padding(2, 2, 2, 2);
             label17.Name = "label17";
-            label17.Size = new Size(117, 36);
+            label17.Size = new Size(82, 22);
             label17.TabIndex = 41;
             label17.Text = "提示文本";
             // 
             // buttonShadow1
             // 
-            buttonShadow1.Location = new Point(1308, 12);
+            buttonShadow1.Location = new Point(916, 7);
+            buttonShadow1.Margin = new Padding(2, 2, 2, 2);
             buttonShadow1.Name = "buttonShadow1";
-            buttonShadow1.Size = new Size(207, 56);
+            buttonShadow1.Size = new Size(145, 34);
             buttonShadow1.TabIndex = 42;
             buttonShadow1.Text = "保存设置";
             buttonShadow1.Click += buttonShadow1_Click;
             // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ButtonFace;
-            ClientSize = new Size(1536, 773);
+            ClientSize = new Size(1075, 464);
             Controls.Add(buttonShadow1);
             Controls.Add(label17);
             Controls.Add(SystemText);
@@ -416,6 +453,7 @@
             Controls.Add(label1);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             Icon = (Icon)resources.GetObject("$this.Icon");
+            Margin = new Padding(2, 2, 2, 2);
             MaximizeBox = false;
             Name = "Form1";
             Text = "设置";

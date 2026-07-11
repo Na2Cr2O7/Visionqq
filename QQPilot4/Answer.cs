@@ -96,7 +96,7 @@ namespace QQPilot4
             // 处理历史消息（除最后一条）
             foreach (var t in textList.Take(textList.Count - 1))
             {
-                if (string.IsNullOrEmpty(t.Text)) continue;
+                if (string.IsNullOrEmpty(t.Text) || t.Empty || t.Text=="【空】") continue;
                 messages.Add(new Dictionary<string, object>
                 {
                     ["role"] = t.OwnByMyself ? "assistant" : "user",
@@ -105,10 +105,10 @@ namespace QQPilot4
             }
 
             // 最后一条消息
-            string lastText = textList.Any() ? textList.Last().ToString() : "_";
-            if (string.IsNullOrEmpty(lastText)) lastText = "_";
+            string lastText = textList.Count != 0 ? textList.Last().ToString() : " ";
+            if (string.IsNullOrEmpty(lastText)) lastText = " ";
 
-            if (IsVisionModel && images.Any())
+            if (IsVisionModel && images.Count != 0)
             {
                 var contentList = new List<object>
                 {
@@ -272,14 +272,21 @@ namespace QQPilot4
                     .GetProperty("message")
                     .GetProperty("content")
                     .GetString();
-                if (doc.RootElement.TryGetProperty("usage", out JsonElement usage))
+                try
                 {
-                    int promptTokens = usage.TryGetProperty("prompt_tokens", out var pt) ? pt.GetInt32() : 0;
-                    int completionTokens = usage.TryGetProperty("completion_tokens", out var ct) ? ct.GetInt32() : 0;
-                    int totalTokens = usage.TryGetProperty("total_tokens", out var tt) ? tt.GetInt32() : 0;
+                    if (doc.RootElement.TryGetProperty("usage", out JsonElement usage))
+                    {
+                        int promptTokens = usage.TryGetProperty("prompt_tokens", out var pt) ? pt.GetInt32() : 0;
+                        int completionTokens = usage.TryGetProperty("completion_tokens", out var ct) ? ct.GetInt32() : 0;
+                        int totalTokens = usage.TryGetProperty("total_tokens", out var tt) ? tt.GetInt32() : 0;
 
-                    Log.Print($"Token 用量: 输入 {promptTokens} | 输出 {completionTokens} | 总计 {totalTokens}");
+                        Log.Print($"Token 用量: 输入 {promptTokens} | 输出 {completionTokens} | 总计 {totalTokens}");
+                    }
+                } catch (Exception ex)
+                {
+
                 }
+
                 var elapsed = (DateTime.UtcNow - startTime).TotalSeconds;
                 Log.Print($"用时 {elapsed:F2}s");
                 Log.Print(answer?.Trim()??"");
@@ -303,8 +310,14 @@ namespace QQPilot4
         {
             try
             {
-                ChatContent c = new("", [], "你好", "", false);
-                Log.Print($"[ASSISTANT]: {GetAnswer([c])}");
+                //ChatContent c = ;
+                Log.Print($"[ASSISTANT]: {GetAnswer([
+                    new("Username1", [], "@neko 我在测试适配器是否可用，请你必须回复，正在修复问题：[解析所有消息] → [清空回复列表] → [批量发送所有消息到Host] → [等待回复收集] → [返回所有回复用[[NEXT]]连接]", "", false),
+                    new("Username3", [], "@neko 我在测试适配器是否可用，请你必须回复，，正在修复问题：[解析所有消息] → [清空回复列表] → [批量发送所有消息到Host] → [等待回复收集] → [返回所有回复用[[NEXT]]连接] 连接。", "", false),
+                    new("Username2", [], "@neko 我在测试适配器是否可用，请你必须回复，，正在修复问题：[解析所有消息] → [清空回复列表] → [批量发送所有消息到Host] → [等待回复收集] → [返回所有回复用[[NEXT]]连接]", "", false),
+                    new("Username4", [], "@neko 我在测试适配器是否可用，请你必须回复，，正在修复问题：正在修复问题：[解析所有消息] → [清空回复列表] → [批量发送所有消息到Host] → [等待回复收集] → [返回所有回复用[[NEXT]]连接]。", "", false),
+                    new("Username5", [], "@neko 我在测试适配器是否可用，请你必须回复，，正在修复问题：正在修复问题：[解析所有消息] → [清空回复列表] → [批量发送所有消息到Host] → [等待回复收集] → [返回所有回复用[[NEXT]]连接]", "", false),
+                    ])}");
             }
             catch (Exception ex)
             {

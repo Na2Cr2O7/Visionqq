@@ -8,6 +8,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Platforms>AnyCPU;x64;ARM64</Platforms>
     <ApplicationIcon>qqpilot.ICO</ApplicationIcon>
+    <PublishAot>False</PublishAot>
   </PropertyGroup>
 
   <ItemGroup>
