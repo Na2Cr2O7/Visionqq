@@ -16,7 +16,11 @@ namespace QQPilot4
         static readonly bool debug =false;
         static void Main(string[] args)
         {
-            Console.OutputEncoding= Encoding.UTF8;
+            if (Environment.OSVersion.Version.Major >= 10)
+            {
+                Console.OutputEncoding = Encoding.UTF8;
+            }
+            //Console.OutputEncoding= Encoding.UTF8;
             //Answer a = new();
             //a.Test();
             //return;
