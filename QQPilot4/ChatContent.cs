@@ -69,8 +69,7 @@ namespace QQPilot4
                 //string serialized=JsonSerializer.Serialize(unc);
                 //Console.WriteLine(serialized);
                 ;
-                return $"{{ [time]\n{Time} \n\n [username] \n {Username} \n\n [content] \n {content}\n";
-                
+                return $"[time]\n{Time} \n\n [username] \n {Username} \n\n [content] \n {content}\n";                
             }
         }
     }

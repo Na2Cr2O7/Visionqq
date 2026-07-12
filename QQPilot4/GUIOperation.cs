@@ -279,7 +279,6 @@ namespace QQPilot4
             Log.Print("发消息->" + text);
             string[] result=text.Split("[[NEXT]]");
             //Log.Print($"{result}");
-            string temp = "";
 
             foreach (var item in result)
             {
@@ -308,17 +307,9 @@ namespace QQPilot4
                 ClickCenter(commentSectionActualSize);
                 Thread.Sleep(200);
                 HotKey("ctrl", "enter");
-            }
+            }   
 
-            if (!string.IsNullOrEmpty(temp))
-            {
-                //Clipboard.SetTextAsync(temp);
-                //Clipboard.SetData(DataFormats.Text, (Object)temp);
-                ClipboardService.SetText(temp);
 
-                Thread.Sleep(200);
-                HotKey("ctrl", "v");
-            }
         }
 
         private static void PasteTextToSection(string text, (int, int, int, int) section)
