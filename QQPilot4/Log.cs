@@ -10,6 +10,10 @@ namespace QQPilot4
         {
             NORMAL,WARN,ERROR
         }
+        public static void SetColor(ConsoleColor color)
+        {
+            Console.ForegroundColor = color;
+        }
         public static void Print(string target,Stat stat=Stat.NORMAL)
         {
             DateTime dt = DateTime.Now;

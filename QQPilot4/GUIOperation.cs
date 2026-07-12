@@ -273,9 +273,10 @@ namespace QQPilot4
             var (pos1, pos2) = getAreaCenter(area);
             Goto(pos1, pos2);
         }
-        public static void SendTextWithoutClick(string text)
+        public static void SendTextAndInsertIdentificationString(string text, (int, int, int, int) commentSectionActualSize)
         {
-            Log.Print("发消息.." + text, Log.Stat.ERROR);
+            Log.SetColor(ConsoleColor.Green);
+            Log.Print("发消息->" + text);
             string[] result=text.Split("[[NEXT]]");
             //Log.Print($"{result}");
             string temp = "";
@@ -285,20 +286,28 @@ namespace QQPilot4
                 Log.Print(item + ";");
 
                 string[] inputs = item.Split('\n');
-                foreach (var item1 in inputs)
+                foreach (var item1 in inputs.Take(inputs.Length - 1))
                 {
-                    ClipboardService.SetText(item1+ ConversationStyleExtract.IdentificationString);
-                    Thread.Sleep(200);
-                    HotKey("ctrl", "v");
-                    Thread.Sleep(800);
+
+                    PasteTextToSection(item1, commentSectionActualSize);
+
 
                     ;
                     PressKey("ENTER");
+                    Thread.Sleep(200);
+
+
                 }
+
+                PasteTextToSection(inputs.Last()+ ConversationStyleExtract.IdentificationString, commentSectionActualSize);
+
+
+                Thread.Sleep(200);
+                HotKey("ctrl", "v");
                 Thread.Sleep(1000);
+                ClickCenter(commentSectionActualSize);
+                Thread.Sleep(200);
                 HotKey("ctrl", "enter");
-
-
             }
 
             if (!string.IsNullOrEmpty(temp))
@@ -310,6 +319,15 @@ namespace QQPilot4
                 Thread.Sleep(200);
                 HotKey("ctrl", "v");
             }
+        }
+
+        private static void PasteTextToSection(string text, (int, int, int, int) section)
+        {
+            ClipboardService.SetText(text);
+            Thread.Sleep(200);
+            ClickCenter(section);
+            HotKey("ctrl", "v");
+            Thread.Sleep(800);
         }
 
         public static void DragFromToSimple(int x1, int y1, int x2, int y2)

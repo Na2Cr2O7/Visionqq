@@ -15,7 +15,7 @@ namespace QQPilot4
         public string Text { get; set; } = text;
         public string Time { get; set; } = time;
         public bool OwnByMyself { get; set; } = ownByMyself;
-        public bool Empty { get => string.IsNullOrEmpty(Text);
+        public bool Empty { get;
              private set; } = false;
 
         // 生成报告的方法
@@ -27,7 +27,7 @@ namespace QQPilot4
 
             // 2. 文本处理 (空内容显示为【空】)
             string content = string.IsNullOrEmpty(Text) ? "【空】" : Text;
-            Empty = string.IsNullOrEmpty(Text);
+            Empty =content== "【空】";
             
             // 3. 图片有效性检查 (核心逻辑移植)
             // 筛选出真实存在于硬盘上的图片路径
@@ -50,9 +50,13 @@ namespace QQPilot4
         // 重写 ToString 方法
         public override string ToString()
         {
+
+            Empty = string.IsNullOrEmpty(Text);
             string content = string.IsNullOrEmpty(Text) ? "【空】" : Text;
-
-
+            if(string.IsNullOrEmpty(Time))
+            {
+                Time =DateTime.Now.ToString("MM-dd HH:mm:ss");
+            }
             if (OwnByMyself)
             {
                 return content[..(content.ToString().Length-1)];
@@ -65,7 +69,7 @@ namespace QQPilot4
                 //string serialized=JsonSerializer.Serialize(unc);
                 //Console.WriteLine(serialized);
                 ;
-                return $"{{ [username] \n {Username} \n\n [content] \n {content}\n}}";
+                return $"{{ [time]\n{Time} \n\n [username] \n {Username} \n\n [content] \n {content}\n";
                 
             }
         }

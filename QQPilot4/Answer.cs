@@ -100,12 +100,14 @@ namespace QQPilot4
                 messages.Add(new Dictionary<string, object>
                 {
                     ["role"] = t.OwnByMyself ? "assistant" : "user",
-                    ["content"] = t.ToString()
+                    ["content"] = $"{t}",
+    
                 });
             }
 
             // 最后一条消息
             string lastText = textList.Count != 0 ? textList.Last().ToString() : " ";
+            //string lastTime=textList.Count!=0 ? textList.Last().Time : string.Empty;
             if (string.IsNullOrEmpty(lastText)) lastText = " ";
 
             if (IsVisionModel && images.Count != 0)
@@ -142,7 +144,8 @@ namespace QQPilot4
                 messages.Add(new Dictionary<string, object>
                 {
                     ["role"] = "user",
-                    ["content"] = lastText
+                    ["content"] = $"{lastText}",
+
                 });
             }
 
@@ -151,7 +154,7 @@ namespace QQPilot4
                 messages.Add(new Dictionary<string, object>
                 {
                     ["role"] = "user",
-                    ["content"] = "_"
+                    ["content"] = "_",
                 });
             }
 
@@ -254,7 +257,7 @@ namespace QQPilot4
                     Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
                     WriteIndented = true // 可选：美化输出
                 };
-                 Log.Print(JsonSerializer.Serialize(requestBody, jsonSerializerOptionsForPrinting!)); 
+                 //Log.Print(JsonSerializer.Serialize(requestBody, jsonSerializerOptionsForPrinting!));
 
                 HttpResponseMessage response = await _httpClient.PostAsync($"{ServerUrl}/chat/completions", content);
                 string responseBody = await response.Content.ReadAsStringAsync();
@@ -264,7 +267,10 @@ namespace QQPilot4
                     Log.Print($"API Error: {response.StatusCode} - {responseBody}",Log.Stat.ERROR);
                     return null;
                 }
-                Log.Print($"\n\nResponse:\n{responseBody}");
+                
+
+                Log.Print($"\n\nResponse:\n");
+                Log.Print(responseBody.ToString());
 
                 using JsonDocument doc = JsonDocument.Parse(responseBody);
                 string? answer = doc.RootElement
@@ -282,9 +288,26 @@ namespace QQPilot4
 
                         Log.Print($"Token 用量: 输入 {promptTokens} | 输出 {completionTokens} | 总计 {totalTokens}");
                     }
+                    string? reason = doc.RootElement //Deepseek
+                        .GetProperty("choices")[0]
+                        .GetProperty("message")
+                        .GetProperty("reasoning_content")
+                        .GetString();  
+                    reason ??= doc.RootElement  //Ollama
+                        .GetProperty("choices")[0]
+                        .GetProperty("message")
+                        .GetProperty("reasoning")
+                        .GetString();
+
+                    if (reason is not null)
+                    {
+                        Log.SetColor(ConsoleColor.Gray);
+                        Log.Print($"<think>\n{reason}\n</think>");
+                        
+                    }
                 } catch (Exception ex)
                 {
-
+                    //Log.Print(ex.ToString(),Log.Stat.ERROR);
                 }
 
                 var elapsed = (DateTime.UtcNow - startTime).TotalSeconds;
@@ -312,11 +335,13 @@ namespace QQPilot4
             {
                 //ChatContent c = ;
                 Log.Print($"[ASSISTANT]: {GetAnswer([
-                    new("Username1", [], "@neko 我在测试适配器是否可用，请你必须回复，正在修复问题：[解析所有消息] → [清空回复列表] → [批量发送所有消息到Host] → [等待回复收集] → [返回所有回复用[[NEXT]]连接]", "", false),
-                    new("Username3", [], "@neko 我在测试适配器是否可用，请你必须回复，，正在修复问题：[解析所有消息] → [清空回复列表] → [批量发送所有消息到Host] → [等待回复收集] → [返回所有回复用[[NEXT]]连接] 连接。", "", false),
-                    new("Username2", [], "@neko 我在测试适配器是否可用，请你必须回复，，正在修复问题：[解析所有消息] → [清空回复列表] → [批量发送所有消息到Host] → [等待回复收集] → [返回所有回复用[[NEXT]]连接]", "", false),
-                    new("Username4", [], "@neko 我在测试适配器是否可用，请你必须回复，，正在修复问题：正在修复问题：[解析所有消息] → [清空回复列表] → [批量发送所有消息到Host] → [等待回复收集] → [返回所有回复用[[NEXT]]连接]。", "", false),
-                    new("Username5", [], "@neko 我在测试适配器是否可用，请你必须回复，，正在修复问题：正在修复问题：[解析所有消息] → [清空回复列表] → [批量发送所有消息到Host] → [等待回复收集] → [返回所有回复用[[NEXT]]连接]", "", false),
+                    //new("Username1", [], "1", DateTime.Now.ToShortDateString(), false),
+                    //new("Username3", [], "1",DateTime.Now.ToShortDateString(), false),
+                    //new("Username2", [], "1", DateTime.Now.ToShortDateString(), false),
+                    //new("Username4", [], "1", DateTime.Now.ToShortDateString(), false),
+                    new("Username5", ["C:\\Users\\Develop\\Downloads\\juniorcuisine-template-26.2\\src\\main\\resources\\assets\\juniorcuisine\\textures\\item\\slime_podding.png"], "这是什么图片 /no_think", "", false),
+                    //new("Username5", ["C:\\Users\\Develop\\Downloads\\juniorcuisine-template-26.2\\src\\main\\resources\\assets\\juniorcuisine\\textures\\item\\magma_cream_podding.png"], "这是什么图片 /no_think", "", false),
+                    //new("Username5", ["C:\\Users\\Develop\\Downloads\\juniorcuisine-template-26.2\\src\\main\\resources\\assets\\juniorcuisine\\textures\\item\\nether_stew.png"], "这是什么图片 /no_think", "", false),
                     ])}");
             }
             catch (Exception ex)

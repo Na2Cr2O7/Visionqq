@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TextCopy;
 using static System.Net.Mime.MediaTypeNames;
+
 namespace QQPilot4
 {
     internal class Program
@@ -165,7 +166,7 @@ namespace QQPilot4
                 }
                 if(contain!=(0,0))
                 {
-                    Thread.Sleep(500); 
+                    Thread.Sleep(500);
                     if (ATDetect)
                     {
                         contain = Image.ContainsRedDot(Image.Rect(atPlaceActualSize));
@@ -174,23 +175,23 @@ namespace QQPilot4
                     {
                         contain = Image.ContainsRedDot(Image.Rect(chatListActualSize));
                     }
-                    if (contain == (0,0))
+                    if (contain == (0, 0))
                     {
                         continue;
                     }
-                    Console.ForegroundColor= ConsoleColor.Green;
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Log.Print($"发现红点: {contain}");
                     DockLog.Log2($"发现红点: {contain}");
 
                     Console.ResetColor();
-                    GUIOperation.Click((int)contain.Item1,(int)contain.Item2);
+                    GUIOperation.Click((int)contain.Item1, (int)contain.Item2);
                     Thread.Sleep(1000);
                     //Log.Print(startDraggingAbsolutePosition.Item1.ToString(), startDraggingAbsolutePosition.Item2, endDraggingAbsolutePosition.Item1, endDraggingAbsolutePosition.Item2);
-                    GUIOperation.DragFromToSimple(startDraggingAbsolutePosition.Item1,startDraggingAbsolutePosition.Item2,endDraggingAbsolutePosition.Item1,endDraggingAbsolutePosition.Item2);
+                    GUIOperation.DragFromToSimple(startDraggingAbsolutePosition.Item1, startDraggingAbsolutePosition.Item2, endDraggingAbsolutePosition.Item1, endDraggingAbsolutePosition.Item2);
                     Thread.Sleep(500);
                     GUIOperation.GotoCenter(conversationActualSize);
                     Thread.Sleep(500);
-                    for (int i = 0; i < scrollTries*2; i++)
+                    for (int i = 0; i < scrollTries * 2; i++)
                     {
                         Thread.Sleep(400);
                         GUIOperation.ScrollDown(480);
@@ -198,7 +199,7 @@ namespace QQPilot4
                     }
                     Image.Screenshot(copyButtonPossibleActualSize);
                     Thread.Sleep(1000);
-                    List<(uint x, uint y)> points = Image.FindTemplates("screenshot.png", "./copy.png",30,1);
+                    List<(uint x, uint y)> points = Image.FindTemplates("screenshot.png", "./copy.png", 30, 1);
                     if (points.Count == 0)
                     {
                         Log.Print("使用模板匹配查找复制按钮失败");
@@ -206,7 +207,7 @@ namespace QQPilot4
 
                         GUIOperation.ClickCenter(commentSectionActualSize);
 
-                        for (int i = 0; i <tapTimes; i++)
+                        for (int i = 0; i < tapTimes; i++)
                         {
 
                             GUIOperation.Tab();
@@ -220,28 +221,40 @@ namespace QQPilot4
                     else
                     {
                         Thread.Sleep(2000);
-                        GUIOperation.Click((int)(points[0].x + copyButtonPossibleActualSize.Item1),(int)(points[0].y+copyButtonPossibleActualSize.Item2));
+                        GUIOperation.Click((int)(points[0].x + copyButtonPossibleActualSize.Item1), (int)(points[0].y + copyButtonPossibleActualSize.Item2));
                         Thread.Sleep(200);
 
                     }
 
                     Clipboard pyperclip = new();
-                    string chatContentStr=pyperclip.GetText()??"";
+                    string chatContentStr = pyperclip.GetText() ?? "";
                     List<ChatContent> ChatContents = ConversationStyleExtract.ParseChatLog(chatContentStr);
-                    SpinnerLoad.Start(ConsoleColor.Green,"等待语言模型生成答案");
+                    SpinnerLoad.Start(ConsoleColor.Green, "等待语言模型生成答案");
                     DockLog.Log2("等待语言模型生成答案");
 
                     GUIOperation.ClickCenter(commentSectionActualSize);
                     answer ??= new();
-                    string result = answer.GetAnswer(ChatContents)??"";
+                    string result = answer.GetAnswer(ChatContents) ?? "";
+                    result = result.Trim();
+                    if (result.Replace("\n\n", "") == "" || result == "")
+                    {
+                        Log.Print("退出会话");
+                        //DockLog.Log2("发送消息 🎉");
+
+                        GoBack(scale, chatButtonActualPosition, contactButtonActualPosition);
+
+                        continue;
+                    }
                     SpinnerLoad.Stop();
                     Thread.Sleep(100);
-                    GUIOperation.SendTextWithoutClick(result);
+                    GUIOperation.ClickCenter(commentSectionActualSize);
+
+                    GUIOperation.SendTextAndInsertIdentificationString(result, commentSectionActualSize);
                     Random r = new();
 
-                    int poss= ((int)(r.NextInt64() % 100));
+                    int poss = ((int)(r.NextInt64() % 100));
                     Log.Print(poss.ToString());
-                    if (withImage  && poss < sendimagepossibility)
+                    if (withImage && poss < sendimagepossibility)
                     {
 
                         var imageDir = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Images");
@@ -250,8 +263,8 @@ namespace QQPilot4
                         if (!Path.Exists(imageDir))
                         {
                             dirs = [];
-                            Log.Print("没有找到图片目录",Log.Stat.ERROR);
-               
+                            Log.Print("没有找到图片目录", Log.Stat.ERROR);
+
                         }
                         else
                         {
@@ -274,14 +287,14 @@ namespace QQPilot4
                             if (imageExtensions.Contains(Path.GetExtension(dir)))
                             {
                                 containsImage = true;
-                                Log.Print("Image:"+ dir);
+                                Log.Print("Image:" + dir);
                                 break;
                             }
 
                         }
                         if (imageDir is not null && containsImage)
                         {
-                        
+
                             Log.Print("上传图片");
                             DockLog.Log2("上传图片");
 
@@ -294,7 +307,7 @@ namespace QQPilot4
 
                                 Process.Start("uploadImage2.exe").WaitForExit();
                                 Thread.Sleep(200);
-                                GUIOperation.HotKey("ctrl","v");
+                                GUIOperation.HotKey("ctrl", "v");
 
                             }
                             else
@@ -305,7 +318,7 @@ namespace QQPilot4
                                 GUIOperation.Click((int)x, (int)y);
                                 Thread.Sleep(4000);
                                 Upload.upload();
-                             }
+                            }
                             Thread.Sleep(4000);
                         }
                     }
@@ -318,12 +331,7 @@ namespace QQPilot4
                     Log.Print("退出会话");
                     //DockLog.Log2("发送消息 🎉");
 
-                    GUIOperation.Click(chatButtonActualPosition.Item1 + (int)(100 * scale), chatButtonActualPosition.Item2 + (int)(80 * scale));
-                    Thread.Sleep(3000);
-                    GUIOperation.Click(contactButtonActualPosition.Item1, contactButtonActualPosition.Item2);
-                    Thread.Sleep(100);
-                    GUIOperation.Click(chatButtonActualPosition.Item1, chatButtonActualPosition.Item2);
-                    Thread.Sleep(1000);
+                    GoBack(scale, chatButtonActualPosition, contactButtonActualPosition);
                 }
                 else
                 {
@@ -332,6 +340,16 @@ namespace QQPilot4
             }
             autoFocusShouldRun = false;
             autoFocusThread.Join();
+
+            static void GoBack(float scale, (int, int) chatButtonActualPosition, (int, int) contactButtonActualPosition)
+            {
+                GUIOperation.Click(chatButtonActualPosition.Item1 + (int)(100 * scale), chatButtonActualPosition.Item2 + (int)(80 * scale));
+                Thread.Sleep(3000);
+                GUIOperation.Click(contactButtonActualPosition.Item1, contactButtonActualPosition.Item2);
+                Thread.Sleep(100);
+                GUIOperation.Click(chatButtonActualPosition.Item1, chatButtonActualPosition.Item2);
+                Thread.Sleep(1000);
+            }
         }
         static void autoFocus()
         {
