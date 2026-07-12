@@ -302,9 +302,9 @@ namespace QQPilot4
                 PasteTextToSection(inputs.Last()+ ConversationStyleExtract.IdentificationString, commentSectionActualSize);
 
 
-                Thread.Sleep(200);
-                HotKey("ctrl", "v");
-                Thread.Sleep(1000);
+                //Thread.Sleep(200);
+                ////HotKey("ctrl", "v");
+                //Thread.Sleep(1000);
                 ClickCenter(commentSectionActualSize);
                 Thread.Sleep(200);
                 HotKey("ctrl", "enter");

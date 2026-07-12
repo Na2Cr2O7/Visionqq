@@ -199,6 +199,10 @@ namespace QQPilot4
                     }
                     Image.Screenshot(copyButtonPossibleActualSize);
                     Thread.Sleep(1000);
+                    Clipboard clipboard = new();
+                    clipboard.SetText(string.Empty);
+
+
                     List<(uint x, uint y)> points = Image.FindTemplates("screenshot.png", "./copy.png", 30, 1);
                     if (points.Count == 0)
                     {
@@ -226,8 +230,17 @@ namespace QQPilot4
 
                     }
 
-                    Clipboard pyperclip = new();
-                    string chatContentStr = pyperclip.GetText() ?? "";
+
+                    string chatContentStr = clipboard.GetText() ?? "";
+                    if (chatContentStr.Length == 0)
+                    {
+                        Log.Print("没有提取到消息。",Log.Stat.ERROR);
+   
+
+                        GoBack(scale, chatButtonActualPosition, contactButtonActualPosition);
+                        continue;
+                    }
+
                     List<ChatContent> ChatContents = ConversationStyleExtract.ParseChatLog(chatContentStr);
                     SpinnerLoad.Start(ConsoleColor.Green, "等待语言模型生成答案");
                     DockLog.Log2("等待语言模型生成答案");
@@ -239,7 +252,7 @@ namespace QQPilot4
                     if (result.Replace("\n\n", "") == "" || result == "")
                     {
                         Log.Print("退出会话");
-                        //DockLog.Log2("发送消息 🎉");
+
 
                         GoBack(scale, chatButtonActualPosition, contactButtonActualPosition);
 
