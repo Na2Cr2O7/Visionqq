@@ -425,7 +425,8 @@ namespace QQPilot4
                     Log.Print(pointsOfCopy.ToString()??"|");
                     if(pointsOfCopy.Count!=0)
                     {
-                        continue;
+                        continue; 
+
                     }
         
                     break;
