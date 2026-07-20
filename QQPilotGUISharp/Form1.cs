@@ -15,6 +15,8 @@ namespace QQPilotGUISharp
             SaveConfig();
 
         }
+
+        private const string NULSTr = "_";
         IniParser.FileIniDataParser parser;
         private void button1_Click(object sender, EventArgs e)
         {
@@ -106,6 +108,21 @@ namespace QQPilotGUISharp
 
             };
             SystemText.Text = File.ReadAllText("system.txt", new UTF8Encoding(false));
+            try
+            {
+                TokenCount.Text = File.ReadAllText("tokencount.txt", new UTF8Encoding(false));
+
+            }
+            catch
+            {
+                ResetTokenConuter();
+            }
+        }
+
+        private void ResetTokenConuter()
+        {
+            TokenCount.Text = 0.ToString();
+            File.WriteAllText("tokencount.txt", 0.ToString(), new UTF8Encoding(false));
         }
 
         private void inputNumber1_ValueChanged(object sender, AntdUI.DecimalEventArgs e)
@@ -163,6 +180,42 @@ namespace QQPilotGUISharp
         private void IsVisionModel_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
 
+        }
+
+        private void winWidth_ValueChanged(object sender, AntdUI.DecimalEventArgs e)
+        {
+
+        }
+
+        private void ModelName_TextChanged(object sender, EventArgs e)
+        {
+            IsNULL(sender);
+        }
+
+        private void APIKey_TextChanged(object sender, EventArgs e)
+        {
+            IsNULL(sender);
+        }
+
+        private static void IsNULL(object sender)
+        {
+            if (sender.GetType() == typeof(AntdUI.Input))
+            {
+                if (((AntdUI.Input)sender).Text.Trim().Length == 0)
+                {
+                    ((AntdUI.Input)sender).Text = NULSTr;
+                }
+            }
+        }
+
+        private void TokenCount_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonShadow2_Click(object sender, EventArgs e)
+        {
+            ResetTokenConuter();
         }
     }
 }

@@ -25,12 +25,15 @@ namespace QQPilot4
         private int RemoteServerTimeout { get; set; }
         private string ApiKey { get; set; } = "";
         private bool Builtin { get; set; } = false;
-        private string sysPmpt { get; set; } = "";
+        private string SysPmpt { get; set; } = "";
         private TinyLangJaccardCS? TinyLangJaccard;
 
         // 常量
         private const int MAX_LENGTH = 2048;
 
+        public long TotalTokens
+        {
+            get; private set; }
         public Answer()
         {
             config = parser.ReadFile("config.ini", Encoding.UTF8);
@@ -40,7 +43,7 @@ namespace QQPilot4
             MaxImageCount = int.Parse(config["general"]["maximagecount"]);
             RemoteServerTimeout = int.Parse(config["general"]["remote_server_timeout"]);
             ApiKey = config["general"]["api_key"];
-            sysPmpt = File.Exists("system.txt") ? File.ReadAllText("system.txt") : "";
+            SysPmpt = File.Exists("system.txt") ? File.ReadAllText("system.txt") : "";
 
             // 配置 HttpClient
             _httpClient = new HttpClient();
@@ -183,7 +186,7 @@ namespace QQPilot4
             // 系统提示
             string finalSystemPrompt = systemPrompt switch
             {
-                "auto" => sysPmpt,
+                "auto" => SysPmpt,
                 "" or "None" => "",
                 _ => systemPrompt
             };
@@ -287,6 +290,7 @@ namespace QQPilot4
                         int totalTokens = usage.TryGetProperty("total_tokens", out var tt) ? tt.GetInt32() : 0;
 
                         Log.Print($"Token 用量: 输入 {promptTokens} | 输出 {completionTokens} | 总计 {totalTokens}");
+                        TotalTokens += totalTokens;
                     }
                     string? reason = doc.RootElement //Deepseek
                         .GetProperty("choices")[0]

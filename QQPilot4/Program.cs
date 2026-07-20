@@ -53,6 +53,15 @@ namespace QQPilot4
             bool isVisionModel          = (general["isvisionmodel"].Equals("true", StringComparison.CurrentCultureIgnoreCase));
             bool ATDetect               = (general["atdetect"].Equals("true", StringComparison.CurrentCultureIgnoreCase));
             int tapTimes                =  int.Parse(general["tab_times"]);
+            long tokenCount = 0;
+            try
+            {
+                tokenCount=long.Parse(File.ReadAllText("tokencount.txt",new UTF8Encoding(false)));
+            }catch
+            {
+                tokenCount=0;
+                File.WriteAllText("tokencount.txt", 0.ToString(), new UTF8Encoding(false));
+            }
             Console.ForegroundColor = ConsoleColor.Cyan;
             Log.Print(general["version"]);
             ArrowLoad.StopLoading();
@@ -66,10 +75,11 @@ namespace QQPilot4
             Log.Print(OSDescription);
             Console.ResetColor();
 
-            Thread autoFocusThread = new(autoFocus);
+            Thread autoFocusThread = new(AutoFocus);
             autoFocusThread.Start();
 
-
+            Log.SetColor(ConsoleColor.Yellow);
+            Log.Print("请将消息栏拉到最小!");
 
 
             Log.Print("自动聚焦功能已开启");
@@ -195,12 +205,7 @@ namespace QQPilot4
                     Thread.Sleep(500);
                     GUIOperation.GotoCenter(conversationActualSize);
                     Thread.Sleep(500);
-                    for (int i = 0; i < scrollTries * 2; i++)
-                    {
-                        Thread.Sleep(400);
-                        GUIOperation.ScrollDown(480);
 
-                    }
                     Image.Screenshot(copyButtonPossibleActualSize);
                     Thread.Sleep(1000);
                     Clipboard clipboard = new();
@@ -212,6 +217,13 @@ namespace QQPilot4
                     {
                         Log.Print("使用模板匹配查找复制按钮失败");
                         DockLog.Log2("使用模板匹配查找复制按钮失败");
+                        for (int i = 0; i < scrollTries * 2; i++)
+                        {
+                            Thread.Sleep(400);
+                            GUIOperation.ScrollDown(480);
+
+                        }
+                        Thread.Sleep(400);
 
                         GUIOperation.ClickCenter(commentSectionActualSize);
 
@@ -240,8 +252,9 @@ namespace QQPilot4
                     {
                         Log.Print("没有提取到消息。",Log.Stat.ERROR);
    
+                    SpinnerLoad.Stop();
 
-                        GoBack(scale, chatButtonActualPosition, contactButtonActualPosition);
+                        GoBack(scale, chatButtonActualPosition, contactButtonActualPosition, copyButtonPossibleActualSize, uploadImagePossibleActualSize);
                         continue;
                     }
 
@@ -252,13 +265,25 @@ namespace QQPilot4
                     GUIOperation.ClickCenter(commentSectionActualSize);
                     answer ??= new();
                     string result = answer.GetAnswer(ChatContents) ?? "";
+                    tokenCount += answer.TotalTokens;
+                    try
+                    {
+                        File.WriteAllText("tokencount.txt", tokenCount.ToString(), new UTF8Encoding(false));
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Print(e.ToString(),Log.Stat.ERROR);
+                    }
+                    SpinnerLoad.Stop();
+
                     result = result.Trim();
                     if (result.Replace("\n\n", "") == "" || result == "")
                     {
+                        //SpinnerLoad.Stop();
                         Log.Print("退出会话");
 
 
-                        GoBack(scale, chatButtonActualPosition, contactButtonActualPosition);
+                        GoBack(scale, chatButtonActualPosition, contactButtonActualPosition, copyButtonPossibleActualSize, uploadImagePossibleActualSize);
 
                         continue;
                     }
@@ -348,7 +373,7 @@ namespace QQPilot4
                     Log.Print("退出会话");
                     //DockLog.Log2("发送消息 🎉");
 
-                    GoBack(scale, chatButtonActualPosition, contactButtonActualPosition);
+                    GoBack(scale, chatButtonActualPosition, contactButtonActualPosition, copyButtonPossibleActualSize, uploadImagePossibleActualSize);
                 }
                 else
                 {
@@ -358,17 +383,42 @@ namespace QQPilot4
             autoFocusShouldRun = false;
             autoFocusThread.Join();
 
-            static void GoBack(float scale, (int, int) chatButtonActualPosition, (int, int) contactButtonActualPosition)
+            static void GoBack(float scale, (int, int) chatButtonActualPosition, (int, int) contactButtonActualPosition, (int, int, int, int) copyButtonPossibleActualSize, (int, int, int, int) uploadImagePossibleActualSize)
             {
-                GUIOperation.Click(chatButtonActualPosition.Item1 + (int)(100 * scale), chatButtonActualPosition.Item2 + (int)(80 * scale));
-                Thread.Sleep(3000);
-                GUIOperation.Click(contactButtonActualPosition.Item1, contactButtonActualPosition.Item2);
-                Thread.Sleep(100);
-                GUIOperation.Click(chatButtonActualPosition.Item1, chatButtonActualPosition.Item2);
-                Thread.Sleep(1000);
+                //点击聊天第一项退出对话
+
+                List<(uint x, uint y)> pointsOfCopy;
+                List<(uint x, uint y)> pointsOfUpload;
+                int count = 0;
+                //检车是否存在上传图片和复制按钮确保已经退出对话。
+                do
+                {
+                    GUIOperation.Click(chatButtonActualPosition.Item1 + (int)(100 * scale), chatButtonActualPosition.Item2 + (int)(80 * scale));
+                    Thread.Sleep(3000);
+                    GUIOperation.Click(contactButtonActualPosition.Item1, contactButtonActualPosition.Item2);
+                    Thread.Sleep(500);
+                    GUIOperation.Click(chatButtonActualPosition.Item1, chatButtonActualPosition.Item2);
+                    Thread.Sleep(1000);
+
+                    Image.Screenshot(copyButtonPossibleActualSize);
+                    Thread.Sleep(1500);
+                    pointsOfCopy= Image.FindTemplates("screenshot.png", "./copy.png", 30, 1);
+                    Log.Print(pointsOfCopy.ToString()??"|");
+                    Image.Screenshot(uploadImagePossibleActualSize);
+                    Thread.Sleep(1500);
+                    pointsOfUpload = Image.FindTemplates("screenshot.png", "./uploadImage.png", 30, 1);
+                    Log.Print(pointsOfUpload.ToString() ?? "||");
+
+                    //count++;
+                    if(count++>2)
+                    {
+                        break;
+                    }
+                }
+                while ( !(pointsOfCopy.Count==0 && pointsOfUpload.Count==0));
             }
         }
-        static void autoFocus()
+        static void AutoFocus()
         {
             while(autoFocusShouldRun)
             {
