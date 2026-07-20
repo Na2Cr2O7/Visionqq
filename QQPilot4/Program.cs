@@ -265,15 +265,21 @@ namespace QQPilot4
                     GUIOperation.ClickCenter(commentSectionActualSize);
                     answer ??= new();
                     string result = answer.GetAnswer(ChatContents) ?? "";
-                    tokenCount += answer.TotalTokens;
-                    try
+                    if(answer.TotalTokens!=0)
                     {
-                        File.WriteAllText("tokencount.txt", tokenCount.ToString(), new UTF8Encoding(false));
+                        tokenCount += answer.TotalTokens;
+                        Log.Print($"累计用量: {tokenCount}");
+                        try
+                        {
+                            File.WriteAllText("tokencount.txt", tokenCount.ToString(), new UTF8Encoding(false));
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Print(e.ToString(), Log.Stat.ERROR);
+                        }
                     }
-                    catch (Exception e)
-                    {
-                        Log.Print(e.ToString(),Log.Stat.ERROR);
-                    }
+                    
+
                     SpinnerLoad.Stop();
 
                     result = result.Trim();
