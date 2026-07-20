@@ -405,23 +405,33 @@ namespace QQPilot4
                     Thread.Sleep(500);
                     GUIOperation.Click(chatButtonActualPosition.Item1, chatButtonActualPosition.Item2);
                     Thread.Sleep(1000);
+                    if (count++ > 2)
+                    {
+                        break;
+                    }
+
+                    Image.Screenshot(uploadImagePossibleActualSize);
+                    Thread.Sleep(1500);
+                    pointsOfUpload = Image.FindTemplates("screenshot.png", "./uploadImage.png", 30, 1);
+                    Log.Print(pointsOfUpload.ToString() ?? "||");
+                    if (pointsOfUpload.Count != 0)
+                    {
+                        continue;
+                    }
 
                     Image.Screenshot(copyButtonPossibleActualSize);
                     Thread.Sleep(1500);
                     pointsOfCopy= Image.FindTemplates("screenshot.png", "./copy.png", 30, 1);
                     Log.Print(pointsOfCopy.ToString()??"|");
-                    Image.Screenshot(uploadImagePossibleActualSize);
-                    Thread.Sleep(1500);
-                    pointsOfUpload = Image.FindTemplates("screenshot.png", "./uploadImage.png", 30, 1);
-                    Log.Print(pointsOfUpload.ToString() ?? "||");
-
-                    //count++;
-                    if(count++>2)
+                    if(pointsOfCopy.Count!=0)
                     {
-                        break;
+                        continue;
                     }
+        
+                    break;
+
                 }
-                while ( !(pointsOfCopy.Count==0 && pointsOfUpload.Count==0));
+                while ( true);
             }
         }
         static void AutoFocus()
