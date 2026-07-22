@@ -63,7 +63,7 @@ namespace QQPilot4
                 File.WriteAllText("tokencount.txt", 0.ToString(), new UTF8Encoding(false));
             }
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Log.Print(general["version"]);
+            Log.Print("QQPilot"+general["version"]);
             ArrowLoad.StopLoading();
             Console.ResetColor();
 
