@@ -401,10 +401,10 @@ namespace QQPilot4
                 {
                     GUIOperation.Click(chatButtonActualPosition.Item1 + (int)(100 * scale), chatButtonActualPosition.Item2 + (int)(80 * scale));
                     Thread.Sleep(3000);
-                    GUIOperation.Click(contactButtonActualPosition.Item1, contactButtonActualPosition.Item2);
-                    Thread.Sleep(500);
-                    GUIOperation.Click(chatButtonActualPosition.Item1, chatButtonActualPosition.Item2);
-                    Thread.Sleep(1000);
+                    //GUIOperation.Click(contactButtonActualPosition.Item1, contactButtonActualPosition.Item2);
+                    //Thread.Sleep(500);
+                    //GUIOperation.Click(chatButtonActualPosition.Item1, chatButtonActualPosition.Item2);
+                    //Thread.Sleep(1000);
                     if (count++ > 2)
                     {
                         break;
@@ -413,18 +413,22 @@ namespace QQPilot4
                     Image.Screenshot(uploadImagePossibleActualSize);
                     Thread.Sleep(1500);
                     pointsOfUpload = Image.FindTemplates("screenshot.png", "./uploadImage.png", 30, 1);
-                    Log.Print(pointsOfUpload.ToString() ?? "||");
+                    //Log.Print(pointsOfUpload/.) ?? "||");
                     if (pointsOfUpload.Count != 0)
                     {
+                        Log.Print($"({pointsOfUpload[0].x},{pointsOfUpload[0].y})");
+
                         continue;
                     }
 
                     Image.Screenshot(copyButtonPossibleActualSize);
                     Thread.Sleep(1500);
                     pointsOfCopy= Image.FindTemplates("screenshot.png", "./copy.png", 30, 1);
-                    Log.Print(pointsOfCopy.ToString()??"|");
+                    
                     if(pointsOfCopy.Count!=0)
                     {
+                        Log.Print($"({pointsOfCopy[0].x},{pointsOfCopy[0].y})");
+
                         continue; 
 
                     }
