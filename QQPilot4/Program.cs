@@ -63,7 +63,7 @@ namespace QQPilot4
                 File.WriteAllText("tokencount.txt", 0.ToString(), new UTF8Encoding(false));
             }
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Log.Print("QQPilot"+general["version"]);
+            Log.Print($"QQPilot {general["version"]}");
             ArrowLoad.StopLoading();
             Console.ResetColor();
 
@@ -240,9 +240,10 @@ namespace QQPilot4
                     }
                     else
                     {
-                        Thread.Sleep(2000);
+                        Thread.Sleep(800);
                         GUIOperation.Click((int)(points[0].x + copyButtonPossibleActualSize.Item1), (int)(points[0].y + copyButtonPossibleActualSize.Item2));
-                        Thread.Sleep(200);
+                        Thread.Sleep(1500);
+
 
                     }
 
