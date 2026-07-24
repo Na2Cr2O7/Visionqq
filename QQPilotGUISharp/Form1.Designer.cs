@@ -69,11 +69,14 @@
             buttonShadow2 = new AntdUI.ButtonShadow();
             TokenCount = new AntdUI.Label();
             label19 = new AntdUI.Label();
+            UserName = new AntdUI.Input();
+            label18 = new AntdUI.Label();
+            tooltip2 = new AntdUI.Tooltip();
             SuspendLayout();
             // 
             // winHeight
             // 
-            winHeight.Location = new Point(245, 32);
+            winHeight.Location = new Point(248, 59);
             winHeight.Margin = new Padding(2);
             winHeight.Maximum = new decimal(new int[] { 720, 0, 0, 0 });
             winHeight.Name = "winHeight";
@@ -84,7 +87,7 @@
             // 
             // label3
             // 
-            label3.Location = new Point(171, 39);
+            label3.Location = new Point(174, 66);
             label3.Margin = new Padding(2);
             label3.Name = "label3";
             label3.Size = new Size(70, 22);
@@ -93,7 +96,7 @@
             // 
             // winWidth
             // 
-            winWidth.Location = new Point(83, 32);
+            winWidth.Location = new Point(86, 59);
             winWidth.Margin = new Padding(2);
             winWidth.Minimum = new decimal(new int[] { 1280, 0, 0, 0 });
             winWidth.Name = "winWidth";
@@ -106,7 +109,7 @@
             // 
             // label2
             // 
-            label2.Location = new Point(8, 39);
+            label2.Location = new Point(11, 66);
             label2.Margin = new Padding(2);
             label2.Name = "label2";
             label2.Size = new Size(70, 22);
@@ -115,7 +118,7 @@
             // 
             // vname
             // 
-            vname.Location = new Point(59, 7);
+            vname.Location = new Point(86, 7);
             vname.Margin = new Padding(2);
             vname.Name = "vname";
             vname.Size = new Size(449, 22);
@@ -124,16 +127,17 @@
             // 
             // label1
             // 
-            label1.Location = new Point(8, 7);
+            label1.Location = new Point(11, 7);
             label1.Margin = new Padding(2);
             label1.Name = "label1";
             label1.Size = new Size(46, 22);
             label1.TabIndex = 6;
             label1.Text = "版本";
+            label1.Click += label1_Click;
             // 
             // label4
             // 
-            label4.Location = new Point(8, 76);
+            label4.Location = new Point(11, 103);
             label4.Margin = new Padding(2);
             label4.Name = "label4";
             label4.Size = new Size(70, 22);
@@ -142,7 +146,7 @@
             // 
             // MaxImageCount
             // 
-            MaxImageCount.Location = new Point(83, 70);
+            MaxImageCount.Location = new Point(86, 97);
             MaxImageCount.Margin = new Padding(2);
             MaxImageCount.Minimum = new decimal(new int[] { 0, 0, 0, 0 });
             MaxImageCount.Name = "MaxImageCount";
@@ -156,7 +160,7 @@
             tooltip1.Back = SystemColors.ActiveCaptionText;
             tooltip1.BackColor = SystemColors.ButtonFace;
             tooltip1.ForeColor = SystemColors.AppWorkspace;
-            tooltip1.Location = new Point(171, 66);
+            tooltip1.Location = new Point(174, 93);
             tooltip1.Margin = new Padding(2);
             tooltip1.MaximumSize = new Size(227, 38);
             tooltip1.MinimumSize = new Size(227, 38);
@@ -168,7 +172,7 @@
             // 
             // label5
             // 
-            label5.Location = new Point(8, 112);
+            label5.Location = new Point(11, 139);
             label5.Margin = new Padding(2);
             label5.Name = "label5";
             label5.Size = new Size(70, 22);
@@ -177,7 +181,7 @@
             // 
             // ModelName
             // 
-            ModelName.Location = new Point(83, 104);
+            ModelName.Location = new Point(86, 131);
             ModelName.Margin = new Padding(2);
             ModelName.Name = "ModelName";
             ModelName.Size = new Size(458, 36);
@@ -186,7 +190,7 @@
             // 
             // label6
             // 
-            label6.Location = new Point(8, 149);
+            label6.Location = new Point(11, 176);
             label6.Margin = new Padding(2);
             label6.Name = "label6";
             label6.Size = new Size(70, 22);
@@ -195,7 +199,7 @@
             // 
             // IsVisionModel
             // 
-            IsVisionModel.Location = new Point(83, 143);
+            IsVisionModel.Location = new Point(86, 170);
             IsVisionModel.Margin = new Padding(2);
             IsVisionModel.Name = "IsVisionModel";
             IsVisionModel.Size = new Size(78, 33);
@@ -204,7 +208,7 @@
             // 
             // label7
             // 
-            label7.Location = new Point(8, 188);
+            label7.Location = new Point(11, 215);
             label7.Margin = new Padding(2);
             label7.Name = "label7";
             label7.Size = new Size(70, 22);
@@ -213,7 +217,7 @@
             // 
             // APIKey
             // 
-            APIKey.Location = new Point(81, 180);
+            APIKey.Location = new Point(84, 207);
             APIKey.Margin = new Padding(2);
             APIKey.Name = "APIKey";
             APIKey.PasswordChar = '·';
@@ -223,7 +227,7 @@
             // 
             // label8
             // 
-            label8.Location = new Point(8, 235);
+            label8.Location = new Point(11, 262);
             label8.Margin = new Padding(2);
             label8.Name = "label8";
             label8.Size = new Size(70, 22);
@@ -232,7 +236,7 @@
             // 
             // ServerName
             // 
-            ServerName.Location = new Point(83, 227);
+            ServerName.Location = new Point(86, 254);
             ServerName.Margin = new Padding(2);
             ServerName.Name = "ServerName";
             ServerName.Size = new Size(111, 36);
@@ -242,7 +246,7 @@
             // 
             // ServerUrl
             // 
-            ServerUrl.Location = new Point(197, 227);
+            ServerUrl.Location = new Point(200, 254);
             ServerUrl.Margin = new Padding(2);
             ServerUrl.Name = "ServerUrl";
             ServerUrl.Size = new Size(343, 36);
@@ -250,7 +254,7 @@
             // 
             // Scroll
             // 
-            Scroll.Location = new Point(102, 267);
+            Scroll.Location = new Point(105, 294);
             Scroll.Margin = new Padding(2);
             Scroll.Name = "Scroll";
             Scroll.Size = new Size(84, 34);
@@ -260,7 +264,7 @@
             // 
             // label9
             // 
-            label9.Location = new Point(8, 275);
+            label9.Location = new Point(11, 302);
             label9.Margin = new Padding(2);
             label9.Name = "label9";
             label9.Size = new Size(90, 22);
@@ -269,7 +273,7 @@
             // 
             // label10
             // 
-            label10.Location = new Point(8, 314);
+            label10.Location = new Point(11, 341);
             label10.Margin = new Padding(2);
             label10.Name = "label10";
             label10.Size = new Size(70, 22);
@@ -278,7 +282,7 @@
             // 
             // WithImage
             // 
-            WithImage.Location = new Point(83, 309);
+            WithImage.Location = new Point(86, 336);
             WithImage.Margin = new Padding(2);
             WithImage.Name = "WithImage";
             WithImage.Size = new Size(78, 33);
@@ -286,7 +290,7 @@
             // 
             // label11
             // 
-            label11.Location = new Point(171, 314);
+            label11.Location = new Point(174, 341);
             label11.Margin = new Padding(2);
             label11.Name = "label11";
             label11.Size = new Size(90, 22);
@@ -295,7 +299,7 @@
             // 
             // label12
             // 
-            label12.Location = new Point(333, 314);
+            label12.Location = new Point(336, 341);
             label12.Margin = new Padding(2);
             label12.Name = "label12";
             label12.Size = new Size(136, 22);
@@ -304,7 +308,7 @@
             // 
             // AutoLogin
             // 
-            AutoLogin.Location = new Point(251, 309);
+            AutoLogin.Location = new Point(254, 336);
             AutoLogin.Margin = new Padding(2);
             AutoLogin.Name = "AutoLogin";
             AutoLogin.Size = new Size(78, 33);
@@ -312,7 +316,7 @@
             // 
             // AutoFocusing
             // 
-            AutoFocusing.Location = new Point(462, 309);
+            AutoFocusing.Location = new Point(465, 336);
             AutoFocusing.Margin = new Padding(2);
             AutoFocusing.Name = "AutoFocusing";
             AutoFocusing.Size = new Size(78, 33);
@@ -320,7 +324,7 @@
             // 
             // label13
             // 
-            label13.Location = new Point(6, 351);
+            label13.Location = new Point(9, 378);
             label13.Margin = new Padding(2);
             label13.Name = "label13";
             label13.Size = new Size(118, 22);
@@ -329,7 +333,7 @@
             // 
             // SendImagePossibility
             // 
-            SendImagePossibility.Location = new Point(117, 346);
+            SendImagePossibility.Location = new Point(120, 373);
             SendImagePossibility.Margin = new Padding(2);
             SendImagePossibility.Name = "SendImagePossibility";
             SendImagePossibility.Size = new Size(424, 33);
@@ -338,7 +342,7 @@
             // 
             // ATDetect
             // 
-            ATDetect.Location = new Point(83, 381);
+            ATDetect.Location = new Point(86, 408);
             ATDetect.Margin = new Padding(2);
             ATDetect.Name = "ATDetect";
             ATDetect.Size = new Size(78, 33);
@@ -347,7 +351,7 @@
             // 
             // label14
             // 
-            label14.Location = new Point(8, 386);
+            label14.Location = new Point(11, 413);
             label14.Margin = new Padding(2);
             label14.Name = "label14";
             label14.Size = new Size(70, 22);
@@ -356,7 +360,7 @@
             // 
             // label15
             // 
-            label15.Location = new Point(8, 419);
+            label15.Location = new Point(11, 446);
             label15.Margin = new Padding(2);
             label15.Name = "label15";
             label15.Size = new Size(134, 22);
@@ -365,7 +369,7 @@
             // 
             // RemoteServerTimeout
             // 
-            RemoteServerTimeout.Location = new Point(171, 412);
+            RemoteServerTimeout.Location = new Point(174, 439);
             RemoteServerTimeout.Margin = new Padding(2);
             RemoteServerTimeout.Minimum = new decimal(new int[] { 60, 0, 0, 0 });
             RemoteServerTimeout.Name = "RemoteServerTimeout";
@@ -377,7 +381,7 @@
             // 
             // label16
             // 
-            label16.Location = new Point(288, 419);
+            label16.Location = new Point(291, 446);
             label16.Margin = new Padding(2);
             label16.Name = "label16";
             label16.Size = new Size(134, 22);
@@ -386,7 +390,7 @@
             // 
             // TabTimes
             // 
-            TabTimes.Location = new Point(430, 410);
+            TabTimes.Location = new Point(433, 437);
             TabTimes.Margin = new Padding(2);
             TabTimes.Name = "TabTimes";
             TabTimes.Size = new Size(111, 36);
@@ -399,7 +403,7 @@
             SystemText.Margin = new Padding(2);
             SystemText.Multiline = true;
             SystemText.Name = "SystemText";
-            SystemText.Size = new Size(514, 407);
+            SystemText.Size = new Size(514, 439);
             SystemText.TabIndex = 40;
             SystemText.Text = "input1";
             // 
@@ -424,7 +428,7 @@
             // 
             // buttonShadow2
             // 
-            buttonShadow2.Location = new Point(413, 66);
+            buttonShadow2.Location = new Point(416, 93);
             buttonShadow2.Name = "buttonShadow2";
             buttonShadow2.Size = new Size(111, 32);
             buttonShadow2.TabIndex = 43;
@@ -433,7 +437,7 @@
             // 
             // TokenCount
             // 
-            TokenCount.Location = new Point(429, 39);
+            TokenCount.Location = new Point(432, 66);
             TokenCount.Margin = new Padding(2);
             TokenCount.Name = "TokenCount";
             TokenCount.Size = new Size(59, 22);
@@ -443,7 +447,7 @@
             // 
             // label19
             // 
-            label19.Location = new Point(352, 39);
+            label19.Location = new Point(355, 66);
             label19.Margin = new Padding(2);
             label19.Name = "label19";
             label19.Size = new Size(70, 22);
@@ -451,12 +455,47 @@
             label19.Text = "Token用量";
             label19.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // UserName
+            // 
+            UserName.Location = new Point(83, 26);
+            UserName.Margin = new Padding(2);
+            UserName.Name = "UserName";
+            UserName.Size = new Size(218, 36);
+            UserName.TabIndex = 46;
+            UserName.TextChanged += UserName_TextChanged;
+            // 
+            // label18
+            // 
+            label18.Location = new Point(9, 33);
+            label18.Margin = new Padding(2);
+            label18.Name = "label18";
+            label18.Size = new Size(70, 22);
+            label18.TabIndex = 47;
+            label18.Text = "用户名";
+            // 
+            // tooltip2
+            // 
+            tooltip2.Back = SystemColors.ActiveCaptionText;
+            tooltip2.BackColor = SystemColors.ButtonFace;
+            tooltip2.ForeColor = SystemColors.AppWorkspace;
+            tooltip2.Location = new Point(304, 24);
+            tooltip2.Margin = new Padding(2);
+            tooltip2.MaximumSize = new Size(168, 38);
+            tooltip2.MinimumSize = new Size(168, 38);
+            tooltip2.Name = "tooltip2";
+            tooltip2.Size = new Size(168, 38);
+            tooltip2.TabIndex = 48;
+            tooltip2.Text = "用于判断是否是自身消息";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ButtonFace;
-            ClientSize = new Size(1075, 464);
+            ClientSize = new Size(1075, 489);
+            Controls.Add(tooltip2);
+            Controls.Add(label18);
+            Controls.Add(UserName);
             Controls.Add(TokenCount);
             Controls.Add(label19);
             Controls.Add(buttonShadow2);
@@ -549,5 +588,8 @@
         private AntdUI.ButtonShadow buttonShadow2;
         private AntdUI.Label TokenCount;
         private AntdUI.Label label19;
+        private AntdUI.Input UserName;
+        private AntdUI.Label label18;
+        private AntdUI.Tooltip tooltip2;
     }
 }

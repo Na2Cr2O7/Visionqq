@@ -34,7 +34,7 @@ namespace QQPilot4
             var validImages = ImagePaths.Where(path => File.Exists(path)).ToList();
 
             string imagePart;
-            if (validImages.Any())
+            if (validImages.Count != 0)
             {
                 // 将路径列表转换为字符串表示形式，例如 ["path1", "path2"]
                 imagePart = "[ " + string.Join(", ", validImages.Select(p => $"\"{p}\"")) + " ]";

@@ -60,6 +60,7 @@ namespace QQPilotGUISharp
             general["sendimagepossibility"] = SendImagePossibility.Value.ToString();
             general["atdetect"] = ATDetect.Checked.ToString().ToLower();
             general["remote_server_timeout"] = RemoteServerTimeout.Value.ToString();
+            general["name"] = UserName.Text;
 
             // tab_times 只允许 7 或 8
             int tabTime = TabTimes.SelectedIndex == 0 ? 7 : 8;
@@ -76,6 +77,7 @@ namespace QQPilotGUISharp
             parser = new();
             IniData ini = parser.ReadFile("config.ini", fileEncoding: new UTF8Encoding(false));
             KeyDataCollection general = ini["general"];
+            UserName.Text = general["name"];
             vname.Text = general["version"];
             winWidth.Value = int.Parse(general["width"]);
             winHeight.Value = int.Parse(general["height"]);
@@ -96,6 +98,7 @@ namespace QQPilotGUISharp
             AutoLogin.Checked = general["autologin"].Equals("true", StringComparison.CurrentCultureIgnoreCase);
             AutoFocusing.Checked = general["autofocusing"].Equals("true", StringComparison.CurrentCultureIgnoreCase);
             SendImagePossibility.Value = int.Parse(general["sendimagepossibility"]);
+
 
             ATDetect.Checked = general["atdetect"].Equals("true", StringComparison.CurrentCultureIgnoreCase);
             RemoteServerTimeout.Value = int.Parse(general["remote_server_timeout"]);
@@ -216,6 +219,16 @@ namespace QQPilotGUISharp
         private void buttonShadow2_Click(object sender, EventArgs e)
         {
             ResetTokenConuter();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void UserName_TextChanged(object sender, EventArgs e)
+        {
+            IsNULL(sender);
         }
     }
 }

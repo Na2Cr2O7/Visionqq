@@ -12,7 +12,7 @@ namespace QQPilot4
     public static class ConversationStyleExtract
     {
         // 全局标识符，用于判断消息是否由“自己”发送
-        public const string IdentificationString = "⨋";
+        //public const string IdentificationString = "⨋";
 
         /// <summary>
         /// 从文本中提取所有 &lt;img src="..."&gt; 的本地路径，并返回：
@@ -76,7 +76,7 @@ namespace QQPilot4
         /// <summary>
         /// 解析聊天日志字符串，返回结构化的 ChatContent 对象列表。
         /// </summary>
-        public static List<ChatContent> ParseChatLog(string chatStr)
+        public static List<ChatContent> ParseChatLog(string chatStr,string characterName)
         {
             string headerPattern = @"^(.+?):\s+(\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})$";
             string[] lines = chatStr.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
@@ -120,9 +120,12 @@ namespace QQPilot4
 
                     string rawText = string.Join("\n", contentLines);
                     var (imagePaths, cleanText) = ExtractImagePaths(rawText);
-                    bool isOwn = rawText.Contains(IdentificationString);
+                    bool isOwn = username.Trim()==characterName.Trim();
 
                     messages.Add(new ChatContent(username, imagePaths, cleanText, timeStr, isOwn));
+
+                    Log.Print(messages[^1].Report());
+                    Log.Print("");
                 }
                 else
                 {
@@ -132,6 +135,6 @@ namespace QQPilot4
 
             return messages;
         }
-        public static Func<string, List<ChatContent>> Extract = ParseChatLog;
+        //public static Func<string, List<ChatContent>> Extract = ParseChatLog;
     }
 }

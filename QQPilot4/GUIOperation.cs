@@ -273,7 +273,7 @@ namespace QQPilot4
             var (pos1, pos2) = getAreaCenter(area);
             Goto(pos1, pos2);
         }
-        public static void SendTextAndInsertIdentificationString(string text, (int, int, int, int) commentSectionActualSize)
+        public static void SendText(string text, (int, int, int, int) commentSectionActualSize)
         {
             Log.SetColor(ConsoleColor.Green);
             Log.Print("发消息->" + text);
@@ -298,7 +298,7 @@ namespace QQPilot4
 
                 }
 
-                PasteTextToSection(inputs.Last()+ ConversationStyleExtract.IdentificationString, commentSectionActualSize);
+                PasteTextToSection(inputs.Last(), commentSectionActualSize);
 
 
                 //Thread.Sleep(200);

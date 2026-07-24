@@ -14,16 +14,14 @@ namespace QQPilot4
     {
         static bool autoFocusShouldRun = true;
         static readonly bool debug =false;
+        public static string characterName="";
         static void Main(string[] args)
         {
             if (Environment.OSVersion.Version.Major >= 10)
             {
                 Console.OutputEncoding = Encoding.UTF8;
             }
-            //Console.OutputEncoding= Encoding.UTF8;
-            //Answer a = new();
-            //a.Test();
-            //return;
+
             DockLog.Init();
             Process? p=null;
             try
@@ -53,6 +51,7 @@ namespace QQPilot4
             bool isVisionModel          = (general["isvisionmodel"].Equals("true", StringComparison.CurrentCultureIgnoreCase));
             bool ATDetect               = (general["atdetect"].Equals("true", StringComparison.CurrentCultureIgnoreCase));
             int tapTimes                =  int.Parse(general["tab_times"]);
+            characterName               = general["name"];
             long tokenCount = 0;
             try
             {
@@ -81,6 +80,8 @@ namespace QQPilot4
             Log.SetColor(ConsoleColor.Yellow);
             Log.Print("请将消息栏拉到最小!");
 
+            Log.SetColor(ConsoleColor.Cyan);
+            Log.Print($"欢迎您 {characterName}。");
 
             Log.Print("自动聚焦功能已开启");
             if(autoLogin)
@@ -259,7 +260,7 @@ namespace QQPilot4
                         continue;
                     }
 
-                    List<ChatContent> ChatContents = ConversationStyleExtract.ParseChatLog(chatContentStr);
+                    List<ChatContent> ChatContents = ConversationStyleExtract.ParseChatLog(chatContentStr,characterName);
                     SpinnerLoad.Start(ConsoleColor.Green, "等待语言模型生成答案");
                     DockLog.Log2("等待语言模型生成答案");
 
@@ -298,7 +299,7 @@ namespace QQPilot4
                     Thread.Sleep(100);
                     GUIOperation.ClickCenter(commentSectionActualSize);
 
-                    GUIOperation.SendTextAndInsertIdentificationString(result, commentSectionActualSize);
+                    GUIOperation.SendText(result, commentSectionActualSize);
                     Random r = new();
 
                     int poss = ((int)(r.NextInt64() % 100));
