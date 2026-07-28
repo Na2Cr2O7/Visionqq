@@ -41,7 +41,7 @@ std::generator<std::filesystem::path> recursiveFiles(std::filesystem::path path)
 #include <filesystem>
 #include <generator>
 #include <utility>
-std::generator< std::pair<std::filesystem::path, bool> > recursiveSubdirectoriesFilesX(std::filesystem::path path)
+static std::generator< std::pair<std::filesystem::path, bool> > recursiveSubdirectoriesFilesX(std::filesystem::path path)
 {
 	try
 	{
@@ -339,5 +339,5 @@ void CMFCUpdateDlg::OnBnClickedButton2()
 
 	}
 	path2.release();
-	MessageBox(L"你可能需要运行PythonPath.cmd -m pip install -r requirements.txt更新python库", L"升级成功", MB_OK | MB_ICONASTERISK);
+	MessageBox(L"", L"升级成功", MB_OK | MB_ICONASTERISK);
 }

@@ -52,6 +52,7 @@ namespace QQPilot4
             bool ATDetect               = (general["atdetect"].Equals("true", StringComparison.CurrentCultureIgnoreCase));
             int tapTimes                =  int.Parse(general["tab_times"]);
             characterName               = general["name"];
+            characterName ??= "";
             long tokenCount = 0;
             try
             {
@@ -288,9 +289,19 @@ namespace QQPilot4
                     if (result.Replace("\n\n", "") == "" || result == "")
                     {
                         //SpinnerLoad.Stop();
-                        Log.Print("退出会话");
+                        if (withImage)
+                        {
+                            Log.Print("答案未生成,上传图片",Log.Stat.WARN);
+                            UploadImageWithoutSend(uploadImagePossibleActualSize);
+                            GUIOperation.HotKey("ctrl", "enter");
 
+                            Log.Print("退出会话");
+                        }
+                        else
+                        {
+                            Log.Print("答案未生成,退出会话",Log.Stat.ERROR);
 
+                        }
                         GoBack(scale, chatButtonActualPosition, contactButtonActualPosition, copyButtonPossibleActualSize, uploadImagePossibleActualSize);
 
                         continue;
@@ -300,77 +311,18 @@ namespace QQPilot4
                     GUIOperation.ClickCenter(commentSectionActualSize);
 
                     GUIOperation.SendText(result, commentSectionActualSize);
+
+
                     Random r = new();
 
                     int poss = ((int)(r.NextInt64() % 100));
-                    Log.Print(poss.ToString());
+                    Log.Print($"概率:{poss}");
                     if (withImage && poss < sendimagepossibility)
                     {
 
-                        var imageDir = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Images");
-                        Log.Print(imageDir);
-                        List<string> dirs;
-                        if (!Path.Exists(imageDir))
-                        {
-                            dirs = [];
-                            Log.Print("没有找到图片目录", Log.Stat.ERROR);
-
-                        }
-                        else
-                        {
-                            dirs = [.. Directory.EnumerateFiles(imageDir)];
-
-                        }
-                        bool containsImage = false;
-
-
-                        // 支持的图像扩展名
-                        var imageExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-                        {
-                            ".jpg", ".jpeg", ".png", ".gif"
-                        };
-
-                        foreach (string dir in dirs)
-                        {
-                            Log.Print(dir);
-
-                            if (imageExtensions.Contains(Path.GetExtension(dir)))
-                            {
-                                containsImage = true;
-                                Log.Print("Image:" + dir);
-                                break;
-                            }
-
-                        }
-                        if (imageDir is not null && containsImage)
-                        {
-
-                            Log.Print("上传图片");
-                            DockLog.Log2("上传图片");
-
-                            Image.Screenshot(uploadImagePossibleActualSize);
-                            points = Image.FindTemplates("screenshot.png", "uploadImage.png", 30, 1);
-                            if (points.Count <= 0)
-                            {
-                                Log.Print("使用模板匹配查找上传图片按钮失败");
-                                DockLog.Log2("使用模板匹配查找上传图片按钮失败");
-
-                                Process.Start("uploadImage2.exe").WaitForExit();
-                                Thread.Sleep(200);
-                                GUIOperation.HotKey("ctrl", "v");
-
-                            }
-                            else
-                            {
-                                var (x, y) = points[0];
-                                x += (uint)uploadImagePossibleActualSize.Item1;
-                                y += (uint)uploadImagePossibleActualSize.Item2;
-                                GUIOperation.Click((int)x, (int)y);
-                                Thread.Sleep(4000);
-                                Upload.upload();
-                            }
-                            Thread.Sleep(4000);
-                        }
+                        Log.Print("上传图片");
+                        DockLog.Log2("上传图片");   
+                        UploadImageWithoutSend(uploadImagePossibleActualSize);
                     }
                     Thread.Sleep(4000);
                     Log.Print("发送消息 🎉");
@@ -429,6 +381,7 @@ namespace QQPilot4
                     
                     if(pointsOfCopy.Count!=0)
                     {
+
                         Log.Print($"({pointsOfCopy[0].x},{pointsOfCopy[0].y})");
 
                         continue; 
@@ -441,6 +394,78 @@ namespace QQPilot4
                 while ( true);
             }
         }
+
+        private static void UploadImageWithoutSend((int, int, int, int) uploadImagePossibleActualSize)
+        {
+            var imageDir = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Images");
+            Log.Print(imageDir);
+            List<string> dirs;
+            if (!Path.Exists(imageDir))
+            {
+                dirs = [];
+                Log.Print("没有找到图片目录", Log.Stat.ERROR);
+
+            }
+            else
+            {
+                dirs = [.. Directory.EnumerateFiles(imageDir)];
+
+            }
+            bool containsImage = false;
+
+
+            // 支持的图像扩展名
+            var imageExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                        {
+                            ".jpg", ".jpeg", ".png", ".gif"
+                        };
+
+            foreach (string dir in dirs)
+            {
+                Log.Print(dir);
+
+                if (imageExtensions.Contains(Path.GetExtension(dir)))
+                {
+                    containsImage = true;
+                    Log.Print("Image:" + dir);
+                    break;
+                }
+
+            }
+            if (imageDir is not null && containsImage)
+            {
+
+
+                Image.Screenshot(uploadImagePossibleActualSize);
+
+                Thread.Sleep(500);
+
+                List<(uint x, uint y)> copyButtonPosition = Image.FindTemplates("screenshot.png", "uploadImage.png", 30, 1);
+                if (copyButtonPosition.Count <= 0)
+                {
+                    Log.Print("使用模板匹配查找上传图片按钮失败");
+                    DockLog.Log2("使用模板匹配查找上传图片按钮失败");
+
+                    Process.Start("uploadImage2.exe").WaitForExit();
+                    Thread.Sleep(200);
+                    GUIOperation.HotKey("ctrl", "v");
+
+                }
+                else
+                {
+                    var (x, y) = copyButtonPosition[0];
+                    x += (uint)uploadImagePossibleActualSize.Item1;
+                    y += (uint)uploadImagePossibleActualSize.Item2;
+                    GUIOperation.Click((int)x, (int)y);
+                    Thread.Sleep(4000);
+                    Upload.upload();
+                }
+                Thread.Sleep(4000);
+            }
+
+            //return copyButtonPosition;
+        }
+
         static void AutoFocus()
         {
             while(autoFocusShouldRun)
