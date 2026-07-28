@@ -25,9 +25,9 @@ namespace QQPilot4
             // 1. 前缀标记
             string prefix = OwnByMyself ? "[你]" : "";
 
-            // 2. 文本处理 (空内容显示为【空】)
-            string content = string.IsNullOrEmpty(Text) ? "【空】" : Text;
-            Empty =content== "【空】";
+            // 2. 文本处理 
+            string content = string.IsNullOrEmpty(Text) ? "" : Text;
+
             
             // 3. 图片有效性检查 (核心逻辑移植)
             // 筛选出真实存在于硬盘上的图片路径
@@ -52,7 +52,7 @@ namespace QQPilot4
         {
 
             Empty = string.IsNullOrEmpty(Text);
-            string content = string.IsNullOrEmpty(Text) ? "【空】" : Text;
+            string content = string.IsNullOrEmpty(Text) ? "" : Text;
             if(string.IsNullOrEmpty(Time))
             {
                 Time =DateTime.Now.ToString("MM-dd HH:mm:ss");

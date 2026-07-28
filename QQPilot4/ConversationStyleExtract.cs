@@ -79,7 +79,7 @@ namespace QQPilot4
         public static List<ChatContent> ParseChatLog(string chatStr,string characterName)
         {
             string headerPattern = @"^(.+?):\s+(\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})$";
-            string[] lines = chatStr.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            string[] lines = chatStr.Split(["\r\n", "\r", "\n"], StringSplitOptions.None);
             var messages = new List<ChatContent>();
             int i = 0;
 

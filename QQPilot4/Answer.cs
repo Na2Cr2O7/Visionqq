@@ -99,7 +99,7 @@ namespace QQPilot4
             // 处理历史消息（除最后一条）
             foreach (var t in textList.Take(textList.Count - 1))
             {
-                if (string.IsNullOrEmpty(t.Text) || t.Empty || t.Text=="【空】") continue;
+                if (string.IsNullOrEmpty(t.Text) || t.Empty) continue;
                 messages.Add(new Dictionary<string, object>
                 {
                     ["role"] = t.OwnByMyself ? "assistant" : "user",
