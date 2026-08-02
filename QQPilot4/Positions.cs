@@ -17,8 +17,8 @@ public static class Positions
     public static readonly (int, int, int, int) sendImageBBoxAbsoluteSize = (663, 917, 663 + 44, 917 + 44);
     public static readonly (int, int, int, int) copyButtonBBoxAbsoluteSize = (1698, 1028, 1698 + 52, 1028 + 45);
     public static readonly (int, int, int, int) atPlaceBBoxAbsoluteSize = (108, 160, 108 + 165, 180 + 1099);
-    public static readonly (int, int, int, int) uploadImagePossibleBBoxAbsoluteSize = (546, 885, 546 + 784, 885 + 188);
-    public static readonly (int, int, int, int) copyButtonPossibleBBoxAbsoluteSize = (525, 912, 525 + 1121, 912 + 283);
+        public static readonly (int, int, int, int) uploadImagePossibleBBoxAbsoluteSize = (240, 499,  858,  221);//(366, 520, 366 + 733,520 + 200);
+        public static readonly (int, int, int, int) copyButtonPossibleBBoxAbsoluteSize = uploadImagePossibleBBoxAbsoluteSize;// (240, 499, 240+858, 499+221);
 
     // 拖拽与取消按钮位置
     public static readonly (int, int) startDraggingAbsolutePosition = (1898, 882);
@@ -55,10 +55,10 @@ public static class Positions
         ToRelativeRect(atPlaceBBoxAbsoluteSize, DEFAULT_SIZE);
 
     public static readonly (double, double, double, double) UPLOAD_IMAGE_POSSIBLE_BBOX_RELATIVE_SIZE =
-        ToRelativeRect(uploadImagePossibleBBoxAbsoluteSize, DEFAULT_SIZE);
+        ToRelativeRect(uploadImagePossibleBBoxAbsoluteSize, DEFAULT_SIZE2);
 
     public static readonly (double, double, double, double) COPY_BUTTON_POSSIBLE_BBOX_RELATIVE_SIZE =
-        ToRelativeRect(copyButtonPossibleBBoxAbsoluteSize, DEFAULT_SIZE);
+        ToRelativeRect(copyButtonPossibleBBoxAbsoluteSize, DEFAULT_SIZE2);
 
     // 相对点位置
     public static readonly (double, double) START_DRAGGING_RELATIVE_POSITION =
