@@ -10,7 +10,6 @@
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="*|x64" Project="x64" />
   </Project>
-  <Project Path="../t/t.csproj" Id="358f9925-255e-4cd5-a7f5-bf5fc7b8f441" />
   <Project Path="QQPilot4.csproj">
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="*|x64" Project="x64" />

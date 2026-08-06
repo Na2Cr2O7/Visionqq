@@ -60,7 +60,8 @@ namespace QQPilot4
                 }
                 if (OwnByMyself)
                 {
-                    return content[..(content.ToString().Length - 1)];
+                    // 空文本时直接返回，避免 content[..^1] 因长度 0 产生负数长度异常
+                    return content.Length == 0 ? "" : content[..^1];
                 }
                 else
                 {

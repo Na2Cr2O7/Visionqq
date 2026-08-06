@@ -8,7 +8,7 @@ build
 .vscode
 .vs
 .exe
-.reasonix
+./.reasonix/*
 __pycache__
 releaseBuild
 CImg.h
