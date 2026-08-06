@@ -329,7 +329,7 @@ namespace QQPilot4
                     DockLog.Log2("发送消息 🎉");
 
                     GUIOperation.HotKey("ctrl", "enter");
-                    Thread.Sleep(100);
+                    Thread.Sleep(4000);
                     Log.Print("退出会话");
                     //DockLog.Log2("发送消息 🎉");
 
