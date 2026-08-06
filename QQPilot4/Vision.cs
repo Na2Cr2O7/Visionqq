@@ -1,9 +1,10 @@
-﻿using System;
+﻿using IniParser;
+using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using IniParser;
 
 namespace QQPilot4
 {
@@ -62,8 +63,16 @@ namespace QQPilot4
             byte[] imageBytes,
             byte[] templateBytes,
             int tolerance,
-            int maxCount);
-
+            int maxCount
+            );
+        [DllImport(VisionDll, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int matchTemplatesSelectedScaleBegin(
+     byte[] imageBytes,
+     byte[] templateBytes,
+     int tolerance,
+     int maxCount,
+     float scale
+     );
         [DllImport(VisionDll, CallingConvention = CallingConvention.Cdecl)]
         public static extern Point matchTemplateNext(int index);
 
@@ -72,19 +81,23 @@ namespace QQPilot4
     }
 
     // === 主逻辑类 ===
-    internal class Image
+    internal class Vision
     {
+        private const float DEFAULT_SCALE    = 1.0f;
         private static readonly float Width;
         private static readonly float Height;
         private static readonly float Scale;
+        private static readonly float dScale;
 
-        static Image()
+
+        static Vision()
         {
             var parser = new FileIniDataParser();
             var data = parser.ReadFile("config.ini", new UTF8Encoding(false));
             Width = int.Parse(data["general"]["width"]);
             Height = int.Parse(data["general"]["height"]);
             Scale = float.Parse(data["general"]["scale"]);
+            dScale = Scale / DEFAULT_SCALE;
         }
 
         // 封装函数
@@ -129,7 +142,18 @@ namespace QQPilot4
         {
             byte[] imgBytes = Encoding.UTF8.GetBytes(imagePath);
             byte[] tplBytes = Encoding.UTF8.GetBytes(templatePath);
+            //var results = new List<(uint x, uint y)>();
 
+            var results = FindTemplatesByNearingDScale(
+             imagePath,
+            templatePath,
+             tolerance,
+             maxCount);
+
+            if(results.Count>=maxCount)
+            {
+                return results;
+            }
             int count = NativeMethods.matchTemplatesMultiScaleBegin(imgBytes, tplBytes, tolerance, maxCount);
 
             if (count < 0)
@@ -145,17 +169,102 @@ namespace QQPilot4
                 throw new InvalidOperationException(msg);
             }
 
-            var results = new List<(uint x, uint y)>();
             for (int i = 0; i < count; i++)
             {
                 Point pt = NativeMethods.matchTemplateNext(i);
                 results.Add((pt.x, pt.y));
+                if (results.Count >= maxCount)
+                {
+                    break;
+                }
             }
 
             NativeMethods.matchTemplateEnd();
             return results;
         }
+        public static List<(uint x, uint y)> FindTemplatesByNearingDScale(
+           string imagePath,
+           string templatePath,
+           int tolerance = 30,
+           int maxCount = 1)
+        {
+            byte[] imgBytes = Encoding.UTF8.GetBytes(imagePath);
+            byte[] tplBytes = Encoding.UTF8.GetBytes(templatePath);
+            var results = new List<(uint x, uint y)>();
 
+            foreach (float scale in new List<float>([dScale, dScale - 0.1f, dScale - 0.2f, dScale + 0.1f    ,dScale+0.2f ,dScale-0.05f    ,dScale+0.05f]))
+            {
+                int count = NativeMethods.matchTemplatesSelectedScaleBegin(imgBytes, tplBytes, tolerance, maxCount, scale);
+
+                if (count < 0)
+                {
+                    NativeMethods.matchTemplateEnd();
+                    string msg = count switch
+                    {
+                        -1 => "大图尺寸小于模板图尺寸",
+                        -2 => $"无法加载大图: {imagePath}",
+                        -3 => $"无法加载模板图: {templatePath}",
+                        _ => $"未知错误代码: {count}"
+                    };
+                    throw new InvalidOperationException(msg);
+                }
+
+                for (int i = 0; i < count; i++)
+                {
+                    Point pt = NativeMethods.matchTemplateNext(i);
+                    results.Add((pt.x, pt.y));
+                    if(results.Count>=maxCount)
+                    {
+                        break;
+                    }
+                }
+
+                NativeMethods.matchTemplateEnd();
+                if (results.Count >= maxCount)
+                {
+                    break;
+                }
+            }
+            return results;
+        }
+        public static List<(uint x, uint y)> FindTemplatesByCurrentScale(
+           string imagePath,
+           string templatePath,
+           int tolerance = 30,
+           int maxCount = 1)
+        {
+            byte[] imgBytes = Encoding.UTF8.GetBytes(imagePath);
+            byte[] tplBytes = Encoding.UTF8.GetBytes(templatePath);
+
+            int count = NativeMethods.matchTemplatesSelectedScaleBegin(imgBytes, tplBytes, tolerance, maxCount,Scale);
+
+            if (count < 0)
+            {
+                NativeMethods.matchTemplateEnd();
+                string msg = count switch
+                {
+                    -1 => "大图尺寸小于模板图尺寸",
+                    -2 => $"无法加载大图: {imagePath}",
+                    -3 => $"无法加载模板图: {templatePath}",
+                    _ => $"未知错误代码: {count}"
+                };  
+                throw new InvalidOperationException(msg);
+            }
+
+            var results = new List<(uint x, uint y)>();
+            for (int i = 0; i < count; i++)
+            {
+                Point pt = NativeMethods.matchTemplateNext(i);
+                results.Add((pt.x, pt.y));
+                if (results.Count >= maxCount)
+                {
+                    break;
+                }
+            }
+
+            NativeMethods.matchTemplateEnd();
+            return results;
+        }
         internal static RECT Rect(int item1, int item2, int item3, int item4)
         {
             return Rect((uint)item1, (uint)item2, (uint)item3, (uint)item4);

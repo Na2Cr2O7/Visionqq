@@ -203,6 +203,7 @@ static double matchScore(const PackedImage& image, const PackedImage& templ, Poi
 // DLL 导出接口
 // ==========================================
 void _matchTemplate(const PackedImage& imgObj, const PackedImage& tplObj, int tolerance,int maxCount, std::vector<Point>& dest = revelants);
+int MatchTemplateByFactors(const int numFactors, const float  factors[16], PackedImage& originalTplObj, int template_w, int template_h, int img_w, int img_h, int template_channels, PackedImage& imgObj, int tolerance, int count, unsigned char* image_data, unsigned char* template_data);
 static bool isPointDuplicate(const std::vector<Point>& existingPoints, const Point& newPt, int minDistance) {
     for (const auto& pt : existingPoints) {
         int dx = static_cast<int>(pt.x) - static_cast<int>(newPt.x);
@@ -213,6 +214,37 @@ static bool isPointDuplicate(const std::vector<Point>& existingPoints, const Poi
         }
     }
     return false;
+}
+EXPORT
+int matchTemplatesSelectedScaleBegin(const char* imagePath, const char* templatePath, int tolerance, int count,float scale)
+{
+    revelants.clear(); // 清空全局结果列表
+
+    const float factors[] = { scale };
+    const int numFactors = sizeof(factors) / sizeof(factors[0]);
+
+    // 1. 加载大图 (只加载一次)
+    int img_w, img_h, img_channels;
+    unsigned char* image_data = stbi_load(imagePath, &img_w, &img_h, &img_channels, 4);
+    if (!image_data) {
+        return -2;
+    }
+    img_channels = 4;
+
+    // 2. 加载原始模板 (只加载一次)
+    int template_w, template_h, template_channels;
+    unsigned char* template_data = stbi_load(templatePath, &template_w, &template_h, &template_channels, 4);
+    if (!template_data) {
+        stbi_image_free(image_data);
+        return -3;
+    }
+    template_channels = 4;
+
+    PackedImage imgObj = { image_data, img_w, img_h, img_channels };
+    PackedImage originalTplObj = { template_data, template_w, template_h, template_channels };
+
+    // 3. 多尺度循环
+    return MatchTemplateByFactors(numFactors, factors, originalTplObj, template_w, template_h, img_w, img_h, template_channels, imgObj, tolerance, count, image_data, template_data);
 }
 
 EXPORT
@@ -244,6 +276,11 @@ int matchTemplatesMultiScaleBegin(const char* imagePath, const char* templatePat
     PackedImage originalTplObj = { template_data, template_w, template_h, template_channels };
 
     // 3. 多尺度循环
+    return MatchTemplateByFactors(numFactors, factors, originalTplObj, template_w, template_h, img_w, img_h, template_channels, imgObj, tolerance, count, image_data, template_data);
+}
+
+int MatchTemplateByFactors(const int numFactors, const float factors[], PackedImage& originalTplObj, int template_w, int template_h, int img_w, int img_h, int template_channels, PackedImage& imgObj, int tolerance, int count, unsigned char* image_data, unsigned char* template_data)
+{
     for (int i = 0; i < numFactors; ++i) {
         float factor = factors[i];
         std::cout << "factor " << factor << std::endl;
@@ -291,11 +328,11 @@ int matchTemplatesMultiScaleBegin(const char* imagePath, const char* templatePat
         //std::vector<Point> temp = {};
         std::vector<Point> newMatches;
 
-        _matchTemplate(imgObj, currentTplObj, tolerance,count, newMatches);
+        _matchTemplate(imgObj, currentTplObj, tolerance, count, newMatches);
         if (newMatches.size() >= count)
         {
             std::copy(newMatches.begin(), newMatches.end(), std::back_inserter(revelants));
-            if (needsFree && resizedData) 
+            if (needsFree && resizedData)
             {
                 free(resizedData);
                 resizedData = nullptr;
@@ -322,7 +359,7 @@ int matchTemplatesMultiScaleBegin(const char* imagePath, const char* templatePat
         //    }
         //}
         std::copy_if(newMatches.begin(), newMatches.end(), std::back_inserter(revelants), [dedupThreshold](const Point& pt) {return !isPointDuplicate(revelants, pt, dedupThreshold); });
-        
+
         // 7. 【关键】如果当前模板是缩放生成的，释放内存
         if (needsFree && resizedData) {
             free(resizedData);
@@ -330,7 +367,7 @@ int matchTemplatesMultiScaleBegin(const char* imagePath, const char* templatePat
         }
     }
 
-    end:
+end:
     // 4. 清理原始图像内存
     stbi_image_free(image_data);
     stbi_image_free(template_data);

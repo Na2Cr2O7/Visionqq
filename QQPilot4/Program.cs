@@ -78,7 +78,7 @@ namespace QQPilot4
             Thread autoFocusThread = new(AutoFocus);
             autoFocusThread.Start();
 
-            Log.SetColor(ConsoleColor.Yellow);
+            Log.SetColor(ConsoleColor.Magenta);
             Log.Print("请将消息栏拉到最小!");
 
             Log.SetColor(ConsoleColor.Cyan);
@@ -93,8 +93,8 @@ namespace QQPilot4
 
                 for (int i = 0; i < 4; i++)
                 {
-                    Image.FullScreenShot();
-                    var (x, y) = Image.ContainsBlue();
+                    Vision.FullScreenShot();
+                    var (x, y) = Vision.ContainsBlue();
                     if(x==0 && y==0)
                     {
                         Thread.Sleep(1000);
@@ -170,26 +170,26 @@ namespace QQPilot4
             {
                 Console.Write("正在寻找新信息...\r");
                 DockLog.Log2("正在寻找新信息...");
-                var chatList = Image.FullScreenShot();
+                var chatList = Vision.FullScreenShot();
                 (uint,uint) contain=(0,0);
                 if(ATDetect)
                 {
-                    contain = Image.ContainsRedDot(Image.Rect(atPlaceActualSize));
+                    contain = Vision.ContainsRedDot(Vision.Rect(atPlaceActualSize));
                 }
                 else
                 {
-                    contain = Image.ContainsRedDot(Image.Rect(chatListActualSize));
+                    contain = Vision.ContainsRedDot(Vision.Rect(chatListActualSize));
                 }
                 if(contain!=(0,0))
                 {
                     Thread.Sleep(500);
                     if (ATDetect)
                     {
-                        contain = Image.ContainsRedDot(Image.Rect(atPlaceActualSize));
+                        contain = Vision.ContainsRedDot(Vision.Rect(atPlaceActualSize));
                     }
                     else
                     {
-                        contain = Image.ContainsRedDot(Image.Rect(chatListActualSize));
+                        contain = Vision.ContainsRedDot(Vision.Rect(chatListActualSize));
                     }
                     if (contain == (0, 0))
                     {
@@ -208,13 +208,13 @@ namespace QQPilot4
                     GUIOperation.GotoCenter(conversationActualSize);
                     Thread.Sleep(500);
 
-                    Image.Screenshot(copyButtonPossibleActualSize);
+                    Vision.Screenshot(copyButtonPossibleActualSize);
                     Thread.Sleep(1000);
                     Clipboard clipboard = new();
                     clipboard.SetText(string.Empty);
 
 
-                    List<(uint x, uint y)> points = Image.FindTemplates("screenshot.png", "./copy.png", 30, 1);
+                    List<(uint x, uint y)> points = Vision.FindTemplates("screenshot.png", "./copy.png", 30, 1);
                     if (points.Count == 0)
                     {
                         Log.Print("使用模板匹配查找复制按钮失败");
@@ -364,9 +364,9 @@ namespace QQPilot4
                         break;
                     }
 
-                    Image.Screenshot(uploadImagePossibleActualSize);
+                    Vision.Screenshot(uploadImagePossibleActualSize);
                     Thread.Sleep(1500);
-                    pointsOfUpload = Image.FindTemplates("screenshot.png", "./uploadImage.png", 30, 1);
+                    pointsOfUpload = Vision.FindTemplates("screenshot.png", "./uploadImage.png", 30, 1);
                     //Log.Print(pointsOfUpload/.) ?? "||");
                     if (pointsOfUpload.Count != 0)
                     {
@@ -375,9 +375,9 @@ namespace QQPilot4
                         continue;
                     }
 
-                    Image.Screenshot(copyButtonPossibleActualSize);
+                    Vision.Screenshot(copyButtonPossibleActualSize);
                     Thread.Sleep(1500);
-                    pointsOfCopy= Image.FindTemplates("screenshot.png", "./copy.png", 30, 1);
+                    pointsOfCopy= Vision.FindTemplates("screenshot.png", "./copy.png", 30, 1);
                     
                     if(pointsOfCopy.Count!=0)
                     {
@@ -436,11 +436,11 @@ namespace QQPilot4
             {
 
 
-                Image.Screenshot(uploadImagePossibleActualSize);
+                Vision.Screenshot(uploadImagePossibleActualSize);
 
-                Thread.Sleep(500);
+                Thread.Sleep(2000);
 
-                List<(uint x, uint y)> copyButtonPosition = Image.FindTemplates("screenshot.png", "uploadImage.png", 30, 1);
+                List<(uint x, uint y)> copyButtonPosition = Vision.FindTemplates("screenshot.png", "uploadImage.png", 30, 1);
                 if (copyButtonPosition.Count <= 0)
                 {
                     Log.Print("使用模板匹配查找上传图片按钮失败");
@@ -456,7 +456,7 @@ namespace QQPilot4
                     var (x, y) = copyButtonPosition[0];
                     x += (uint)uploadImagePossibleActualSize.Item1;
                     y += (uint)uploadImagePossibleActualSize.Item2;
-                    GUIOperation.Click((int)x, (int)y);
+                    GUIOperation.Click((int)x,   (int)y);
                     Thread.Sleep(4000);
                     Upload.upload();
                 }

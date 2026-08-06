@@ -17,7 +17,7 @@ public static class Positions
     public static readonly (int, int, int, int) sendImageBBoxAbsoluteSize = (663, 917, 663 + 44, 917 + 44);
     public static readonly (int, int, int, int) copyButtonBBoxAbsoluteSize = (1698, 1028, 1698 + 52, 1028 + 45);
     public static readonly (int, int, int, int) atPlaceBBoxAbsoluteSize = (108, 160, 108 + 165, 180 + 1099);
-        public static readonly (int, int, int, int) uploadImagePossibleBBoxAbsoluteSize = (240, 499,  858,  221);//(366, 520, 366 + 733,520 + 200);
+        public static readonly (int, int, int, int) uploadImagePossibleBBoxAbsoluteSize = (366, 520,  733,200);//(366, 520, 366 + 733,520 + 200);
         public static readonly (int, int, int, int) copyButtonPossibleBBoxAbsoluteSize = uploadImagePossibleBBoxAbsoluteSize;// (240, 499, 240+858, 499+221);
 
     // 拖拽与取消按钮位置
