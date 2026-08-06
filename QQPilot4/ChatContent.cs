@@ -50,27 +50,35 @@ namespace QQPilot4
         // 重写 ToString 方法
         public override string ToString()
         {
+            try
+            {
+                Empty = string.IsNullOrEmpty(Text);
+                string content = string.IsNullOrEmpty(Text) ? "" : Text;
+                if (string.IsNullOrEmpty(Time))
+                {
+                    Time = DateTime.Now.ToString("MM-dd HH:mm:ss");
+                }
+                if (OwnByMyself)
+                {
+                    return content[..(content.ToString().Length - 1)];
+                }
+                else
+                {
+                    //Unc unc=new();
+                    //unc.Username = Username;
+                    //unc.Content=content;
+                    //string serialized=JsonSerializer.Serialize(unc);
+                    //Console.WriteLine(serialized);
+                    ;
+                    return $"[time]\n{Time} \n\n [username] \n {Username} \n\n [content] \n {content}\n";
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Print(ex.ToString(), Log.Stat.ERROR);
+                return "";
+            }
 
-            Empty = string.IsNullOrEmpty(Text);
-            string content = string.IsNullOrEmpty(Text) ? "" : Text;
-            if(string.IsNullOrEmpty(Time))
-            {
-                Time =DateTime.Now.ToString("MM-dd HH:mm:ss");
-            }
-            if (OwnByMyself)
-            {
-                return content[..(content.ToString().Length-1)];
-            }
-            else
-            {
-                //Unc unc=new();
-                //unc.Username = Username;
-                //unc.Content=content;
-                //string serialized=JsonSerializer.Serialize(unc);
-                //Console.WriteLine(serialized);
-                ;
-                return $"[time]\n{Time} \n\n [username] \n {Username} \n\n [content] \n {content}\n";                
-            }
         }
     }
     //public class Unc()
