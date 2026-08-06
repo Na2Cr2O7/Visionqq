@@ -8,7 +8,7 @@ build
 .vscode
 .vs
 .exe
-./.reasonix/*
+.reasonix/*
 __pycache__
 releaseBuild
 CImg.h
@@ -377,3 +377,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/QQPilot4/.reasonix
