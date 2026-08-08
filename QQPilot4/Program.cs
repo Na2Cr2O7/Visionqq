@@ -255,7 +255,7 @@ namespace QQPilot4
                     {
                         Log.Print("没有提取到消息。",Log.Stat.ERROR);
    
-                    SpinnerLoad.Stop();
+                        SpinnerLoad.Stop();
 
                         GoBack(scale, chatButtonActualPosition, contactButtonActualPosition, copyButtonPossibleActualSize, uploadImagePossibleActualSize);
                         continue;
@@ -266,6 +266,12 @@ namespace QQPilot4
                     DockLog.Log2("等待语言模型生成答案");
 
                     GUIOperation.ClickCenter(commentSectionActualSize);
+                    
+                    GUIOperation.HotKey("ctrl", "a");
+                    Thread.Sleep(200);
+                    GUIOperation.PressKey("backspace");
+                    Thread.Sleep(200);
+
                     answer ??= new();
                     string result = answer.GetAnswer(ChatContents) ?? "";
                     if(answer.TotalTokens!=0)
