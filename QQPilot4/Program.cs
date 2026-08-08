@@ -47,7 +47,7 @@ namespace QQPilot4
             int scrollTries             = int.Parse(general["scroll"]);
             bool withImage              = (general["withimage"].Equals("true", StringComparison.CurrentCultureIgnoreCase));
             bool autoLogin              = (general["autologin"].Equals("true", StringComparison.CurrentCultureIgnoreCase));
-            int sendimagepossibility    = int.Parse(general["sendimagepossibility"]);
+            int sendImagePossibility    = int.Parse(general["sendimagepossibility"]);
             bool isVisionModel          = (general["isvisionmodel"].Equals("true", StringComparison.CurrentCultureIgnoreCase));
             bool ATDetect               = (general["atdetect"].Equals("true", StringComparison.CurrentCultureIgnoreCase));
             int tapTimes                =  int.Parse(general["tab_times"]);
@@ -289,7 +289,7 @@ namespace QQPilot4
                     if (result.Replace("\n\n", "") == "" || result == "")
                     {
                         //SpinnerLoad.Stop();
-                        if (withImage)
+                        if (withImage && sendImagePossibility>0)
                         {
                             Log.Print("答案未生成,上传图片",Log.Stat.WARN);
                             UploadImageWithoutSend(uploadImagePossibleActualSize);
@@ -317,7 +317,7 @@ namespace QQPilot4
 
                     int poss = ((int)(r.NextInt64() % 100));
                     Log.Print($"概率:{poss}");
-                    if (withImage && poss < sendimagepossibility)
+                    if (withImage && poss < sendImagePossibility)
                     {
 
                         Log.Print("上传图片");
