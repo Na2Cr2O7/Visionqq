@@ -253,28 +253,25 @@ namespace QQPilot4
                     string chatContentStr = clipboard.GetText() ?? "";
                     if (chatContentStr.Length == 0)
                     {
-                        Log.Print("没有提取到消息。",Log.Stat.ERROR);
-   
+                        Log.Print("没有提取到消息。", Log.Stat.ERROR);
+
                         SpinnerLoad.Stop();
 
                         GoBack(scale, chatButtonActualPosition, contactButtonActualPosition, copyButtonPossibleActualSize, uploadImagePossibleActualSize);
                         continue;
                     }
 
-                    List<ChatContent> ChatContents = ConversationStyleExtract.ParseChatLog(chatContentStr,characterName);
+                    List<ChatContent> ChatContents = ConversationStyleExtract.ParseChatLog(chatContentStr, characterName);
                     SpinnerLoad.Start(ConsoleColor.Green, "等待语言模型生成答案");
                     DockLog.Log2("等待语言模型生成答案");
 
                     GUIOperation.ClickCenter(commentSectionActualSize);
-                    
-                    GUIOperation.HotKey("ctrl", "a");
-                    Thread.Sleep(200);
-                    GUIOperation.PressKey("backspace");
-                    Thread.Sleep(200);
+
+                    ClearInputSection();
 
                     answer ??= new();
                     string result = answer.GetAnswer(ChatContents) ?? "";
-                    if(answer.TotalTokens!=0)
+                    if (answer.TotalTokens != 0)
                     {
                         tokenCount += answer.TotalTokens;
                         Log.Print($"累计用量: {tokenCount}");
@@ -287,7 +284,7 @@ namespace QQPilot4
                             Log.Print(e.ToString(), Log.Stat.ERROR);
                         }
                     }
-                    
+
 
                     SpinnerLoad.Stop();
 
@@ -295,19 +292,21 @@ namespace QQPilot4
                     if (result.Replace("\n\n", "") == "" || result == "")
                     {
                         //SpinnerLoad.Stop();
-                        if (withImage && sendImagePossibility>0)
+                        if (withImage && sendImagePossibility > 0)
                         {
-                            Log.Print("答案未生成,上传图片",Log.Stat.WARN);
+                            Log.Print("答案未生成,上传图片", Log.Stat.WARN);
                             UploadImageWithoutSend(uploadImagePossibleActualSize);
                             GUIOperation.HotKey("ctrl", "enter");
-
+                            Thread.Sleep(4000);
                             Log.Print("退出会话");
                         }
                         else
                         {
-                            Log.Print("答案未生成,退出会话",Log.Stat.ERROR);
+                            Log.Print("答案未生成,退出会话", Log.Stat.ERROR);
 
                         }
+
+                        ClearInputSection();
                         GoBack(scale, chatButtonActualPosition, contactButtonActualPosition, copyButtonPossibleActualSize, uploadImagePossibleActualSize);
 
                         continue;
@@ -327,7 +326,7 @@ namespace QQPilot4
                     {
 
                         Log.Print("上传图片");
-                        DockLog.Log2("上传图片");   
+                        DockLog.Log2("上传图片");
                         UploadImageWithoutSend(uploadImagePossibleActualSize);
                     }
                     Thread.Sleep(4000);
@@ -338,7 +337,7 @@ namespace QQPilot4
                     Thread.Sleep(4000);
                     Log.Print("退出会话");
                     //DockLog.Log2("发送消息 🎉");
-
+                    ClearInputSection();
                     GoBack(scale, chatButtonActualPosition, contactButtonActualPosition, copyButtonPossibleActualSize, uploadImagePossibleActualSize);
                 }
                 else
@@ -399,6 +398,14 @@ namespace QQPilot4
                 }
                 while ( true);
             }
+        }
+
+        private static void ClearInputSection()
+        {
+            GUIOperation.HotKey("ctrl", "a");
+            Thread.Sleep(200);
+            GUIOperation.PressKey("backspace");
+            Thread.Sleep(200);
         }
 
         private static void UploadImageWithoutSend((int, int, int, int) uploadImagePossibleActualSize)
