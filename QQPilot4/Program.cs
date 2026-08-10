@@ -21,9 +21,6 @@ namespace QQPilot4
             {
                 Console.OutputEncoding = Encoding.UTF8;
             }
-            Answer a = new();
-            a.Test();
-            return;
 
             DockLog.Init();
             Process? p=null;
