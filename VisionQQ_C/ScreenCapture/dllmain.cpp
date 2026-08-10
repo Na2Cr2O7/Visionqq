@@ -47,21 +47,27 @@ int getWidth()
 	HWND hwd = GetDesktopWindow();
 
 	HDC hdc = GetDC(hwd);
-	int width = ::GetDeviceCaps(hdc, DESKTOPHORZRES);
+	int width = 0;
+	if (hdc)
+	{
+		width = ::GetDeviceCaps(hdc, DESKTOPHORZRES);
+		::ReleaseDC(hwd, hdc); // 必须释放 DC，否则每次截图泄漏一个 GDI 句柄
+	}
 	return width;
 
 }
 
 static int CaptureAnImage(HWND hWnd, const float& scale, const wchar_t* name = L"")
 {
-	HDC hdcScreen;
-	HDC hdcWindow;
+	HDC hdcScreen = NULL;
+	HDC hdcWindow = NULL;
 	HDC hdcMemDC = NULL;
 	HBITMAP hbmScreen = NULL;
+	HBITMAP hbmOld = NULL;
 	BITMAP bmpScreen;
 	DWORD dwBytesWritten = 0;
 	DWORD dwSizeofDIB = 0;
-	HANDLE hFile = NULL;
+	HANDLE hFile = INVALID_HANDLE_VALUE;
 	char* lpbitmap = NULL;
 	HANDLE hDIB = NULL;
 	DWORD dwBmpSize = 0;
@@ -118,7 +124,8 @@ static int CaptureAnImage(HWND hWnd, const float& scale, const wchar_t* name = L
 	}
 
 	// Select the compatible bitmap into the compatible memory DC.
-	SelectObject(hdcMemDC, hbmScreen);
+	// 保存旧位图，释放前恢复，确保新建位图能被 DeleteObject 正常删除
+	hbmOld = (HBITMAP)SelectObject(hdcMemDC, hbmScreen);
 
 	// Bit block transfer into our compatible memory DC.
 	if (!BitBlt(hdcMemDC,
@@ -157,6 +164,10 @@ static int CaptureAnImage(HWND hWnd, const float& scale, const wchar_t* name = L
 	// have greater overhead than HeapAlloc.
 	hDIB = GlobalAlloc(GHND, dwBmpSize);
 	lpbitmap = (char*)GlobalLock(hDIB);
+	if (!lpbitmap)
+	{
+		goto done;
+	}
 
 	// Gets the "bits" from the bitmap, and copies them into a buffer 
 	// that's pointed to by lpbitmap.
@@ -172,6 +183,10 @@ static int CaptureAnImage(HWND hWnd, const float& scale, const wchar_t* name = L
 		NULL,
 		CREATE_ALWAYS,
 		FILE_ATTRIBUTE_NORMAL, NULL);
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		goto done;
+	}
 
 	// Add the size of the headers to the size of the bitmap to get the total file size.
 	dwSizeofDIB = dwBmpSize + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
@@ -189,19 +204,42 @@ static int CaptureAnImage(HWND hWnd, const float& scale, const wchar_t* name = L
 	WriteFile(hFile, (LPSTR)&bi, sizeof(BITMAPINFOHEADER), &dwBytesWritten, NULL);
 	WriteFile(hFile, (LPSTR)lpbitmap, dwBmpSize, &dwBytesWritten, NULL);
 
-	// Unlock and Free the DIB from the heap.
-	GlobalUnlock(hDIB);
-	GlobalFree(hDIB);
-
-	// Close the handle for the file that was created.
-	CloseHandle(hFile);
-
-	// Clean up.
+	// Clean up.（所有资源统一在 done 释放，正常与出错路径一致）
 done:
-	DeleteObject(hbmScreen);
-	DeleteObject(hdcMemDC);
-	ReleaseDC(NULL, hdcScreen);
-	ReleaseDC(hWnd, hdcWindow);
+	if (hFile != INVALID_HANDLE_VALUE)
+	{
+		CloseHandle(hFile);
+	}
+	if (lpbitmap)
+	{
+		GlobalUnlock(hDIB);
+	}
+	if (hDIB)
+	{
+		GlobalFree(hDIB);
+	}
+	if (hbmScreen)
+	{
+		// 先恢复旧位图，确保新建位图能被 DeleteObject 删除
+		if (hdcMemDC && hbmOld)
+		{
+			SelectObject(hdcMemDC, hbmOld);
+		}
+		DeleteObject(hbmScreen);
+	}
+	if (hdcMemDC)
+	{
+		// 兼容 DC 必须用 DeleteDC 释放（DeleteObject 对 DC 无效，会泄漏 GDI 句柄）
+		DeleteDC(hdcMemDC);
+	}
+	if (hdcWindow)
+	{
+		ReleaseDC(hWnd, hdcWindow);
+	}
+	if (hdcScreen)
+	{
+		ReleaseDC(NULL, hdcScreen);
+	}
 
 	return 0;
 }
