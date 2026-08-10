@@ -1,5 +1,7 @@
 using IniParser;
 using IniParser.Model;
+using Microsoft.VisualBasic.Logging;
+using System.Diagnostics;
 using System.Text;
 
 namespace QQPilotGUISharp
@@ -61,7 +63,7 @@ namespace QQPilotGUISharp
             general["atdetect"] = ATDetect.Checked.ToString().ToLower();
             general["remote_server_timeout"] = RemoteServerTimeout.Value.ToString();
             general["name"] = UserName.Text;
-
+            general["forceollamaapi"] = forceOllamaAPI.Checked.ToString().ToLower();
             // tab_times 只允许 7 或 8
             int tabTime = TabTimes.SelectedIndex == 0 ? 7 : 8;
             general["tab_times"] = tabTime.ToString();
@@ -120,6 +122,7 @@ namespace QQPilotGUISharp
             {
                 ResetTokenConuter();
             }
+            forceOllamaAPI.Checked = general["forceollamaapi"].Equals("true", StringComparison.CurrentCultureIgnoreCase);
         }
 
         private void ResetTokenConuter()
@@ -150,6 +153,7 @@ namespace QQPilotGUISharp
             }
             //else { ServerUrl.Enabled = false; }
             ServerUrl.Enabled = (ServerName.SelectedIndex == 2);
+            forceOllamaAPI.Enabled = ServerUrl.Enabled;
 
 
         }
@@ -229,6 +233,27 @@ namespace QQPilotGUISharp
         private void UserName_TextChanged(object sender, EventArgs e)
         {
             IsNULL(sender);
+        }
+
+        private void forceOllamaAPI_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
+        {
+
+        }
+
+        private void buttonShadow3_Click(object sender, EventArgs e)
+        {
+            Process? p = null;
+            try
+            {
+                p = Process.Start("notepad","extra.json");
+
+            }
+            catch
+            {
+               
+                
+            }
+            p?.WaitForExit();
         }
     }
 }

@@ -72,6 +72,9 @@
             UserName = new AntdUI.Input();
             label18 = new AntdUI.Label();
             tooltip2 = new AntdUI.Tooltip();
+            forceOllamaAPI = new AntdUI.Switch();
+            label20 = new AntdUI.Label();
+            buttonShadow3 = new AntdUI.ButtonShadow();
             SuspendLayout();
             // 
             // winHeight
@@ -487,12 +490,42 @@
             tooltip2.TabIndex = 48;
             tooltip2.Text = "用于判断是否是自身消息";
             // 
+            // forceOllamaAPI
+            // 
+            forceOllamaAPI.Location = new Point(465, 297);
+            forceOllamaAPI.Margin = new Padding(2);
+            forceOllamaAPI.Name = "forceOllamaAPI";
+            forceOllamaAPI.Size = new Size(78, 33);
+            forceOllamaAPI.TabIndex = 50;
+            forceOllamaAPI.CheckedChanged += forceOllamaAPI_CheckedChanged;
+            // 
+            // label20
+            // 
+            label20.Location = new Point(336, 302);
+            label20.Margin = new Padding(2);
+            label20.Name = "label20";
+            label20.Size = new Size(136, 22);
+            label20.TabIndex = 49;
+            label20.Text = "强制使用OllamaAPI";
+            // 
+            // buttonShadow3
+            // 
+            buttonShadow3.Location = new Point(200, 297);
+            buttonShadow3.Name = "buttonShadow3";
+            buttonShadow3.Size = new Size(111, 32);
+            buttonShadow3.TabIndex = 51;
+            buttonShadow3.Text = "请求的额外参数";
+            buttonShadow3.Click += buttonShadow3_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ButtonFace;
             ClientSize = new Size(1075, 489);
+            Controls.Add(buttonShadow3);
+            Controls.Add(forceOllamaAPI);
+            Controls.Add(label20);
             Controls.Add(tooltip2);
             Controls.Add(label18);
             Controls.Add(UserName);
@@ -591,5 +624,8 @@
         private AntdUI.Input UserName;
         private AntdUI.Label label18;
         private AntdUI.Tooltip tooltip2;
+        private AntdUI.Switch forceOllamaAPI;
+        private AntdUI.Label label20;
+        private AntdUI.ButtonShadow buttonShadow3;
     }
 }

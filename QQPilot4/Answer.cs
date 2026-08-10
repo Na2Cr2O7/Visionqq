@@ -179,6 +179,7 @@ namespace QQPilot4
         JsonSerializerOptions? jsonSerializerOptionsForPrinting;
         public async Task<string?> GetAnswerAsync(List<ChatContent> text, string systemPrompt = "auto")
         {
+
             if (text == null || text.Count == 0) return "";
 
             // 内置模型
@@ -192,7 +193,56 @@ namespace QQPilot4
                 }
                 return "";
             }
+            string extra = "{}";
+            try
+            {
 
+                extra=File.ReadAllText("extra.json", new UTF8Encoding(false));
+            }
+            catch
+            {
+
+            }
+           JsonDocument? extraJson;
+            try
+            {
+             extraJson = JsonSerializer.Deserialize<JsonDocument>(extra);
+
+            }
+            catch
+            {
+                  extraJson=JsonSerializer.Deserialize<JsonDocument>("{}");
+            }
+            var mergedData = new Dictionary<string, object>();
+            if (extraJson != null)
+            {
+                
+                foreach (JsonProperty property in extraJson.RootElement.EnumerateObject())
+                {
+                    // property.Name 是键
+                    // property.Value 是 JsonElement
+
+                    // 注意：JsonElement 需要转换为具体类型才能存入 object
+                    // 这里简单处理，根据类型转换
+                    if (property.Value.ValueKind == JsonValueKind.String)
+                        mergedData[property.Name] = property.Value.GetString()!;
+                    else if (property.Value.ValueKind == JsonValueKind.Number)
+                        mergedData[property.Name] = property.Value.GetDouble();
+                    else if (property.Value.ValueKind == JsonValueKind.True || property.Value.ValueKind == JsonValueKind.False)
+                        mergedData[property.Name] = property.Value.GetBoolean();
+                    else if (property.Value.ValueKind == JsonValueKind.Null)
+                        mergedData[property.Name] = "null";
+                    else if (property.Value.ValueKind == JsonValueKind.Object)
+                        // 嵌套对象可以递归处理，或者直接用 Utf8JsonWriter 写入
+                        mergedData[property.Name] = JsonSerializer.Deserialize<object>(property.Value.GetRawText())!;
+                    else if (property.Value.ValueKind == JsonValueKind.Array)
+                        mergedData[property.Name] = JsonSerializer.Deserialize<object[]>(property.Value.GetRawText()!)!;
+                }
+            }
+            string finalJson = JsonSerializer.Serialize(mergedData);
+            Log.Print(finalJson);
+
+            //foreach(var (k,v) in extraJson )
             // 系统提示
             string finalSystemPrompt = systemPrompt switch
             {
@@ -243,6 +293,11 @@ namespace QQPilot4
                 ["messages"] = messages,
                 ["stream"] = false,
             };
+
+            foreach(KeyValuePair<string, object> k in mergedData)
+            {
+                requestBody[k.Key]= k.Value;
+            }
 
             jsonSerializerOptionsForPosting ??= new JsonSerializerOptions { WriteIndented = false };
             string json = JsonSerializer.Serialize(requestBody,jsonSerializerOptionsForPosting! );
