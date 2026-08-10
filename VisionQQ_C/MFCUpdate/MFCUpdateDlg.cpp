@@ -231,6 +231,35 @@ void CMFCUpdateDlg::OnEnChangeEdit1()
 }
 constexpr auto CONFIG_FILE = "config.ini";
 //constexpr auto LCONFIG_FILE = L"config.ini";
+
+// 迁移单个用户配置文件（如 system.txt / extra.json）：
+// 旧版本目录中存在该文件时，以旧版内容覆盖新版（当前目录）中的同名文件，
+// 后续整体复制到旧版目录时即可保留用户旧配置，而不是被新版模板粗暴替换；
+// 旧版本不存在该文件（如老版本尚无此配置）时保留新版默认模板。
+static void MigrateConfigFile(const std::string& oldDir, const char* fileName)
+{
+	try
+	{
+		std::ifstream src(oldDir + fileName, std::ios::binary);
+		if (!src.is_open())
+		{
+			// 旧版本没有该配置文件，保留新版默认模板，避免把新版文件截断为空
+			return;
+		}
+
+		std::ofstream dst(fileName, std::ios::binary);
+		if (!dst.is_open())
+		{
+			return;
+		}
+
+		dst << src.rdbuf();
+	}
+	catch (const std::exception&)
+	{
+	}
+}
+
 void CMFCUpdateDlg::OnBnClickedButton2()
 {
 	setlocale(LC_ALL, "zh_CN.UTF-8");
@@ -270,17 +299,9 @@ void CMFCUpdateDlg::OnBnClickedButton2()
 	oldIni.release();
 	newIni.release();
 
-	//读取system.txt(1.5.11+)
-	try
-	{
-		std::ifstream src(std::string(oldPath)+"system.txt", std::ios::binary);
-		std::ofstream dst("system.txt", std::ios::binary);
-		dst << src.rdbuf();
-	}
-	catch(std::exception e)
-	{
-
-	}
+	//迁移用户配置文件(system.txt / extra.json)：以旧版内容为准，避免新版模板粗暴覆盖
+	MigrateConfigFile(std::string(oldPath), "system.txt");
+	MigrateConfigFile(std::string(oldPath), "extra.json");
 
 
 	auto files2 = recursiveFiles(std::filesystem::current_path());
