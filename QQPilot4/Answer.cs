@@ -28,6 +28,10 @@ namespace QQPilot4
         private string SysPmpt { get; set; } = "";
         private TinyLangJaccardCS? TinyLangJaccard;
 
+        private 
+            //readonly
+            bool UseOllama=false;
+
         // 常量
         private const int MAX_LENGTH = 2048;
 
@@ -51,7 +55,8 @@ namespace QQPilot4
 
             if (ServerUrl.Equals("ollama", StringComparison.OrdinalIgnoreCase))
             {
-                ServerUrl = "http://localhost:11434/v1";
+                ServerUrl = "http://localhost:11434/api/chat";
+                UseOllama= true;
             }
             else if (ServerUrl.Equals("builtin", StringComparison.OrdinalIgnoreCase))
             {
@@ -231,14 +236,15 @@ namespace QQPilot4
             {
                 ["model"] = ModelName,
                 ["messages"] = messages,
-                ["max_tokens"] = MAX_LENGTH,
-                ["temperature"] = 0.7
+                ["stream"] = false,
             };
 
             jsonSerializerOptionsForPosting ??= new JsonSerializerOptions { WriteIndented = false };
             string json = JsonSerializer.Serialize(requestBody,jsonSerializerOptionsForPosting! );
 
+
             var content = new StringContent(json, Encoding.UTF8, "application/json");
+
 
             // 设置 Headers
             if (!string.IsNullOrEmpty(ApiKey) && !ServerUrl.Contains("localhost") && !ServerUrl.Contains("127.0.0.1"))
@@ -254,15 +260,29 @@ namespace QQPilot4
             try
             {
                 var startTime = DateTime.UtcNow;
-                Log.Print($"Sending request to: {ServerUrl}/chat/completions");
+                HttpResponseMessage response;
                 jsonSerializerOptionsForPrinting ??= new JsonSerializerOptions
                 {
                     Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
                     WriteIndented = true // 可选：美化输出
                 };
+                if (! UseOllama)
+                {
+
+           
+                    Log.Print($"Sending request to: {ServerUrl}/chat/completions");
+
                  //Log.Print(JsonSerializer.Serialize(requestBody, jsonSerializerOptionsForPrinting!));
 
-                HttpResponseMessage response = await _httpClient.PostAsync($"{ServerUrl}/chat/completions", content);
+                     response= await _httpClient.PostAsync($"{ServerUrl}/chat/completions", content);
+                }
+                else
+                {
+                    Log.Print($"Sending request to: {ServerUrl}");
+
+                    response = await _httpClient.PostAsync(ServerUrl, content);
+
+                }
                 string responseBody = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
@@ -276,11 +296,22 @@ namespace QQPilot4
                 Log.Print(responseBody.ToString());
 
                 using JsonDocument doc = JsonDocument.Parse(responseBody);
-                string? answer = doc.RootElement
-                    .GetProperty("choices")[0]
-                    .GetProperty("message")
-                    .GetProperty("content")
-                    .GetString();
+                string? answer = null;
+                if (UseOllama)
+                {
+                    answer = doc.RootElement
+                        .GetProperty("message")
+                        .GetProperty("content")
+                        .GetString();
+                }
+                else
+                {
+                    answer = doc.RootElement
+                        .GetProperty("choices")[0]
+                        .GetProperty("message")
+                        .GetProperty("content")
+                        .GetString();
+                }
                 try
                 {
                     if (doc.RootElement.TryGetProperty("usage", out JsonElement usage))
@@ -337,13 +368,16 @@ namespace QQPilot4
         {
             try
             {
+                UseOllama = true;
+                ServerUrl = "http://localhost:8080/api/chat";
+
                 //ChatContent c = ;
                 Log.Print($"[ASSISTANT]: {GetAnswer([
-                    //new("Username1", [], "1", DateTime.Now.ToShortDateString(), false),
+                    new("Username1", [], "你好", DateTime.Now.ToShortDateString(), false),
                     //new("Username3", [], "1",DateTime.Now.ToShortDateString(), false),
                     //new("Username2", [], "1", DateTime.Now.ToShortDateString(), false),
                     //new("Username4", [], "1", DateTime.Now.ToShortDateString(), false),
-                    new("Username5", ["C:\\Users\\Develop\\Downloads\\juniorcuisine-template-26.2\\src\\main\\resources\\assets\\juniorcuisine\\textures\\item\\slime_podding.png"], "这是什么图片 /no_think", "", false),
+                    //new("Username5", ["C:\\Users\\Develop\\Downloads\\juniorcuisine-template-26.2\\src\\main\\resources\\assets\\juniorcuisine\\textures\\item\\slime_podding.png"], "这是什么图片 /no_think", "", false),
                     //new("Username5", ["C:\\Users\\Develop\\Downloads\\juniorcuisine-template-26.2\\src\\main\\resources\\assets\\juniorcuisine\\textures\\item\\magma_cream_podding.png"], "这是什么图片 /no_think", "", false),
                     //new("Username5", ["C:\\Users\\Develop\\Downloads\\juniorcuisine-template-26.2\\src\\main\\resources\\assets\\juniorcuisine\\textures\\item\\nether_stew.png"], "这是什么图片 /no_think", "", false),
                     ])}");
