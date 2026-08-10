@@ -8,6 +8,7 @@ using System.Text;
 
 namespace QQPilot4
 {
+    
     // === 结构体定义 ===
     [StructLayout(LayoutKind.Sequential)]
     public struct Point
@@ -88,7 +89,15 @@ namespace QQPilot4
         private static readonly float Height;
         private static readonly float Scale;
         private static readonly float dScale;
-
+        
+        
+        
+        public static void Test()
+        {
+            FullScreenShot();
+            ;
+            Screenshot(0, 0, 230, 440);
+        }
 
         static Vision()
         {
@@ -274,4 +283,5 @@ namespace QQPilot4
             return Rect((uint)Pos.Item1, (uint)Pos.Item2, (uint)Pos.Item3, (uint)Pos.Item4);
         }
     }
+    
 }
