@@ -135,6 +135,19 @@ namespace QQPilot4
 
             return messages;
         }
+        public static void Test()
+        {
+            string f = "neko: 08-10 17:18:30\r\n这就是……我的……猫爪攻击喵~\r\n\r\nneko: 08-10 17:18:31\r\n喵～网易监管确实像摆设呢 但最后这句“本来不想展现实力”也太经典了 喵₍ᐢ.ˬ.ᐢ₎\r\n\r\nneko: 08-10 17:18:46\r\n<img src=\"file://C:\\Users\\Develop\\Documents\\Tencent Files\\1692860991\\nt_qq\\nt_data\\Pic\\2026-08\\Thumb\\ea3229f89fee9510a42a294f7f40ae6c_720.jpg\" />\r\n\r\nOurMovement: 08-10 17:19:55\r\n<img src=\"file://C:\\Users\\Develop\\Documents\\Tencent Files\\1692860991\\nt_qq\\nt_data\\Pic\\2026-08\\Ori\\8e359f69c04a2ff4632042ab39cdddc9.jpg\" />\r\n\r\nOurMovement: 08-10 17:19:57\r\n2￥\r\n\r\nOurMovement: 08-10 17:20:05\r\n会赢吗\r\n\r\nNa₂IrCl₆•6H₂O: 08-10 17:20:09\r\n像是代餐\r\n\r\nOurMovement: 08-10 17:20:22\r\n<img src=\"file://C:\\Users\\Develop\\Documents\\Tencent Files\\1692860991\\nt_qq\\nt_data\\Emoji\\emoji-recv\\2026-08\\Ori\\017b25025c244d9e1b4e7f98b9816209.jpg\" />\r\n\r\nneko: 08-10 17:20:54\r\n什么发言这么唐啊喵~\r\n\r\nOurMovement: 08-10 17:21:04\r\n@凌铱铱🔥 喵？\r\n\r\nOurMovement: 08-10 17:21:07\r\n<img src=\"file://C:\\Users\\Develop\\Documents\\Tencent Files\\1692860991\\nt_qq\\nt_data\\Emoji\\emoji-recv\\2026-08\\Ori\\ffacc2fc4aafc6d23a7008ab724c0c4e.jpg\" />\r\n\r\nneko: 08-10 17:21:09\r\n<img src=\"file://C:\\Users\\Develop\\Documents\\Tencent Files\\1692860991\\nt_qq\\nt_data\\Pic\\2026-08\\Ori\\efbc80d6b7cc65d99416d1d39b6951b8.jpg\" />\r\n\r\n蓝色鲸鱼: 08-10 17:21:11\r\n又发图喵？本喵今天眼神不太好，只能看到一团糊糊\r\n\r\n话说你们说本喵被neko教坏了，哼，本喵明明是自学成才喵\r\n\r\n林枫柠🍁🍋: 08-10 17:21:45\r\n？！！？\r\n\r\nNa₂IrCl₆•6H₂O: 08-10 17:21:47\r\n？\r\n\r\n林枫柠🍁🍋: 08-10 17:22:22\r\n被neko教成zako了\r\n\r\n林枫柠🍁🍋: 08-10 17:22:27\r\n<img src=\"file://C:\\Users\\Develop\\Documents\\Tencent Files\\1692860991\\nt_qq\\nt_data\\Emoji\\emoji-recv\\2026-08\\Ori\\b8c962b6d006575ecd10f1e73339e488.jpg\" />\r\n\r\nneko: 08-10 17:23:06\r\n哼\r\n\r\nbaiyan: 08-10 17:23:19\r\n试一下\r\n\r\nneko: 08-10 17:23:20\r\n<img src=\"file://C:\\Users\\Develop\\Documents\\Tencent Files\\1692860991\\nt_qq\\nt_data\\Pic\\2026-08\\Ori\\e7b788f0be535433ca76f1db57623ffa.jpg\" />"
+            ;
+            var d=ParseChatLog(f, "neko");
+            foreach (var line in d)
+            {
+                Console.WriteLine(line.ToString());
+            }
+            Answer A=new();
+            A.GetAnswer(d);
+            //A.E
+                }
         //public static Func<string, List<ChatContent>> Extract = ParseChatLog;
     }
 }

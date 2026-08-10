@@ -21,6 +21,7 @@ namespace QQPilot4
             {
                 Console.OutputEncoding = Encoding.UTF8;
             }
+    
             DockLog.Init();
             Process? p=null;
             try

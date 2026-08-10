@@ -326,15 +326,16 @@ namespace QQPilot4
                     Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
                     WriteIndented = true // 可选：美化输出
                 };
+                //Log.Print(JsonSerializer.Serialize(requestBody, jsonSerializerOptionsForPrinting!));
+
                 if (! UseOllama)
                 {
 
            
                     Log.Print($"Sending request to: {ServerUrl}/chat/completions");
 
-                 //Log.Print(JsonSerializer.Serialize(requestBody, jsonSerializerOptionsForPrinting!));
 
-                     response= await _httpClient.PostAsync($"{ServerUrl}/chat/completions", content);
+                    response = await _httpClient.PostAsync($"{ServerUrl}/chat/completions", content);
                 }
                 else
                 {
