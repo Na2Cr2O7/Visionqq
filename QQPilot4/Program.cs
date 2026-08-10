@@ -21,7 +21,8 @@ namespace QQPilot4
             {
                 Console.OutputEncoding = Encoding.UTF8;
             }
-    
+            //ConversationStyleExtract.Test();
+            //return;
             DockLog.Init();
             Process? p=null;
             try

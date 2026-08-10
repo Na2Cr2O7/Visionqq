@@ -62,7 +62,8 @@ namespace QQPilot4
                 {
                     ServerUrl = "http://localhost:11434/api/chat";
                     UseOllama = true;
-                }
+                    //UseOllama = false;
+            }
                 else if (ServerUrl.Equals("builtin", StringComparison.OrdinalIgnoreCase))
                 {
                     Builtin = true;
@@ -106,69 +107,78 @@ namespace QQPilot4
         {
             var messages = new List<Dictionary<string, object>>();
 
-            // 处理历史消息（除最后一条）
-            foreach (var t in textList.Take(textList.Count - 1))
+            foreach (var t in textList)
             {
-                if (string.IsNullOrEmpty(t.Text) || t.Empty) continue;
-                messages.Add(new Dictionary<string, object>
+                // 只收集同时出现在全局 images 列表（已按 MaxImageCount 截断）中的图片
+                var imageB64 = new List<string>();       // 纯 base64 —— Ollama 使用
+                var imageDataUrls = new List<string>();  // data: URI  —— OpenAI 兼容 API 使用
+                foreach (var img in t.ImagePaths)
                 {
-                    ["role"] = t.OwnByMyself ? "assistant" : "user",
-                    ["content"] = $"{t}",
-    
-                });
-            }
-
-            // 最后一条消息
-            string lastText = textList.Count != 0 ? textList.Last().ToString() : " ";
-            //string lastTime=textList.Count!=0 ? textList.Last().Time : string.Empty;
-            if (string.IsNullOrEmpty(lastText)) lastText = " ";
-
-            if (IsVisionModel && images.Count != 0)
-            {
-                var contentList = new List<object>
-                {
-                    new Dictionary<string, string> { ["type"] = "text", ["text"] = lastText }
-                };
-
-                foreach (var img in images.Take(MaxImageCount))
-                {
-                    if (!File.Exists(img)) continue;
+                    if (images.IndexOf(img) < 0) continue;
 
                     string b64 = ImageToBase64(img);
                     string mime = img.ToLower().EndsWith(".png") ? "image/png" : "image/jpeg";
-                    contentList.Add(new Dictionary<string, object>
-                    {
-                        ["type"] = "image_url",
-                        ["image_url"] = new Dictionary<string, string>
-                        {
-                            ["url"] = $"data:{mime};base64,{b64}"
-                        }
-                    });
+                    imageB64.Add(b64);
+                    imageDataUrls.Add($"data:{mime};base64,{b64}");
                 }
 
-                messages.Add(new Dictionary<string, object>
-                {
-                    ["role"] = "user",
-                    ["content"] = contentList
-                });
-            }
-            else
-            {
-                messages.Add(new Dictionary<string, object>
-                {
-                    ["role"] = "user",
-                    ["content"] = $"{lastText}",
+                // 只有用户消息携带图片；assistant 消息只带文本
+                bool hasText = !string.IsNullOrEmpty(t.Text);
+                bool attachImages = !t.OwnByMyself && imageB64.Count > 0;
 
-                });
-            }
+                // 既没有文本、也没有可发送的图片 → 整条消息跳过。
+                // 注意：纯图片消息（Text 为空但有图片）必须保留，否则图片永远不会发出去。
+                if (!hasText && !attachImages) continue;
 
-            if (messages.Count == 0)
-            {
-                messages.Add(new Dictionary<string, object>
+                string text = hasText ? $"{t}" : "";
+
+                var message = new Dictionary<string, object>
                 {
-                    ["role"] = "user",
-                    ["content"] = "_",
-                });
+                    ["role"] = t.OwnByMyself ? "assistant" : "user",
+                };
+
+                if (UseOllama)
+                {
+                    // Ollama /api/chat 格式：images 是与 content 平级的【纯 base64】数组（不带 data: 前缀）
+                    message["content"] = text;
+                    if (attachImages)
+                    {
+                        message["images"] = imageB64.ToArray();
+                    }
+                }
+                else
+                {
+                    // OpenAI 兼容格式：content 可以是字符串，也可以是分段数组
+                    if (!attachImages)
+                    {
+                        message["content"] = text;
+                    }
+                    else
+                    {
+                        var parts = new List<object>
+                        {
+                            new Dictionary<string, object>
+                            {
+                                ["type"] = "text",
+                                ["text"] = text
+                            }
+                        };
+                        foreach (var url in imageDataUrls)
+                        {
+                            parts.Add(new Dictionary<string, object>
+                            {
+                                ["type"] = "image_url",
+                                ["image_url"] = new Dictionary<string, string>
+                                {
+                                    ["url"] = url
+                                }
+                            });
+                        }
+                        message["content"] = parts;
+                    }
+                }
+
+                messages.Add(message);
             }
 
             return messages;
@@ -253,7 +263,9 @@ namespace QQPilot4
 
             // 收集图片
             var imageList = new List<string>();
-            foreach (var t in text)
+            var reversedText = new List<ChatContent>(text.ToArray());
+            reversedText.Reverse();
+            foreach (var t in reversedText)
             {
                 if (!t.OwnByMyself)
                 {
@@ -326,7 +338,14 @@ namespace QQPilot4
                     Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
                     WriteIndented = true // 可选：美化输出
                 };
-                //Log.Print(JsonSerializer.Serialize(requestBody, jsonSerializerOptionsForPrinting!));
+                try
+                {
+
+                File.WriteAllText("dest.json", JsonSerializer.Serialize(requestBody, jsonSerializerOptionsForPrinting!));
+                }catch
+                {
+
+                }
 
                 if (! UseOllama)
                 {
