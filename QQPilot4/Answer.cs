@@ -27,9 +27,10 @@ namespace QQPilot4
         private bool Builtin { get; set; } = false;
         private string SysPmpt { get; set; } = "";
         private TinyLangJaccardCS? TinyLangJaccard;
+        private bool ForceOllamaAPI { get; set; }
 
-        private 
-            //readonly
+        private
+            readonly
             bool UseOllama=false;
 
         // 常量
@@ -46,22 +47,26 @@ namespace QQPilot4
             IsVisionModel = config["general"]["isvisionmodel"].Equals("true", StringComparison.OrdinalIgnoreCase);
             MaxImageCount = int.Parse(config["general"]["maximagecount"]);
             RemoteServerTimeout = int.Parse(config["general"]["remote_server_timeout"]);
+            ForceOllamaAPI = bool.Parse(config["general"]["forceollamaapi"]);
             ApiKey = config["general"]["api_key"];
             SysPmpt = File.Exists("system.txt") ? File.ReadAllText("system.txt") : "";
 
             // 配置 HttpClient
             _httpClient = new HttpClient();
             _httpClient.Timeout = TimeSpan.FromSeconds(RemoteServerTimeout);
-
-            if (ServerUrl.Equals("ollama", StringComparison.OrdinalIgnoreCase))
+            if (ForceOllamaAPI)
             {
-                ServerUrl = "http://localhost:11434/api/chat";
-                UseOllama= true;
+                UseOllama = true;
             }
-            else if (ServerUrl.Equals("builtin", StringComparison.OrdinalIgnoreCase))
-            {
-                Builtin = true;
-            }
+            else if (ServerUrl.Equals("ollama", StringComparison.OrdinalIgnoreCase))
+                {
+                    ServerUrl = "http://localhost:11434/api/chat";
+                    UseOllama = true;
+                }
+                else if (ServerUrl.Equals("builtin", StringComparison.OrdinalIgnoreCase))
+                {
+                    Builtin = true;
+                }
             // 否则 ServerUrl 就是用户自定义的 base URL（如 http://192.168.1.100:8000/v1）
         }
 
@@ -329,9 +334,8 @@ namespace QQPilot4
                         .GetProperty("reasoning_content")
                         .GetString();  
                     reason ??= doc.RootElement  //Ollama
-                        .GetProperty("choices")[0]
                         .GetProperty("message")
-                        .GetProperty("reasoning")
+                        .GetProperty("thinking")
                         .GetString();
 
                     if (reason is not null)
@@ -368,9 +372,9 @@ namespace QQPilot4
         {
             try
             {
-                UseOllama = true;
+                //UseOllama = true;
                 ServerUrl = "http://localhost:8080/api/chat";
-
+                ForceOllamaAPI= true;
                 //ChatContent c = ;
                 Log.Print($"[ASSISTANT]: {GetAnswer([
                     new("Username1", [], "你好", DateTime.Now.ToShortDateString(), false),

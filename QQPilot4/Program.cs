@@ -21,6 +21,9 @@ namespace QQPilot4
             {
                 Console.OutputEncoding = Encoding.UTF8;
             }
+            Answer a = new();
+            a.Test();
+            return;
 
             DockLog.Init();
             Process? p=null;
@@ -270,7 +273,8 @@ namespace QQPilot4
                     ClearInputSection();
 
                     answer ??= new();
-                    string result = answer.GetAnswer(ChatContents) ?? "";
+                    string result = (answer.GetAnswer(ChatContents) ?? "");
+                    result = result[..500];
                     if (answer.TotalTokens != 0)
                     {
                         tokenCount += answer.TotalTokens;
