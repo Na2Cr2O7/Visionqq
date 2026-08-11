@@ -272,7 +272,7 @@ namespace QQPilot4
 
                     answer ??= new();
                     string result = (answer.GetAnswer(ChatContents) ?? "");
-                    result = result[..500];
+                    result = result.Length > 500 ? result[..500] : result;
                     if (answer.TotalTokens != 0)
                     {
                         tokenCount += answer.TotalTokens;

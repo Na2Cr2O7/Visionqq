@@ -57,6 +57,7 @@ namespace QQPilot4
             if (ForceOllamaAPI)
             {
                 UseOllama = true;
+                ServerUrl += "/api/chat";
             }
             else if (ServerUrl.Equals("ollama", StringComparison.OrdinalIgnoreCase))
                 {
@@ -265,25 +266,29 @@ namespace QQPilot4
             var imageList = new List<string>();
             var reversedText = new List<ChatContent>(text.ToArray());
             reversedText.Reverse();
-            foreach (var t in reversedText)
+            if(IsVisionModel)
             {
-                if (!t.OwnByMyself)
+                foreach (var t in reversedText)
                 {
-                    foreach (var img in t.ImagePaths)
+                    if (!t.OwnByMyself)
                     {
-                        if (File.Exists(img))
+                        foreach (var img in t.ImagePaths)
                         {
-                            imageList.Add(img);
-                            if (imageList.Count >= MaxImageCount) break;
+                            if (File.Exists(img))
+                            {
+                                imageList.Add(img);
+                                if (imageList.Count >= MaxImageCount) break;
+                            }
+                            else
+                            {
+                                Log.Print($"× 没有找到图片 {img}", Log.Stat.WARN);
+                            }
                         }
-                        else
-                        {
-                            Log.Print($"× 没有找到图片 {img}",Log.Stat.WARN);
-                        }
+                        if (imageList.Count >= MaxImageCount) break;
                     }
-                    if (imageList.Count >= MaxImageCount) break;
                 }
             }
+       
 
             // 构建 messages
             var messages = new List<Dictionary<string, object>>();
