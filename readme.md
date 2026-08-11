@@ -24,7 +24,10 @@
 <img alt="示例截图" src="./assets/qqpilot.png" width="300" >
 </div>
 
+## 1.5.17
 
+对于强制使用Ollama API，填写类似https://example.com 即可，会自动定向到 https://example.com/api/chat。
+否则填写https://example.com/v1 定向到 https://example.com/v1/chat/completions/
 
 
 
