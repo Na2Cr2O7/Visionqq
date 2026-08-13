@@ -88,15 +88,62 @@ static int select()
 	}
 	selectedImage = std::wstring(path, std::wcslen(pathwithastar) - 1) + images.at(0);
 }
-int main()
+
+std::unique_ptr<wchar_t[]> CharToWchar(const char* str) {
+	if (!str) return nullptr;
+
+	// Step 1: 获取所需缓冲区大小
+	int wideLen = MultiByteToWideChar(
+		CP_ACP,           // 代码页：ANSI
+		0,                // 标志位
+		str,              // 输入字符串
+		-1,               // -1 表示自动计算到 '\0'
+		nullptr,          // 首次调用
+		0                 // 返回所需大小
+	);
+
+	if (wideLen <= 0) {
+		throw std::runtime_error("MultiByteToWideChar failed");
+	}
+
+	// Step 2: 分配内存（auto 释放）
+	auto wideStr = std::make_unique<wchar_t[]>(wideLen);
+
+	// Step 3: 执行转换
+	int result = MultiByteToWideChar(
+		CP_ACP,
+		0,
+		str,
+		-1,
+		wideStr.get(),
+		wideLen
+	);
+
+	if (result == 0) {
+		throw std::runtime_error("MultiByteToWideChar conversion failed");
+	}
+
+	return wideStr; // 自动管理内存
+}
+int main(int argc,char** argv)
 {
+	if (argc == 2)
+	{
+		//selectedImage = argv[1];
+		auto result=CharToWchar(argv[1]);
+		selectedImage = result.get();
+	}
+	else if (argc==1)
+	{
+		select();
+	}
+	else
+	{
+		std::cout << "Invalid argument:\t" << argv[0] << " <selectedImage>\n";
+		return -1;
+	}
 
-	////HRESULT result0 = PathCchCombine(copyDirectory, MAX_PATH, currentDirectory, argv[1]);
-	//std::cout << result0 << "\n";
-	//std::wcout << copyDirectory << "\n";
 
-	//initialize Gdiplus once:
-	select();
 
 	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 	ULONG_PTR gdiplusToken;

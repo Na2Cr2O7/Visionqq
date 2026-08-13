@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -35,6 +36,7 @@ namespace QQPilot4
 
         // 常量
         private const int MAX_LENGTH = 2048;
+        private const string TEMP_PATH = "./temp/";
 
         public long TotalTokens
         {
@@ -69,9 +71,21 @@ namespace QQPilot4
                 {
                     Builtin = true;
                 }
-            // 否则 ServerUrl 就是用户自定义的 base URL（如 http://192.168.1.100:8000/v1）
-        }
 
+
+            // 否则 ServerUrl 就是用户自定义的 base URL（如 http://192.168.1.100:8000/v1）
+            // 初始化temp
+            Directory.CreateDirectory(TEMP_PATH);
+        }
+        ~Answer()
+        {
+            try
+            {
+            Directory.Delete(TEMP_PATH);
+            }
+            catch
+            { }
+        }
         // --- 工具方法 ---
 
         private static string ImageToBase64(string path)
@@ -118,7 +132,14 @@ namespace QQPilot4
                     if (images.IndexOf(img) < 0) continue;
 
                     string b64 = ImageToBase64(img);
-                    string mime = img.ToLower().EndsWith(".png") ? "image/png" : "image/jpeg";
+                    string lower = img.ToLower();
+                    string mime = lower.EndsWith(".png") ? "image/png"
+                                : lower.EndsWith(".jpg") || lower.EndsWith(".jpeg") ? "image/jpeg"
+                                : lower.EndsWith(".gif") ? "image/gif"
+                                : lower.EndsWith(".webp") ? "image/webp"
+                                : lower.EndsWith(".bmp") ? "image/bmp"
+                                : lower.EndsWith(".avif") ? "image/avif"
+                                : "image/jpeg";
                     imageB64.Add(b64);
                     imageDataUrls.Add($"data:{mime};base64,{b64}");
                 }
@@ -188,8 +209,9 @@ namespace QQPilot4
         // --- 主逻辑：直接 POST 调用 API ---
         JsonSerializerOptions? jsonSerializerOptionsForPosting;
         JsonSerializerOptions? jsonSerializerOptionsForPrinting;
-        public async Task<string?> GetAnswerAsync(List<ChatContent> text, string systemPrompt = "auto")
+        public async Task<UploadContent?> GetAnswerAsync(List<ChatContent> text, string systemPrompt = "auto")
         {
+            var startTime = DateTime.UtcNow;
 
             if (text == null || text.Count == 0) return "";
 
@@ -200,7 +222,7 @@ namespace QQPilot4
                 {
                     if (string.IsNullOrEmpty(t.Text) || t.OwnByMyself) continue;
                     TinyLangJaccard ??= new TinyLangJaccardCS("datasetTiny.json");
-                    return TinyLangJaccard.Answer(t.Text);
+                    return new (TinyLangJaccard.Answer(t.Text), []);
                 }
                 return "";
             }
@@ -336,7 +358,6 @@ namespace QQPilot4
 
             try
             {
-                var startTime = DateTime.UtcNow;
                 HttpResponseMessage response;
                 jsonSerializerOptionsForPrinting ??= new JsonSerializerOptions
                 {
@@ -382,12 +403,14 @@ namespace QQPilot4
 
                 using JsonDocument doc = JsonDocument.Parse(responseBody);
                 string? answer = null;
+                List<string> outgoingImagePaths = [];
                 if (UseOllama)
                 {
                     answer = doc.RootElement
                         .GetProperty("message")
                         .GetProperty("content")
                         .GetString();
+                    
                 }
                 else
                 {
@@ -396,6 +419,55 @@ namespace QQPilot4
                         .GetProperty("message")
                         .GetProperty("content")
                         .GetString();
+
+
+                    if (doc.RootElement.TryGetProperty("choices", out JsonElement choices))
+                    {
+                        // 1. 获取第一个 choice (index 0)
+                        if (choices[0].TryGetProperty("message", out JsonElement message))
+                        {
+                            // 2. 尝试获取 "images" 字段
+                            if (message.TryGetProperty("images", out JsonElement imagesArray))
+                            {
+                                // 3. 检查它是否是一个数组
+                                if (imagesArray.ValueKind == JsonValueKind.Array)
+                                {
+                                    Console.WriteLine($"找到 {imagesArray.GetArrayLength()} 张图片");
+
+                                    // 4. 遍历数组中的每一张图片
+                                    foreach (JsonElement image in imagesArray.EnumerateArray())
+                                    {
+                                        try
+                                        {
+                                            // 方法 A: 直接获取 data URL (推荐，包含格式前缀)
+                                            if (image.TryGetProperty("image_url", out JsonElement imageUrlObj))
+                                            {
+                                                string dataUrl = imageUrlObj.GetProperty("url").GetString() ?? "";
+                                                Console.WriteLine($"图片 DataURL: {dataUrl[..Math.Min(50, dataUrl.Length)]}...");
+                                                outgoingImagePaths.Add(SaveToTemp(dataUrl));
+                                            }
+
+                                            // 方法 B: 如果 API 返回的是直接的 b64_json (某些旧版或特定模型)
+                                            if (image.TryGetProperty("b64_json", out JsonElement b64Element))
+                                            {
+                                                string base64String = b64Element.GetString() ?? "";
+                                                Console.WriteLine($"Base64 长度: {base64String?.Length ?? 0}");
+                                                outgoingImagePaths.Add(SaveToTemp(base64String??""));
+
+                                            }
+                                        }
+                                        catch(Exception ex)
+                                        {
+                                            Log.Print(ex.ToString(),Log.Stat.ERROR);
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+
+
+                    }
                 }
                 try
                 {
@@ -433,7 +505,7 @@ namespace QQPilot4
                 Log.Print($"用时 {elapsed:F2}s");
                 Log.Print(answer?.Trim()??"");
 
-                return answer?.Trim();
+                return new (answer?.Trim(), outgoingImagePaths);
             }
             catch (Exception ex)
             {
@@ -443,18 +515,56 @@ namespace QQPilot4
         }
 
         // 同步版本
-        public string? GetAnswer(List<ChatContent> text, string systemPrompt = "auto")
+        public UploadContent? GetAnswer(List<ChatContent> text, string systemPrompt = "auto")
         {
             return GetAnswerAsync(text, systemPrompt).GetAwaiter().GetResult();
         }
+        public static string MD5(string input)
+        {
+            using (MD5 md5Hash = System.Security.Cryptography.MD5.Create())
+            {
+                byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+                StringBuilder sBuilder = new StringBuilder();
+                for (int i = 0; i < data.Length; i++)
+                {
+                    sBuilder.Append(data[i].ToString("x2"));
+                }
+                return sBuilder.ToString();
+            }
+        }
+        static string SaveToTemp(string base64String)
+        {
+            string meta = base64String.Split(";")[0];
+            string base64 = base64String.Split(',')[1];
+            string filename = MD5(base64);
+            
+            var ext=meta.Split("data:image/")[1];
+            filename += "." + ext;
+            string filePath = Path.Combine(TEMP_PATH, filename);
+            SaveBase64Image(base64, filePath);
+            return filePath;
+        }
 
+         static void SaveBase64Image(string base64String, string filePath)
+        {
+            // 如果传入的是 data URL (data:image/png;base64,...)，需要去掉前缀
+            Log.Print("saved" + filePath);
+            if (base64String.Contains(','))
+            {
+                base64String = base64String.Split(',')[1];
+            }
+
+            byte[] imageBytes = Convert.FromBase64String(base64String);
+            File.WriteAllBytes(filePath, imageBytes);
+            Console.WriteLine($"图片已保存到: {filePath}");
+        }
         public void Test()
         {
             try
             {
                 //UseOllama = true;
-                ServerUrl = "http://localhost:8080/api/chat";
-                ForceOllamaAPI= true;
+                //ServerUrl = "http://localhost:8080/api/chat";
+                //ForceOllamaAPI= true;
                 //ChatContent c = ;
                 Log.Print($"[ASSISTANT]: {GetAnswer([
                     new("Username1", [], "你好", DateTime.Now.ToShortDateString(), false),

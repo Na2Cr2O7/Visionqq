@@ -101,6 +101,13 @@ extern "C" int __declspec(dllexport) upload()
 	EnumWindows(uploadFile, NULL);
 	return 0;
 }
+extern "C" int __declspec(dllexport) uploadSelectedImage(wchar_t* src)
+{
+	selectedImage = src;
+	std::wcout << "selected " << src << std::endl;
+	EnumWindows(uploadFile, NULL);
+	return 0;
+}
 
 
 static BOOL CALLBACK uploadFile(HWND hwnd, LPARAM lparam)

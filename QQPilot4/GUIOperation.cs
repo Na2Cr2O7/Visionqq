@@ -121,6 +121,10 @@ namespace QQPilot4
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
 
+
+
+        [DllImport("uploadFile.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+        private static extern int uploadSelectedImage(string src);
         // === 初始化 ===
         public static bool Init()
         {
@@ -195,6 +199,8 @@ namespace QQPilot4
         private delegate bool MouseUpDownDelegate();
         private static MouseUpDownDelegate _mouseDown, _mouseUp;
 
+
+
         public static bool MouseDown()
         {
             if (_mouseDown == null)
@@ -231,6 +237,12 @@ namespace QQPilot4
                 PressKey("ESC");
             }
             Console.WriteLine();
+        }
+
+        public static void UploadSelectedFile(string file)
+        {
+
+            uploadSelectedImage(file);
         }
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
