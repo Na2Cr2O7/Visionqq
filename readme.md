@@ -91,7 +91,7 @@ ollama pull minicpm-v4.6:1b
 |模型名称    | 填写使用的模型          |
 |视觉模型    | 选定的模型是否是视觉模型，如果不是，则不会传任何图片给API          |
 |API Key|填写LLM 提供商的API Key，如果是Ollama，可以填写随机值|
-|服务器|填写类似https://example.com/v1 定向到 https://example.com/v1/chat/completions/，若开启 **强制使用Ollama API** ，填写类似https://example.com 即可，会自动定向到 https://example.com/api/chat|
+|服务器|支持直接使用Ollama(http://localhost:11434/api/chat),内置模型（Jaccard）和填写URL。填写类似https://example.com/v1 定向到 https://example.com/v1/chat/completions/，若开启 **强制使用Ollama API** ，填写类似https://example.com 即可，会自动定向到 https://example.com/api/chat|
 |框选消息时长|选择消息的长度随时长的增加而增加|
 |请求的额外参数|API请求的额外参数，`{"think":false}`可以让Ollama API 的模型不思考 |
 |包含图片|发送完结果后上传`.\Images`下面的图片，API返回的图片必定发送 |
