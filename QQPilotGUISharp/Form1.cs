@@ -76,6 +76,9 @@ namespace QQPilotGUISharp
         }
         private void Form1_Load(object sender, EventArgs e)
         {
+            Left = Screen.PrimaryScreen!.Bounds.Width - Width - 20;
+            
+            Top= Screen.PrimaryScreen!.Bounds.Height - Height -50;
             parser = new();
             IniData ini = parser.ReadFile("config.ini", fileEncoding: new UTF8Encoding(false));
             KeyDataCollection general = ini["general"];
