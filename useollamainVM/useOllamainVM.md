@@ -1,6 +1,6 @@
 # 在虚拟机中调用主机上的 Ollama 服务（Windows 主机）
 
-本教程将指导你如何在虚拟机（如 VMware、VirtualBox 等）中访问运行在 **Windows 主机** 上的 Ollama 服务，从而避免在虚拟机中重复部署模型。
+本教程将指导你如何在虚拟机（如 VMware、VirtualBox 等）中访问运行在 **主机** 上的 Ollama 服务，从而避免在虚拟机中重复部署模型。
 
 适用于VisionQQ/QQPilot 1.5+
 
@@ -103,9 +103,13 @@
    ```
    http://192.168.31.233:11434/v1/
    ```
-   
+
+ > 对于强制使用Ollama API，填写类似http://192.168.31.233:11434 即可，会自动定向到 http://192.168.31.233:11434/api/chat。
+ >  否则填写http://192.168.31.233:11434/v1/定向到 http://192.168.31.233:11434/v1/chat/completions/
 <!-- ![alt text]() -->
-    <img src="image-3.png" />
+
+![alt text](image-3.png)
+
 ![alt text](image-5.png)
    > 🔑 注意：OpenAI-Python要求填写 API Key，即使 Ollama 本身不需要。此时可随意填写非空值（如 `dummy-key`），只要不为 `None` 或留空即可。
    
@@ -127,7 +131,6 @@
    复制你想要使用的完整 `NAME`（包括命名空间和标签），填入虚拟机客户端的“模型名称”字段。
 ![alt text](image-4.png)
 
-![alt text](image-6.png)
 
 * 使用时你应该可以看到
 ```bash
@@ -151,6 +154,13 @@ huihui_ai/deepseek-r1-abliterated:8b    5ae823b61e22    5.8 GB    100% GPU     4
   - 可将环境变量写入系统（通过“系统属性 → 环境变量”），但需注意安全风险。
   - 更推荐编写一个启动脚本（`.bat` 文件）自动完成 kill + serve 流程。
 
+  ```cmd
+   taskkill /F /IM ollama.exe
+   taskkill /F /IM "ollama app.exe" 
+   set OLLAMA_HOST=0.0.0.0
+   set OLLAMA_ORIGINS=*
+   ollama serve
+   ```
 ---
 
 ✅ 完成以上步骤后，你的虚拟机即可无缝调用主机上运行的 Ollama 模型，节省资源并统一管理！
