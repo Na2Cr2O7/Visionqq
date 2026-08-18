@@ -277,8 +277,7 @@ namespace QQPilot4
 
                     GUIOperation.ClickCenter(commentSectionActualSize);
 
-                    ClearInputSection();
-
+                    
                     answer ??= new();
                     //string result = (( ?? new UploadContent("")).ToString() ?? "");
                     UploadContent results= answer.GetAnswer(ChatContents) ?? new("");
@@ -319,8 +318,6 @@ namespace QQPilot4
                             Log.Print("答案未生成,退出会话", Log.Stat.ERROR);
 
                         }
-
-                        ClearInputSection();
                         GoBack(scale, chatButtonActualPosition, contactButtonActualPosition, copyButtonPossibleActualSize, uploadImagePossibleActualSize);
 
                         continue;
