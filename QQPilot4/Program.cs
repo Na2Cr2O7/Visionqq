@@ -23,6 +23,7 @@ namespace QQPilot4
             }
             //Answer a=new();
             //var g=a.GetAnswer([new("Username1", [], "你好", DateTime.Now.ToShortDateString(), false)]);
+
             //Console.WriteLine(g.ToString());
             ////Console.WriteLine(g.ToString());
             //var g2 = g.Absolute();
@@ -332,6 +333,7 @@ namespace QQPilot4
                     {
                         Log.Print("上传获取的图片");
                         Upload2.UploadSelectedImage(uploadImagePossibleActualSize, image);
+                        Upload.escape();
 
                     }
                     Random r = new();
@@ -344,6 +346,8 @@ namespace QQPilot4
                         Log.Print("上传图片");
                         DockLog.Log2("上传图片");
                         UploadImageWithoutSend(uploadImagePossibleActualSize);
+                        Upload.escape();
+
                     }
                     Thread.Sleep(4000);
                     Log.Print("发送消息 🎉");
@@ -355,6 +359,7 @@ namespace QQPilot4
                     //DockLog.Log2("发送消息 🎉");
                     ClearInputSection();
                     GoBack(scale, chatButtonActualPosition, contactButtonActualPosition, copyButtonPossibleActualSize, uploadImagePossibleActualSize);
+                    
                 }
                 else
                 {
@@ -371,7 +376,7 @@ namespace QQPilot4
                 List<(uint x, uint y)> pointsOfCopy;
                 List<(uint x, uint y)> pointsOfUpload;
                 int count = 0;
-                //检车是否存在上传图片和复制按钮确保已经退出对话。
+                //检查是否存在上传图片和复制按钮确保已经退出对话。
                 do
                 {
                     GUIOperation.Click(chatButtonActualPosition.Item1 + (int)(100 * scale), chatButtonActualPosition.Item2 + (int)(80 * scale));

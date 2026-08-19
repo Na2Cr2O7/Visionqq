@@ -19,7 +19,9 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 
 
 std::wstring selectedImage;
+const wchar_t* findStr = L"请选择";
 static BOOL CALLBACK uploadFile(HWND hwnd, LPARAM lparam);
+static BOOL escapeUploadFileDialog(HWND hwnd, LPARAM lparam);
 static bool stringInString(const std::wstring& text, const std::wstring& search)
 {
 	return text.find(search) != std::wstring::npos;
@@ -110,24 +112,37 @@ extern "C" int __declspec(dllexport) uploadSelectedImage(wchar_t* src)
 }
 
 
-static BOOL CALLBACK uploadFile(HWND hwnd, LPARAM lparam)
+extern "C" void __declspec(dllexport) escape()
 {
-	//wchar_t windowName[MAX_PATH]{};
+	EnumWindows(escapeUploadFileDialog, NULL);
+}
+static std::wstring getWindowName(const HWND& hwnd)
+{
 	if (not IsWindowVisible(hwnd))
 	{
-		return true;
+		return L"";
 	}
 	int length = GetWindowTextLength(hwnd);
-	if (not length) return true;
+	if (not length) return L"";
 	std::unique_ptr<wchar_t[]> windowName = std::make_unique<wchar_t[]>(static_cast<size_t>(length) + 1);
 	int success = GetWindowText(hwnd, windowName.get(), MAX_PATH);
 	if (not success)
 	{
-		return true;
+		return L"";
 	}
 	//return true;
-	std::wcout << windowName.get() << std::endl;
-	if (stringInString(std::wstring(windowName.get(), length), L"请选择"))
+	//std::wcout << windowName.get() << std::endl;
+	const std::wstring windowName2 = std::wstring(windowName.get(), length);
+	return windowName2;
+}
+
+static BOOL CALLBACK uploadFile(HWND hwnd, LPARAM lparam)
+{
+	//wchar_t windowName[MAX_PATH]{};
+
+	auto windowName2 = getWindowName(hwnd);
+	if (windowName2 == L"") return true;
+	if (stringInString(windowName2, findStr))
 	{
 
 		HWND comboboxEx32 = FindWindowEx(hwnd, NULL, L"ComboBoxEx32", NULL);
@@ -136,6 +151,17 @@ static BOOL CALLBACK uploadFile(HWND hwnd, LPARAM lparam)
 		SendMessage(edit, WM_SETTEXT, NULL, (LPARAM)((selectedImage).c_str()));
 		HWND button = FindWindowEx(hwnd, NULL, L"Button", NULL);
 		SendMessage(hwnd, WM_COMMAND, 1, (LPARAM)button);
+	}
+	return true;
+}
+static BOOL CALLBACK escapeUploadFileDialog(HWND hwnd, LPARAM lparam)
+{
+	auto windowName2 = getWindowName(hwnd);
+	if (windowName2 == L"") return true;
+	if (stringInString(windowName2, findStr))
+	{
+		SendMessage(hwnd, WM_CLOSE, 0, 0);
+		return false;
 	}
 	return true;
 }

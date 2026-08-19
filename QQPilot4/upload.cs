@@ -12,6 +12,9 @@ namespace QQPilot4
     {
         [DllImport("uploadFile.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int upload();
+
+        [DllImport("uploadFile.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void escape();
         //extern "C" int __declspec(dllexport) upload()
     }
 }
