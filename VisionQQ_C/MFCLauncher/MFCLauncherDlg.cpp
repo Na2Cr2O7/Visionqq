@@ -110,7 +110,7 @@ void CMFCLauncherDlg::OnBnClickedButton1()
 
 void CMFCLauncherDlg::OnBnClickedButton4()
 {
-	run(L"Download.exe");
+	//run(L"Download.exe");
 
 }
 bool run(const wchar_t* fn)
@@ -142,7 +142,7 @@ void CMFCLauncherDlg::OnBnClickedButton5()
 
 void CMFCLauncherDlg::OnBnClickedButton2()
 {
-	run(L"扩展管理器.exe");
+	//run(L"扩展管理器.exe");
 	// TODO: 在此添加控件通知处理程序代码
 }
 
@@ -155,6 +155,6 @@ void CMFCLauncherDlg::OnBnClickedOk2()
 
 void CMFCLauncherDlg::OnBnClickedButton6()
 {
-	run(L"MFCUpdate.exe");
+	//run(L"MFCUpdate.exe");
 	// TODO: 在此添加控件通知处理程序代码
 }

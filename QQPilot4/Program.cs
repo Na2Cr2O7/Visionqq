@@ -117,49 +117,56 @@ namespace QQPilot4
                 }
                 Thread.Sleep(1000);
             }
-
+            Log.SetColor(ConsoleColor.Cyan);
+            Log.Print("======================================================");
+            Log.Print("");
+            Log.SetColor(ConsoleColor.Yellow);
+            Log.Print("\t使用时请勿移动鼠标！");
+            Log.Print("");
+            Log.SetColor(ConsoleColor.Cyan);
+            Log.Print("======================================================");
 
             size = ((int)(size.Item1 * scale), (int)(size.Item2 * scale));
             (int,int,int,int) positionRect=(0,0,size.Item1,size.Item2);
 
             // 聊天列表实际大小
             var chatListActualSize = Positions.ToActualSize(Positions.CHAT_LIST_BBOX_RELATIVE_SIZE, size);
-            Log.Print( $"聊天列表实际大小: {chatListActualSize}");
+            //Log.Print( $"聊天列表实际大小: {chatListActualSize}");
             // 聊天区域实际大小
             var conversationActualSize = Positions.ToActualSize(Positions.CONVERSATION_BBOX_RELATIVE_SIZE, size);
-            Log.Print( $"聊天区域实际大小: {conversationActualSize}");
+            //Log.Print( $"聊天区域实际大小: {conversationActualSize}");
             // 输入框实际大小
             var commentSectionActualSize = Positions.ToActualSize(Positions.COMMENT_SECTION_BBOX_RELATIVE_SIZE, size);
-            Log.Print( $"输入框实际大小: {commentSectionActualSize}");
+            //Log.Print( $"输入框实际大小: {commentSectionActualSize}");
             // 发送按钮实际大小
             var sendButtonActualSize = Positions.ToActualSize(Positions.SEND_BUTTON_BBOX_RELATIVE_SIZE, size);
-            Log.Print( $"发送按钮实际大小: {sendButtonActualSize}");
+            //Log.Print( $"发送按钮实际大小: {sendButtonActualSize}");
             // 退出会话按钮实际大小
             var exitConversationActualSize = Positions.ToActualSize(Positions.EXIT_CONVERSATION_BBOX_RELATIVE_SIZE, size);
-            Log.Print( $"退出会话按钮实际大小: {exitConversationActualSize}");
+            //Log.Print( $"退出会话按钮实际大小: {exitConversationActualSize}");
             // 发送图片按钮实际大小
             var sendImageActualSize = Positions.ToActualSize(Positions.SEND_IMAGE_BBOX_RELATIVE_SIZE, size);
-            Log.Print( $"发送图片按钮实际大小: {sendImageActualSize}");
+            //Log.Print( $"发送图片按钮实际大小: {sendImageActualSize}");
             // @位置实际大小
             var atPlaceActualSize = Positions.ToActualSize(Positions.AT_PLACE_BBOX_RELATIVE_SIZE, size);
-            Log.Print( $"@位置实际大小: {atPlaceActualSize}");
+            //Log.Print( $"@位置实际大小: {atPlaceActualSize}");
             // 拖拽起止位置
             var startDraggingAbsolutePosition = Positions.ToActualPoint(Positions.START_DRAGGING_RELATIVE_POSITION, size);
             var endDraggingAbsolutePosition = Positions.ToActualPoint(Positions.END_DRAGGING_RELATIVE_POSITION, size);
-            Log.Print( $"开始拖拽位置: {startDraggingAbsolutePosition}");
-            Log.Print( $"结束拖拽位置: {endDraggingAbsolutePosition}");
+            //Log.Print( $"开始拖拽位置: {startDraggingAbsolutePosition}");
+            //Log.Print( $"结束拖拽位置: {endDraggingAbsolutePosition}");
             // 聊天按钮和联系人按钮位置
             var chatButtonActualPosition = Positions.ToActualPoint(Positions.CHAT_BUTTON_RELATIVE_POSITION, size);
-            Log.Print( $"聊天按钮实际位置: {chatButtonActualPosition}");
+            //Log.Print( $"聊天按钮实际位置: {chatButtonActualPosition}");
             var contactButtonActualPosition = Positions.ToActualPoint(Positions.CONTACT_BUTTON_RELATIVE_POSITION, size);
-            Log.Print( $"联系人按钮实际位置: {contactButtonActualPosition}");
+            //Log.Print( $"联系人按钮实际位置: {contactButtonActualPosition}");
             // 取消按钮位置（未打印日志，按需添加）
             var cancelButtonActualPosition = Positions.ToActualPoint(Positions.CANCEL_BUTTON_RELATIVE_POSITION, size);
             // 上传图片和复制按钮可能区域
             var uploadImagePossibleActualSize = Positions.ToActualSize(Positions.UPLOAD_IMAGE_POSSIBLE_BBOX_RELATIVE_SIZE, size);
             var copyButtonPossibleActualSize = Positions.ToActualSize(Positions.COPY_BUTTON_POSSIBLE_BBOX_RELATIVE_SIZE, size);
-            Log.Print( $"上传图片可能位置: {uploadImagePossibleActualSize}");
-            Log.Print( $"复制按钮可能位置: {copyButtonPossibleActualSize}");
+            //Log.Print( $"上传图片可能位置: {uploadImagePossibleActualSize}");
+            //Log.Print( $"复制按钮可能位置: {copyButtonPossibleActualSize}");
             Answer? answer = null;
             bool cancelled=false;
             Console.CancelKeyPress += (sender, e) =>
